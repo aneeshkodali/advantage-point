@@ -5,9 +5,13 @@ import logging
 
 def main():
 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    # set logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
 
-
+    # run ingestion layer
     ingest_main()
 
 if __name__ == "__main__":
