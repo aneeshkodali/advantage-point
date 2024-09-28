@@ -26,8 +26,9 @@ jobs:
           python-version: '3.x'   
 
       - name: Set environment variables
-        env:
-          DATABASE: ${{ vars.DATABASE }}
         run: |
-          echo "Current environment: ${{ matrix.environment }}"
+          echo "DATABASE=${{ vars.DATABASE }}" >> $GITHUB_ENV
+
+      - name: Debug environment variables
+        run: |
           echo "DATABASE=${DATABASE}"
