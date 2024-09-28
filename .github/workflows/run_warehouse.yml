@@ -3,22 +3,27 @@ name: Run Data Warehouse
 on:
 #   schedule:
 #     - cron: '0 0 * * *'
-  push:
-    branches:
-      - dev
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
 
 jobs:
   run_script:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [dev]
+    environment: ${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ matrix.environment == 'prod' && 'master' || 'dev' }}
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
       - name: Set up python
         uses: actions/setup-python@v2
@@ -27,8 +32,4 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "DATABASE=${{ vars.DATABASE }}" >> $GITHUB_ENV
-
-      - name: Debug environment variables
-        run: |
-          echo "DATABASE=${DATABASE}"
+          echo "DATABASE=${{ vars.DATABASE }}"
