@@ -41,6 +41,7 @@ def create_schema(schema_name):
     create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name}"
 
     # execute statement
+    logging.info(f"Creating schema: {schema_name}")
     logging.info(f"Executing statement:\n {create_schema_sql}")
     cursor.execute(create_schema_sql)
     conn.commit()
