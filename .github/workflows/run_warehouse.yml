@@ -29,13 +29,11 @@ jobs:
         with:
           python-version: '3.x'
       
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      
 
       - name: Set environment variables
         run: |
-          echo "DATABASE=testing" >> $GITHUB_ENV
+          echo "DATABASE=${{ env.DATABASE }}" >> $GITHUB_ENV
           
 
       - name: Run warehouse script
