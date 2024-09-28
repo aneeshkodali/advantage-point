@@ -29,13 +29,14 @@ jobs:
         with:
           python-version: '3.x'    
 
-      - name: Run warehouse script
-        env:
-          DATABASE: ${{ vars.DATABASE }}
+      - name: Set environment variables
         run: |
-          echo "DATABASE=$DATABASE"
-          echo "USER=$USER"
-          echo "PASSWORD=$PASSWORD"
-          echo "HOST=$HOST"
-          echo "PORT=$PORT"
-          python -m warehouse.warehouse_main
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            echo "DATABASE=${{ vars.DATABASE }}" >> $GITHUB_ENV
+          else
+            echo "DATABASE=${{ secrets.DATABASE }}" >> $GITHUB_ENV
+          fi
+
+      - name: Debug environment variables
+        run: |
+          echo "DATABASE=${DATABASE}"
