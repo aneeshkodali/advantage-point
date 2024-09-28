@@ -54,7 +54,7 @@ jobs:
           DATABASE: ${{ vars.DATABASE }}
           USER: postgres
           PASSWORD: ${{ secrets.SUPER_PASSWORD }}
-          HOST: postgres
+          HOST: localhost
           PORT: 5432
         run: |
           python -m warehouse.warehouse_main
