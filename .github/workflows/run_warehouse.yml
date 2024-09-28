@@ -23,9 +23,8 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: ${{ vars.USER }}
-          POSTGRES_PASSWORD: ${{ secrets.PASSWORD }}
-          POSTGRES_DATABASE: ${{ vars.DATABASE }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.SUPER_PASSWORD }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
