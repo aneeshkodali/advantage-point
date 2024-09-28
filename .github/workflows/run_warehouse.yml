@@ -3,19 +3,7 @@ name: Run Data Warehouse
 on:
 #   schedule:
 #     - cron: '0 0 * * *'
-  push:
-    branches:
-      - dev
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Select the environment to run the script'
-        required: true
-        default: dev
-        type: choice
-        options:
-          - dev
-          - prod
 
 jobs:
   run_script:
