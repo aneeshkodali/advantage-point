@@ -1,4 +1,4 @@
-from config.sql import (
+from utils.config.sql import (
     DATABASE,
     HOST,
     PASSWORD,
