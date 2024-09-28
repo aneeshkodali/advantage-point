@@ -40,9 +40,10 @@ def create_schema(schema_name):
 
     # generate sql statement
     # uses sql to prevent sql injection
-    create_schema_sql = sql.SQL(f"CREATE SCHEMA IF NOT EXISTS {sql.Identifier(schema_name)}")
+    create_schema_sql = sql.SQL(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
 
     # execute statement
+    logging.info(f"Executing statement:\n {create_schema_sql}")
     cursor.execute(create_schema_sql)
     conn.commit()
     logging.info(f"{schema_name} created successfully.")
