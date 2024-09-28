@@ -9,14 +9,20 @@ from psycopg2 import sql
 import logging
 import psycopg2
 
-# create connection for use in functions
-conn = psycopg2.connect(
-    dbname=DATABASE,
-    user=USER,
-    password=PASSWORD,
-    host=HOST,
-    port=PORT
-)
+def create_connection():
+    """
+    Create sql connection
+    """
+
+    conn = psycopg2.connect(
+        dbname=DATABASE,
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT
+    )
+
+    return conn
 
 def create_schema(schema_name):
     """
@@ -26,7 +32,8 @@ def create_schema(schema_name):
     Creates schema if it does not exist
     """
 
-    conn = conn
+    # create connection
+    conn = create_connection()
 
     # create cursor
     cursor = conn.cursor()
