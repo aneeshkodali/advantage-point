@@ -3,7 +3,7 @@ from utils.constants.sql import (
     SCHEMA_INGEST,
     SCHEMA_INGEST_TEMP
 )
-from utils.constants.functions import create_schema
+from utils.functions.sql import create_schema
 import logging
 
 def main():
