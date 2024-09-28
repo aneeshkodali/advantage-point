@@ -33,7 +33,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "DATABASE=${{ env.DATABASE }}" >> $GITHUB_ENV
+          echo "DATABASE=${{ vars.DATABASE }}" >> $GITHUB_ENV
           
 
       - name: Run warehouse script
