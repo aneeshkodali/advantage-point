@@ -3,9 +3,9 @@ name: Run Data Warehouse
 on:
 #   schedule:
 #     - cron: '0 0 * * *'
-  push:
-    branches:
-      - dev
+  # push:
+  #   branches:
+  #     - dev
   workflow_dispatch:
     inputs:
       environment:
