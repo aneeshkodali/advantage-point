@@ -29,7 +29,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'   
-
-      - name: Set environment variables
+          
+      - name: Run python script
+        env:
+          DATABASE: ${{ vars.DATABASE }}
+          USER: ${{ vars.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HOST: ${{ vars.HOST }}
+          PORT: ${{ vars.PORT }}
         run: |
-          echo "DATABASE=${{ vars.DATABASE }}"
+          python -m warehouse.warehouse_main
