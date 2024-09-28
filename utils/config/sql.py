@@ -1,7 +1,7 @@
 import os
 
-DATABASE_NAME = os.getenv("POSTGRESQL_DATABASE_NAME")
-USER_NAME = os.getenv("POSTGRESQL_USER_NAME")
-PASSWORD = os.getenv("POSTGRESQL_USER_PASSWORD")
-HOST = os.getenv("POSTGRESQL_HOST")
-PORT = int(os.getenv("POSTGRESQL_PORT"))
+DATABASE = os.getenv("DATABASE")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+HOST = os.getenv("HOST")
+PORT = int(os.getenv("PORT"))
