@@ -34,6 +34,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run warehouse script
+        env:
+          DATABASE: ${{ env.DATABASE }}
+          USER: ${{ env.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HOST: ${{ env.HOST }}
+          PORT: ${{ env.PORT }}
         run: |
           echo "DATABASE=${{ DATABASE }}"
           echo "USER=${{ USER }}"
