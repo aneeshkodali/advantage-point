@@ -1,1 +1,2 @@
 SCHEMA_INGEST = 'ods'
+SCHEMA_INGEST_TEMP = 'odstemp'
