@@ -27,16 +27,11 @@ jobs:
       - name: Set up python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
-      
-      
-
-      - name: Set environment variables
-        run: |
-          echo "DATABASE=${{ vars.DATABASE }}" >> $GITHUB_ENV
-          
+          python-version: '3.x'    
 
       - name: Run warehouse script
+        env:
+          DATABASE: ${{ vars.DATABASE }}
         run: |
           echo "DATABASE=$DATABASE"
           echo "USER=$USER"
