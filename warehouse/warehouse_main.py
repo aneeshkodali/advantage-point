@@ -1,7 +1,5 @@
-from .ingest.ingest_main import main as ingest_main
+from warehouse.ingest.ingest_main import main as ingest_main
 import logging
-
-
 
 def main():
 
