@@ -10,10 +10,15 @@ on:
 jobs:
   run_script:
     runs-on: ubuntu-latest
-    environment: dev
+    strategy:
+      matrix:
+        environment: [dev]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ matrix.environment == 'prod' && 'master' || 'dev' }}
 
       - name: Set up python
         uses: actions/setup-python@v2
