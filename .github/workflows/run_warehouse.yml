@@ -41,9 +41,9 @@ jobs:
           HOST: ${{ env.HOST }}
           PORT: ${{ env.PORT }}
         run: |
-          echo "DATABASE=${{ DATABASE }}"
-          echo "USER=${{ USER }}"
-          echo "PASSWORD=${{ PASSWORD }}"
-          echo "HOST=${{ HOST }}"
-          echo "PORT=${{ PORT }}"
+          echo "DATABASE=$DATABASE"
+          echo "USER=$USER"
+          echo "PASSWORD=$PASSWORD"
+          echo "HOST=$HOST"
+          echo "PORT=$PORT"
           python -m warehouse.warehouse_main
