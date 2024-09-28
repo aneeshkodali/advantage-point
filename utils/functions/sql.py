@@ -26,6 +26,8 @@ def create_schema(schema_name):
     Creates schema if it does not exist
     """
 
+    conn = conn
+
     # create cursor
     cursor = conn.cursor()
 
@@ -37,3 +39,7 @@ def create_schema(schema_name):
     cursor.execute(create_schema_sql)
     conn.commit()
     logging.info(f"{schema_name} created successfully.")
+
+    # close
+    cursor.close()
+    conn.close()
