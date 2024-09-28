@@ -23,15 +23,16 @@ jobs:
       postgres:
         image: postgres:17
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ${{ secrets.SUPER_PASSWORD }}
+          POSTGRES_USER: ${{ vars.USER }}
+          POSTGRES_PASSWORD: ${{ secrets.PASSWORD }}
+          POSTGRES_DATABASE: ${{ vars.DATABASE }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         ports:
-          - 5432:5432
+          - ${{ vars.PORT }}:${{ vars.PORT }}
 
     steps:
       - name: Checkout code
