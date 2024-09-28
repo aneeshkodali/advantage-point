@@ -108,7 +108,9 @@ def main():
     logging.info(f"Found {len(tournament_tr_list)} tournaments.")
 
     # loop through tournaments
-    for tournament_tr in tournament_tr_list:
+    for i, tournament_tr in enumerate(tournament_tr_list):
+
+        logging.info(f"Starting {i+1} of {len(tournament_tr_list)}.")
         
         # create dict of tournament info from <tr> element
         tournament_dict_parsed = parse_tournament_tr(tournament_tr)
