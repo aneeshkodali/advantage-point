@@ -35,11 +35,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "DATABASE=${{ env.DATABASE }}" >> $GITHUB_ENV
-          echo "USER=${{ env.USER }}" >> $GITHUB_ENV
-          echo "PASSWORD=${{ secrets.PASSWORD }}" >> $GITHUB_ENV
-          echo "HOST=${{ env.HOST }}" >> $GITHUB_ENV
-          echo "PORT=${{ env.PORT }}" >> $GITHUB_ENV
+          echo "DATABASE=testing" >> $GITHUB_ENV
+          
 
       - name: Run warehouse script
         run: |
