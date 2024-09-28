@@ -21,9 +21,7 @@ jobs:
           python-version: '3.x'    
 
       - name: Set environment variables
-        env:
-          DATABASE: ${{ vars.DATABASE }}
 
       - name: Debug environment variables
         run: |
-          echo "DATABASE=${DATABASE}"
+          echo "DATABASE=${{ vars.DATABASE }}"
