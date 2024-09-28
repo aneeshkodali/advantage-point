@@ -27,4 +27,5 @@ jobs:
 
       - name: Debug environment variables
         run: |
+          echo "Environment=${{ matrix.environment }}"
           echo "DATABASE=${{ vars.DATABASE }}"
