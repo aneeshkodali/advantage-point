@@ -33,13 +33,15 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Set environment variables
+        run: |
+          echo "DATABASE=${{ env.DATABASE }}" >> $GITHUB_ENV
+          echo "USER=${{ env.USER }}" >> $GITHUB_ENV
+          echo "PASSWORD=${{ secrets.PASSWORD }}" >> $GITHUB_ENV
+          echo "HOST=${{ env.HOST }}" >> $GITHUB_ENV
+          echo "PORT=${{ env.PORT }}" >> $GITHUB_ENV
+
       - name: Run warehouse script
-        env:
-          DATABASE: ${{ env.DATABASE }}
-          USER: ${{ env.USER }}
-          PASSWORD: ${{ secrets.PASSWORD }}
-          HOST: ${{ env.HOST }}
-          PORT: ${{ env.PORT }}
         run: |
           echo "DATABASE=$DATABASE"
           echo "USER=$USER"
