@@ -5,7 +5,6 @@ from utils.config.sql import (
     PORT,
     USER
 )
-from psycopg2 import sql
 import logging
 import psycopg2
 
@@ -39,8 +38,7 @@ def create_schema(schema_name):
     cursor = conn.cursor()
 
     # generate sql statement
-    # uses sql to prevent sql injection
-    create_schema_sql = sql.SQL(f"CREATE SCHEMA IF NOT EXISTS {schema_name}")
+    create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name}"
 
     # execute statement
     logging.info(f"Executing statement:\n {create_schema_sql}")
