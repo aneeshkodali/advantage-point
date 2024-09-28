@@ -3,11 +3,14 @@ name: Run Data Warehouse
 on:
 #   schedule:
 #     - cron: '0 0 * * *'
-  workflow_dispatch:
+  push:
+    branches:
+      - dev
 
 jobs:
   run_script:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,6 +22,8 @@ jobs:
 
       - name: Set environment variables
         env:
-          PASSWORD: ${{ secrets.PASSWORD }}
+          DATABASE: ${{ vars.DATABASE }}
+
+      - name: Debug environment variables
         run: |
-            echo "PASSWORD = $PASSWORD"
+          echo "DATABASE=${DATABASE}"
