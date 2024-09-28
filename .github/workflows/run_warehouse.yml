@@ -30,5 +30,7 @@ jobs:
           python-version: '3.x'    
 
       - name: Set environment variables
+        env:
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-            echo "${{ secrets.PASSWORD }}"
+            echo "PASSWORD = $PASSWORD"
