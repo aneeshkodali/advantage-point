@@ -1,0 +1,46 @@
+name: Run Data Warehouse
+
+on:
+#   schedule:
+#     - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  run_script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run warehouse script
+        env:
+          DATABASE: ${{ env.DATABASE }}
+          USER: ${{ env.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HOST: ${{ env.HOST }}
+          PORT: ${{ env.PORT }}
+        run: |
+          echo "DATABASE=$DATABASE"
+          echo "USER=$USER"
+          echo "PASSWORD=$PASSWORD"
+          echo "HOST=$HOST"
+          echo "PORT=$PORT"
+          python -m warehouse_main
