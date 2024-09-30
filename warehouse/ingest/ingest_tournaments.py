@@ -1,3 +1,4 @@
+from selenium.webdriver.common.by import By
 from typing import (
     Dict,
     List
@@ -112,7 +113,7 @@ def main():
         # create dict of tournament info from <tr> element
         tournament_dict_parsed = parse_tournament_tr(tournament_tr)
         tournament_url_suffix = tournament_dict_parsed['tournament_url_suffix']
-        logging.info(f"Begin parsing {tournament_url_suffix}")
+        logging.info(f"Begin parsing: {tournament_url_suffix}")
         
         # scrape rest of tournament data
         tournament_url = tournament_dict_parsed['tournament_url']
@@ -126,7 +127,7 @@ def main():
             **tournament_dict_parsed,
             **tournament_dict_scraped
         }
-        logging.info(f"Finished parsing {tournament_url_suffix}")
+        logging.info(f"Finished parsing: {tournament_url_suffix}")
 
     # quit driver
     driver.quit()
