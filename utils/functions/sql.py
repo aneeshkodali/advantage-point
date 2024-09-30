@@ -1,11 +1,7 @@
-from utils.config.sql import (
-    DATABASE,
-    HOST,
-    PASSWORD,
-    PORT,
-    USER
-)
+from dotenv import load_dotenv
+from utils.functions.version_control import get_current_branch
 import logging
+import os
 import psycopg2
 
 def create_connection():
@@ -13,14 +9,24 @@ def create_connection():
     Create sql connection
     """
 
-    conn = psycopg2.connect(
-        dbname=DATABASE,
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT
-    )
+    # get current branch
+    branch = get_current_branch()
+    print(branch)
 
+    # import environment variables
+    if branch == 'master':
+        load_dotenv('utils/config/.env.prod')
+    else:
+        load_dotenv('utils/config/.env.dev')
+
+    conn = psycopg2.connect(
+        dbname=os.getenv('DATABASE'),
+        user=os.getenv('USER'),
+        password=os.getenv('PASSWORD'),
+        host=os.getenv('HOST'),
+        port=os.getenv('PORT')
+    )
+    
     return conn
 
 def create_schema(schema_name):
