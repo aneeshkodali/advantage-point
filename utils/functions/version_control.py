@@ -12,5 +12,3 @@ def get_current_branch():
     ).strip().decode('utf-8')
 
     return branch
-
-print(get_current_branch())
