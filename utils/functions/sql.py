@@ -51,7 +51,7 @@ def create_schema(schema_name):
     logging.info(f"Executing statement:\n {create_schema_sql}")
     cursor.execute(create_schema_sql)
     conn.commit()
-    logging.info(f"{schema_name} exists.")
+    logging.info(f"Schema exists: {schema_name}.")
 
     # close
     cursor.close()
