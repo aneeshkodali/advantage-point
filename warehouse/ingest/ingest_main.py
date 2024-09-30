@@ -20,11 +20,14 @@ def main():
     for schema in schema_ingest_list:
         create_schema(schema_name=schema)
 
-    print("Starting data ingestion.")
+    logging.info("Starting data ingestion.")
 
-    # ingest_tournaments()
+    # ingest tournaments
+    logging.info("Starting ingestion: tournaments")
+    ingest_tournaments()
+    logging.info("Completed ingestion: tournaments")
 
-    print("Data ingestion completed.")
+    logging.info("Data ingestion completed.")
 
 if __name__ == "__main__":
     main()
