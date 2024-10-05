@@ -16,15 +16,15 @@ def main():
 
     # create ingest schemas
     logging.info(f"Creating ingestion layer schemas.")
-    schema_ingest_list = [SCHEMA_INGEST, SCHEMA_INGEST_TEMP]
-    for schema in schema_ingest_list:
-        create_schema(schema_name=schema)
+    # schema_ingest_list = [SCHEMA_INGEST, SCHEMA_INGEST_TEMP]
+    # for schema in schema_ingest_list:
+    #     create_schema(schema_name=schema)
 
     logging.info("Starting data ingestion.")
 
     # ingest tournaments
     logging.info("Starting ingestion: tournaments")
-    ingest_tournaments()
+    # ingest_tournaments()
     logging.info("Completed ingestion: tournaments")
 
     logging.info("Data ingestion completed.")
