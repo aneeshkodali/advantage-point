@@ -19,9 +19,13 @@ def create_connection():
     
     return conn
 
-def create_schema(schema_name):
+def create_schema(
+    conn,
+    schema_name
+):
     """
     Arguments:
+    - connection: SQL database connection
     - schema_name: schema
 
     Creates schema if it does not exist
@@ -31,11 +35,8 @@ def create_schema(schema_name):
     branch = get_current_branch()
     schema_name_env = schema_name if branch == 'master' else f"{schema_name}_dev"
 
-    # create connection
-    conn = create_connection()
-
     # create cursor
-    cursor = conn.cursor()
+    cursor = connection.cursor()
 
     # generate sql statement
     create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name_env}"
@@ -44,9 +45,9 @@ def create_schema(schema_name):
     logging.info(f"Ensuring schema exists: {schema_name_env}")
     logging.info(f"Executing statement:\n {create_schema_sql}")
     cursor.execute(create_schema_sql)
-    conn.commit()
+    connection.commit()
     logging.info(f"Schema exists: {schema_name_env}.")
 
     # close
     cursor.close()
-    conn.close()
+    connection.close()
