@@ -51,10 +51,10 @@ jobs:
           
       - name: Run python script
         env:
-          DATABASE: ${{ vars.DATABASE }}
-          USER: postgres
+          DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          USER: ${{ vars.SUPABASE_USER }}
           PASSWORD: ${{ secrets.SUPER_PASSWORD }}
-          HOST: localhost
-          PORT: 5432
+          HOST: ${{ vars.SUPABASE_HOST }}
+          PORT: ${{ vars.SUPABASE_PORT }}
         run: |
           python -m warehouse.warehouse_main
