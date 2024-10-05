@@ -29,7 +29,7 @@ def create_schema(schema_name):
 
     # set schema based on current branch
     branch = get_current_branch()
-    schema_name_env = schema_name == 'master' else f"{schema_name}_dev"
+    schema_name_env = schema_name if branch == 'master' else f"{schema_name}_dev"
 
     # create connection
     conn = create_connection()
