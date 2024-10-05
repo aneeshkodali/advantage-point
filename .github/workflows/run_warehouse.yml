@@ -41,5 +41,9 @@ jobs:
           PASSWORD: ${{ secrets.SUPER_PASSWORD }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PORT: ${{ vars.SUPABASE_PORT }}
+          SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
+          SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}
+          SCHEMA_TRANSFORMATION: ${{ vars.SCHEMA_TRANSFORMATION }}
+          SCHEMA_PRESENTATION: ${{ vars.SCHEMA_PRESENTATION }}
         run: |
           python -m warehouse.warehouse_main
