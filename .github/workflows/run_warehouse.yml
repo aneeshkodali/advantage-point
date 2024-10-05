@@ -38,7 +38,7 @@ jobs:
         env:
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           USER: ${{ vars.SUPABASE_USER }}
-          PASSWORD: ${{ secrets.SUPER_PASSWORD }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PORT: ${{ vars.SUPABASE_PORT }}
           SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
