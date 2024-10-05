@@ -9,16 +9,6 @@ def create_connection():
     Create sql connection
     """
 
-    # get current branch
-    branch = get_current_branch()
-    print(branch)
-
-    # import environment variables
-    if branch == 'master':
-        load_dotenv('utils/config/.env.prod')
-    else:
-        load_dotenv('utils/config/.env.dev')
-
     conn = psycopg2.connect(
         dbname=os.getenv('DATABASE'),
         user=os.getenv('USER'),
@@ -37,6 +27,10 @@ def create_schema(schema_name):
     Creates schema if it does not exist
     """
 
+    # set schema based on current branch
+    branch = get_current_branch()
+    schema_name_env = schema_name == 'master' else f"{schema_name}_dev"
+
     # create connection
     conn = create_connection()
 
@@ -44,14 +38,14 @@ def create_schema(schema_name):
     cursor = conn.cursor()
 
     # generate sql statement
-    create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name}"
+    create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name_env}"
 
     # execute statement
-    logging.info(f"Ensuring schema exists: {schema_name}")
+    logging.info(f"Ensuring schema exists: {schema_name_env}")
     logging.info(f"Executing statement:\n {create_schema_sql}")
     cursor.execute(create_schema_sql)
     conn.commit()
-    logging.info(f"Schema exists: {schema_name}.")
+    logging.info(f"Schema exists: {schema_name_env}.")
 
     # close
     cursor.close()
