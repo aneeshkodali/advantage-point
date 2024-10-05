@@ -1,10 +1,7 @@
-from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
-from utils.constants.sql import (
-    SCHEMA_INGEST,
-    SCHEMA_INGEST_TEMP
-)
 from utils.functions.sql import create_schema
+from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
 import logging
+import os
 
 def main():
 
@@ -16,9 +13,10 @@ def main():
 
     # create ingest schemas
     logging.info(f"Creating ingestion layer schemas.")
-    # schema_ingest_list = [SCHEMA_INGEST, SCHEMA_INGEST_TEMP]
-    # for schema in schema_ingest_list:
-    #     create_schema(schema_name=schema)
+    schema_ingest = os.getenv('SCHEMA_INGESTION')
+    schema_ingest_temp = f"{schema_ingest}_temp"
+    for schema in [schema_ingest, schema_ingest_temp]:
+        create_schema(schema_name=schema)
 
     logging.info("Starting data ingestion.")
 
