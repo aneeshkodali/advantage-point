@@ -48,6 +48,5 @@ def create_schema(
     connection.commit()
     logging.info(f"Schema exists: {schema_name_env}.")
 
-    # close
+    # close cursor
     cursor.close()
-    connection.close()

@@ -14,8 +14,10 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-    # create ingest schemas
+    # create connection
     conn = create_connection()
+    
+    # create ingest schemas
     logging.info(f"Creating ingestion layer schemas.")
     schema_ingest = os.getenv('SCHEMA_INGESTION')
     schema_ingest_temp = f"{schema_ingest}_temp"
@@ -33,6 +35,9 @@ def main():
     logging.info("Completed ingestion: tournaments")
 
     logging.info("Data ingestion completed.")
+
+    # close connection
+    conn.close()
 
 if __name__ == "__main__":
     main()
