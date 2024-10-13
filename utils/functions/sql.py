@@ -20,7 +20,7 @@ def create_connection():
     return conn
 
 def create_schema(
-    conn,
+    connection,
     schema_name
 ):
     """
