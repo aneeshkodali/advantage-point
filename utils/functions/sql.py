@@ -50,3 +50,25 @@ def create_schema(
 
     # close cursor
     cursor.close()
+
+def infer_sql_type(value):
+    """
+    Arguments:
+    - value: python value
+
+    Return (postgres) sql data type based on the python data type of the value passed
+    """
+
+    #  construct dictionary of type mappings
+    type_mapping_dict = {
+        bool: 'BOOLEAN',
+        datetime: 'TIMESTAMP',
+        float: 'FLOAT',
+        int: 'INTEGER',
+        str: 'TEXT',
+    }
+
+    # look up sql type; default to TEXT
+    sql_type = type_mapping_dict.get(type(value), 'TEXT')
+
+    return sql_type
