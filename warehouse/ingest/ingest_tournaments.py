@@ -90,7 +90,7 @@ def scrape_tournament_data(
 
     return tournament_dict
 
-def main():
+def main() -> List:
 
     # set logging
     logging.basicConfig(
@@ -106,6 +106,8 @@ def main():
     logging.info(f"Found {len(tournament_tr_list)} tournaments.")
 
     # loop through tournaments
+    # initialize list
+    tournament_data_list = []
     for i, tournament_tr in enumerate(tournament_tr_list):
 
         logging.info(f"Starting {i+1} of {len(tournament_tr_list)}.")
@@ -127,17 +129,17 @@ def main():
             **tournament_dict_parsed,
             **tournament_dict_scraped
         }
-        logging.info(f"Finished parsing: {tournament_url_suffix}")
+
+        # append to list
+        tournament_data_list.append(tournament_dict)
+
+    logging.info(f"Finished parsing: {tournament_url_suffix}")
 
     # quit driver
     driver.quit()
 
-        # create or replace temp table and insert
-
-        # create or alter target table
-
-        # merge into target table
-
+    # return data
+    return tournament_data_list
     
 
 if __name__ == "__main__":
