@@ -63,9 +63,6 @@ def create_schema(
         cursor.execute(create_schema_sql)
         connection.commit()
     
-    
-    logging.info(f"Schema {schema_name} exists.")
-
     # close cursor
     cursor.close()
 
