@@ -29,10 +29,35 @@ def main():
 
     logging.info("Starting data ingestion.")
 
-    # ingest tournaments
-    logging.info("Starting ingestion: tournaments")
-    # ingest_tournaments()
-    logging.info("Completed ingestion: tournaments")
+    # create configuration dictionary - used on ALL sources
+    config_dict = {
+        'temp_schema': schema_ingest_temp,
+        'target_schema': schema_ingest,
+    }
+
+    # generate list of sources
+    source_list = [
+        {
+            'source_name': 'tournaments',
+            'ingest_func': ingest_tournaments
+            'unique_column_list': ['tournament_url']
+        }
+    ]
+
+    # loop through sources
+    for source_dict in source_list:
+
+        source_name = source_dict['source_name']
+        ingest_func = source_dict['ingest_func']
+
+    logging.info(f"Starting ingestion: {source_name}")
+    source_config_dict = {
+        **source_dict,
+        **config_dict,
+    }
+    logging.info(f"Running ingestion for {source_name} with config: {source_config_dict}")
+    ingest_func(config_dict=source_config_dict)
+    logging.info(f"Completed ingestion: {source_name}")
 
     logging.info("Data ingestion completed.")
 
