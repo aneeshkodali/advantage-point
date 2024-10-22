@@ -33,7 +33,7 @@ def create_schema(
 
     # set schema based on current branch
     branch = get_current_branch()
-    schema_name_env = schema_name if branch == 'master' else f"{schema_name}_dev"
+    schema_name = schema_name if branch == 'master' else f"{schema_name}_dev"
 
     # create cursor
     cursor = connection.cursor()
@@ -51,17 +51,20 @@ def create_schema(
     logging.info(f"Executing statement: {schema_exists_sql}")
     cursor.execute(schema_exists_sql)
     schema_exists_flag = cursor.fetchone()[0]
-    logging.info(f"Schema exists: {schema_exists_flag}")
+    logging.info(f"Schema {schema_name} exists: {schema_exists_flag}")
 
     # conditionally create schema
     if schema_exists_flag:
         logging.info(f"Schema {schema_name} already exists.")
     else:
         # generate sql statement
-        create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name_env}"
+        create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name}"
         logging.info(f"Executing statement:\n {create_schema_sql}")
         cursor.execute(create_schema_sql)
         connection.commit()
+    
+    
+    logging.info(f"Schema {schema_name} exists.")
 
     # close cursor
     cursor.close()
