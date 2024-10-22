@@ -33,6 +33,7 @@ def main():
     config_dict = {
         'temp_schema': schema_ingest_temp,
         'target_schema': schema_ingest,
+        'connection': conn,
     }
 
     # generate list of sources
@@ -50,14 +51,34 @@ def main():
         source_name = source_dict['source_name']
         ingest_func = source_dict['ingest_func']
 
-    logging.info(f"Starting ingestion: {source_name}")
-    source_config_dict = {
-        **source_dict,
-        **config_dict,
-    }
-    logging.info(f"Running ingestion for {source_name} with config: {source_config_dict}")
-    ingest_func(config_dict=source_config_dict)
-    logging.info(f"Completed ingestion: {source_name}")
+        logging.info(f"Starting ingestion: {source_name}")
+        source_config_dict = {
+            **source_dict,
+            **config_dict,
+        }
+        logging.info(f"Running ingestion for {source_name} with config: {source_config_dict}")
+
+        # create dataframe
+        source_data_list = ingest_func()
+        source_data_df = pd.Dataframe(source_data_list)
+
+        # create or replace temp table and insert
+        logging.info(f"Create temp table for {source_name}.")
+        source_data_df.to_sql(
+            name=f"{source_config_dict['temp_schema_name']}.{source_config_dict['source_name']}",
+            con=source_config_dict['connection'],
+            if_exists='replace',
+            index=False
+        )
+        logging.info(f"Created temp table for {source_name}.")
+
+
+        # create or alter target table
+
+        # merge into target table
+
+        logging.info(f"Completed ingestion: {source_name}")
+
 
     logging.info("Data ingestion completed.")
 
