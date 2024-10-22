@@ -49,7 +49,8 @@ def create_schema(
 
     # execute query
     logging.info(f"Executing statement: {schema_exists_sql}")
-    schema_exists_flag = cursor.execute(schema_exists_sql).fetchone()
+    cursor.execute(schema_exists_sql)
+    schema_exists_flag = cursor.fetchone()
     logging.info(f"Schema exists: {schema_exists_flag}")
 
     # conditionally create schema
