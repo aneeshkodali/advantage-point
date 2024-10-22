@@ -38,15 +38,29 @@ def create_schema(
     # create cursor
     cursor = connection.cursor()
 
-    # generate sql statement
-    create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name_env}"
+    # write query to check schema existence
+    schema_exists_sql = f"""
+        SELECT
+            COUNT(*) > 0 AS schema_exists_flag
+        FROM INFORMATION_SCHEMA.SCHEMATA
+        WHERE SCHEMA_NAME = '{schema_name}'
+        ;
+    """
 
-    # execute statement
-    logging.info(f"Ensuring schema exists: {schema_name_env}")
-    logging.info(f"Executing statement:\n {create_schema_sql}")
-    cursor.execute(create_schema_sql)
-    connection.commit()
-    logging.info(f"Schema exists: {schema_name_env}.")
+    # execute query
+    logging.info(f"Executing statement: {schema_exists_sql}")
+    schema_exists_flag = cursor.execute(schema_exists_sql).fetchone()
+    logging.info(f"Schema exists: {schema_exists_flag}")
+
+    # conditionally create schema
+    if schema_exists_flag:
+        logging.info(f"Schema {schema_name} already exists.")
+    else:
+        # generate sql statement
+        create_schema_sql = f"CREATE SCHEMA IF NOT EXISTS {schema_name_env}"
+        logging.info(f"Executing statement:\n {create_schema_sql}")
+        cursor.execute(create_schema_sql)
+        connection.commit()
 
     # close cursor
     cursor.close()
