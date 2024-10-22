@@ -40,26 +40,30 @@ def main():
     source_list = [
         {
             'source_name': 'tournaments',
-            'ingest_func': ingest_tournaments
-            'unique_column_list': ['tournament_url']
+            'ingest_data': ingest_tournaments,
+            'unique_column_list': ['tournament_url'],
         }
     ]
 
     # loop through sources
     for source_dict in source_list:
 
-        source_name = source_dict['source_name']
-        ingest_func = source_dict['ingest_func']
-
-        logging.info(f"Starting ingestion: {source_name}")
+        # combine dictionaries
         source_config_dict = {
             **source_dict,
             **config_dict,
         }
+
+        # parse dictionary properties
+        source_name = source_dict['source_name']
+        ingest_func = source_dict['ingest_func']
+
+        logging.info(f"Starting ingestion: {source_name}")
+        
         logging.info(f"Running ingestion for {source_name} with config: {source_config_dict}")
 
         # create dataframe
-        source_data_list = ingest_func()
+        source_data_list = ingest_data()
         source_data_df = pd.Dataframe(source_data_list)
 
         # create or replace temp table and insert
