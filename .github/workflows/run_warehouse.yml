@@ -30,19 +30,21 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install dependencies
+      - name: Install python requirements
         run: |
           pip install -r requirements.txt
 
+      - name: Install chrome
+        steps:
+        - uses: browser-actions/setup-chrome@v1
+          with:
+            chrome-version: 114
+
+      - name: Install chromedriver
+        run: |
+
           sudo apt-get update
           sudo apt-get install -y wget unzip
-          
-          # Install a specific version of Chrome (e.g., version 114)
-          CHROME_VERSION="114.0.5735.90"  # Use the specific Chrome version
-          echo "Installing Google Chrome Version: $CHROME_VERSION"
-          
-          wget "https://dl.google.com/linux/direct/google-chrome-stable_${CHROME_VERSION}_amd64.deb"
-          sudo dpkg -i "google-chrome-stable_${CHROME_VERSION}_amd64.deb" || sudo apt-get -f install
           
           # Fetch ChromeDriver for the exact version of Chrome installed
           CHROMEDRIVER_VERSION="114.0.5735.90"  # Ensure this matches the Chrome version
