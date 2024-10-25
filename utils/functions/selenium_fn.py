@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
-def create_webdriver(webdriver_path):
+def create_chromedriver(webdriver_path):
     """
     Arguments:
     - webdriver_path: path to webdriver
