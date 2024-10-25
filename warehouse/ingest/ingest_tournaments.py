@@ -101,7 +101,8 @@ def main() -> List:
     )
 
     # initialize driver
-    driver = create_webdriver()
+    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    driver = create_chromedriver(webdriver_path=webdriver_path)
 
     # get list of tournaments
     tournament_tr_list = get_tournament_tr_list(driver=driver)
