@@ -35,10 +35,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install chrome
-        steps:
-        - uses: browser-actions/setup-chrome@v1
-          with:
-            chrome-version: 114
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 114
 
       - name: Install chromedriver
         run: |
