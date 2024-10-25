@@ -37,24 +37,19 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget unzip
           
-          # Install Chrome
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
+          # Install a specific version of Chrome (e.g., version 114)
+          CHROME_VERSION="114.0.5735.90"  # Use the specific Chrome version
+          echo "Installing Google Chrome Version: $CHROME_VERSION"
           
-          # Get the exact Chrome version installed on the system
-          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -n1)
-          echo "Installed Chrome Version: $CHROME_VERSION"
+          wget "https://dl.google.com/linux/direct/google-chrome-stable_${CHROME_VERSION}_amd64.deb"
+          sudo dpkg -i "google-chrome-stable_${CHROME_VERSION}_amd64.deb" || sudo apt-get -f install
           
-          # Extract the major version for ChromeDriver compatibility
-          MAJOR_CHROME_VERSION=$(echo $CHROME_VERSION | cut -d. -f1)
-          echo "Fetching ChromeDriver for Major Version: $MAJOR_CHROME_VERSION"  # Log major Chrome version
-          
-          # Fetch the latest compatible ChromeDriver version
-          LATEST_DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_CHROME_VERSION")
-          echo "Latest ChromeDriver Version: $LATEST_DRIVER_VERSION"  # Log the latest driver version
+          # Fetch ChromeDriver for the exact version of Chrome installed
+          CHROMEDRIVER_VERSION="114.0.5735.90"  # Ensure this matches the Chrome version
+          echo "Fetching ChromeDriver for Version: $CHROMEDRIVER_VERSION"
           
           # Download and install the matching ChromeDriver version
-          wget "https://chromedriver.storage.googleapis.com/${LATEST_DRIVER_VERSION}/chromedriver_linux64.zip"
+          wget "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           
           # Create directory if it doesn't exist and move chromedriver
