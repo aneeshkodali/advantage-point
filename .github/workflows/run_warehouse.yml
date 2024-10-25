@@ -34,6 +34,15 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Remove old Chrome if it exists
+        run: |
+          sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
+
+      - name: Verify chrome versions
+        run: |
+          google-chrome --version
+          chromedriver --version
+
       - name: Install chrome
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
