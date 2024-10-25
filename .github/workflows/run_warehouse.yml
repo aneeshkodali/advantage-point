@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          
+
           sudo apt-get update
           sudo apt-get install -y wget unzip
           
@@ -43,13 +43,16 @@ jobs:
           
           # Get the exact Chrome version installed on the system
           CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -n1)
+          echo "Installed Chrome Version: $CHROME_VERSION"  # Log Chrome version
           
-          # Fetch the correct ChromeDriver version for the installed Chrome
+          # Fetch the ChromeDriver version that matches the installed Chrome version
           LATEST_DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          echo "Fetching ChromeDriver for Version: $LATEST_DRIVER_VERSION"  # Log ChromeDriver version
           
-          # If the specific version isn't found, fallback to the latest
+          # If the specific version isn't found, get the latest version under the installed Chrome version
           if [ -z "$LATEST_DRIVER_VERSION" ]; then
               LATEST_DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+              echo "Falling back to the latest available ChromeDriver Version: $LATEST_DRIVER_VERSION"  # Log fallback
           fi
           
           # Download and install the matching ChromeDriver version
