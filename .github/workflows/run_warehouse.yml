@@ -33,17 +33,31 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y wget unzip
+          # Install Chrome
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
+          # Install ChromeDriver
+          CHROME_VERSION=$(google-chrome --version | sed 's/.* \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')
+          wget "https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip"
+          unzip chromedriver_linux64.zip
+          # Create directory if it doesn't exist and move chromedriver
+          mkdir -p $(dirname "${{ vars.CHROMEDRIVER_PATH }}")  # Create directory if it doesn't exist
+          sudo mv chromedriver ${{ vars.CHROMEDRIVER_PATH }}
+          sudo chmod +x ${{ vars.CHROMEDRIVER_PATH }}
           
       - name: Run python script
         env:
+          CHROMEDRIVER_PATH: ${{ vars.CHROMEDRIVER_PATH }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
-          USER: ${{ vars.SUPABASE_USER }}
-          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           HOST: ${{ vars.SUPABASE_HOST }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           PORT: ${{ vars.SUPABASE_PORT }}
           SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
+          SCHEMA_PRESENTATION: ${{ vars.SCHEMA_PRESENTATION }}
           SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}
           SCHEMA_TRANSFORMATION: ${{ vars.SCHEMA_TRANSFORMATION }}
-          SCHEMA_PRESENTATION: ${{ vars.SCHEMA_PRESENTATION }}
+          USER: ${{ vars.SUPABASE_USER }}
         run: |
           python -m warehouse.warehouse_main
