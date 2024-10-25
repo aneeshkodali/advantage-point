@@ -4,8 +4,9 @@ from typing import (
     List
 )
 from utils.functions.scrape import scrape_page_source_var
-from utils.functions.selenium_fn import create_webdriver
+from utils.functions.selenium_fn import create_chromedriver
 import logging
+import os
 import re
 
 def get_tournament_tr_list(driver) -> List:
@@ -72,7 +73,8 @@ def scrape_tournament_data(
     """
 
     # initialize driver
-    driver = create_webdriver()
+    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    driver = create_chromedriver(webdriver_path=webdriver_path)
 
     # open url in browser
     driver.get(tournament_url)
