@@ -38,15 +38,17 @@ jobs:
           # Install Chrome
           wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
-          # Install ChromeDriver
-          CHROME_VERSION=$(google-chrome --version | sed 's/.* \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/')
-          wget "https://chromedriver.storage.googleapis.com/${CHROME_VERSION}/chromedriver_linux64.zip"
+          # Get the latest ChromeDriver version compatible with the installed Chrome
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
+          LATEST_DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          # Download and install the matching ChromeDriver version
+          wget "https://chromedriver.storage.googleapis.com/${LATEST_DRIVER_VERSION}/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           # Create directory if it doesn't exist and move chromedriver
           mkdir -p $(dirname "${{ vars.CHROMEDRIVER_PATH }}")  # Create directory if it doesn't exist
           sudo mv chromedriver ${{ vars.CHROMEDRIVER_PATH }}
           sudo chmod +x ${{ vars.CHROMEDRIVER_PATH }}
-          
+            
       - name: Run python script
         env:
           CHROMEDRIVER_PATH: ${{ vars.CHROMEDRIVER_PATH }}
