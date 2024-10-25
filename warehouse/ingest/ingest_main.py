@@ -74,7 +74,7 @@ def main():
             if_exists='replace',
             index=False
         )
-        logging.info(f"Created temp table for {source_name}.")
+        logging.info(f"Created temp table for {source_name}: {schema_ingest_temp}.{source_name}")
 
 
         # create or alter target table
