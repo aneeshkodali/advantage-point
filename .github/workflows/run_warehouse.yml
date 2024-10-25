@@ -34,16 +34,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Install chrome and chromedriver
-        id: chrome_setup
+      - name: Install chrome
+        id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 120
+          chrome-version: latest
           install-chromedriver: true
 
       - name: Run python script
         env:
-          CHROMEDRIVER_PATH: ${{ steps.chrome_setup.outputs.chromedriver-path }}
+          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
