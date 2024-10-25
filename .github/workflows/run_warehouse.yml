@@ -42,13 +42,8 @@ jobs:
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 132
+          chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
-
-      - name: Verify chrome versions
-        run: |
-          google-chrome --version
-          chromedriver --version
 
       - name: Run python script
         env:
