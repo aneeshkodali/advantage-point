@@ -38,17 +38,17 @@ jobs:
         run: |
           sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
 
-      - name: Verify chrome versions
-        run: |
-          google-chrome --version
-          chromedriver --version
-
       - name: Install chrome
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 132
           install-chromedriver: true
+
+      - name: Verify chrome versions
+        run: |
+          google-chrome --version
+          chromedriver --version
 
       - name: Run python script
         env:
