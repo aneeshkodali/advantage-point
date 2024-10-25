@@ -34,33 +34,16 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Install chrome
+      - name: Install chrome and chromedriver
+        id: chrome_setup
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 114
+          chrome-version: 120
+          install-chromedriver: true
 
-      - name: Install chromedriver
-        run: |
-
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-          
-          # Fetch ChromeDriver for the exact version of Chrome installed
-          CHROMEDRIVER_VERSION="114.0.5735.90"  # Ensure this matches the Chrome version
-          echo "Fetching ChromeDriver for Version: $CHROMEDRIVER_VERSION"
-          
-          # Download and install the matching ChromeDriver version
-          wget "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          
-          # Create directory if it doesn't exist and move chromedriver
-          mkdir -p $(dirname "${{ vars.CHROMEDRIVER_PATH }}")
-          sudo mv chromedriver ${{ vars.CHROMEDRIVER_PATH }}
-          sudo chmod +x ${{ vars.CHROMEDRIVER_PATH }}
-            
       - name: Run python script
         env:
-          CHROMEDRIVER_PATH: ${{ vars.CHROMEDRIVER_PATH }}
+          CHROMEDRIVER_PATH: ${{ steps.chrome_setup.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
