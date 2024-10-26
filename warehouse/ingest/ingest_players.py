@@ -99,7 +99,7 @@ def fetch_player_data_scraped(
 
 def main():
     
-     set logging
+    # set logging
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
