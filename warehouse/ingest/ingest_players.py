@@ -118,7 +118,7 @@ def main():
     # loop through players
     # initialize list
     player_data_list = []
-    for i, player_url in enumerate(player_list):
+    for i, player_url in enumerate(player_url_list):
 
         logging.info(f"Starting {i+1} of {len(player_url_list)}.")
 
