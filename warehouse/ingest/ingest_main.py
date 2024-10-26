@@ -6,6 +6,7 @@ from warehouse.ingest.ingest_players import main as ingest_players
 from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
 import logging
 import os
+import pandas as pd
 
 def main():
 
