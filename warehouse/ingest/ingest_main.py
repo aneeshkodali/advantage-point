@@ -2,6 +2,7 @@ from utils.functions.sql import (
     create_connection,
     create_schema
 )
+from warehouse.ingest.ingest_players import main as ingest_players
 from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
 import logging
 import os
@@ -45,7 +46,7 @@ def main():
         # },
         {
             'source_name': 'players',
-            'fn_ingest_data': None,
+            'fn_ingest_data': ingest_players,
             'unique_column_list': ['player_url'],
         },
     ]
