@@ -71,12 +71,12 @@ def main():
 
         # create dataframe
         source_data_list = fn_ingest_data()
-        source_data_df = pd.Dataframe(source_data_list)
+        source_data_df = pd.DataFrame(source_data_list)
 
         # create or replace temp table and insert
         logging.info(f"Create temp table for {source_name}.")
         source_data_df.to_sql(
-            name=f"{source_config_dict['temp_schema_name']}.{source_config_dict['source_name']}",
+            name=f"{source_config_dict['temp_schema_name']}.{source_name}",
             con=source_config_dict['connection'],
             if_exists='replace',
             index=False
