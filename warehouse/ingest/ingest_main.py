@@ -1,4 +1,5 @@
 from utils.functions.sql import (
+    create_and_load_table,
     create_connection,
     create_schema
 )
@@ -74,12 +75,11 @@ def main():
         source_data_df = pd.DataFrame(source_data_list)
 
         # create or replace temp table and insert
-        logging.info(f"Create temp table for {source_name}.")
-        source_data_df.to_sql(
-            name=f"{schema_ingest_temp}.{source_name}",
-            con=source_config_dict['connection'],
-            if_exists='replace', # overwrite if already exists
-            index=False
+        logging.info(f"Creating temp table for {source_name}.")
+        create_and_load_table(
+            connection=conn,
+            df=source_data_df,
+            schema_table_name=f"{schema_ingest_temp}.{source_name}"
         )
         logging.info(f"Created temp table for {source_name}: {schema_ingest_temp}.{source_name}")
 
