@@ -78,7 +78,7 @@ def main():
         source_data_df.to_sql(
             name=f"{source_config_dict['temp_schema_name']}.{source_name}",
             con=source_config_dict['connection'],
-            if_exists='replace',
+            if_exists='replace', # overwrite if already exists
             index=False
         )
         logging.info(f"Created temp table for {source_name}: {schema_ingest_temp}.{source_name}")
