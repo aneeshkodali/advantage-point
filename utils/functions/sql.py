@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from utils.functions.version_control import get_current_branch
+import datetime
 import logging
 import os
 import psycopg2
