@@ -38,11 +38,16 @@ def main():
 
     # generate list of sources
     source_list = [
+        # {
+        #     'source_name': 'tournaments',
+        #     'fn_ingest_data': ingest_tournaments,
+        #     'unique_column_list': ['tournament_url'],
+        # },
         {
-            'source_name': 'tournaments',
-            'fn_ingest_data': ingest_tournaments,
-            'unique_column_list': ['tournament_url'],
-        }
+            'source_name': 'players',
+            'fn_ingest_data': None,
+            'unique_column_list': ['player_url'],
+        },
     ]
 
     # loop through sources
