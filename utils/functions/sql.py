@@ -87,3 +87,51 @@ def infer_sql_type(value):
     sql_type = type_mapping_dict.get(type(value), 'TEXT')
 
     return sql_type
+
+def create_and_load_table(
+    connection,
+    df,
+    schema_table_name
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - df: Pandas dataframe
+    - schema_table_name: schema_name.table_name
+
+    Does the following tasks:
+    - drop (if exists) and create table
+    - insert data into table
+    """
+
+    # get column data types
+    column_type_list = []
+    for col, dtype in df.dtypes.items():
+        sql_type = infer_sql_type(dtype)
+        column_type_list.append(f"{col} {sql_type}")
+
+    # inititialize cursor
+    cursor = connection.cursor()
+
+    # drop table if exists
+    drop_table_sql = f"DROP TABLE IF EXISTS {schema_table_name}"
+    logging.info(f"Running statement: {drop_table_sql}")
+    cursor.execute(drop_table_sql)
+
+    # create table
+    create_table_sql = f"CREATE TABLE {schema_table_name} ({',\n'.join(column_type_list)})"
+    logging.info(f"Running statement: {create_table_sql}")
+    cursor.execute(create_table_sql)
+
+    # insert data into table
+    values = ", ".join(
+        f"({', '.join(map(repr, row))})" for row in df.values.tolist()
+    )
+    insert_sql = f"""
+        INSERT INTO TABLE {schema_table_name} ({', '.join(column_type_list)})
+        VALUES
+        {values}
+    """
+    cursor.execute(insert_sql)
+
+
