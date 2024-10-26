@@ -61,3 +61,15 @@ def get_player_list_source(
             player_name=name
         )
         player_url_list.append(player_url)
+
+def get_player_list_ingest():
+    """
+    Returns list of player urls from ingest table
+    """
+    pass
+
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
