@@ -40,10 +40,9 @@ def get_player_url_list_source(
     """
 
     # retrieve url page source
-    player_list_url = 'https://www.minorleaguesplits.com/tennisabstract/cgi-bin/jsplayers/mwplayerlist.js'
+    player_list_url = 'https://www.tennisabstract.com/jsplayers/mwplayerlist.js'
     driver.get(player_list_url)
     response_page_source = driver.page_source
-    logging.info(f"page source: {response_page_source}")
 
     # retrieve list-like string
     regex_var = 'playerlist'
