@@ -111,8 +111,7 @@ def main():
 
     # get list of players
     player_url_list = get_player_url_list_source(
-        driver=driver,
-        player_list_url='https://www.minorleaguesplits.com/tennisabstract/cgi-bin/jsplayers/mwplayerlist.js'
+        driver=driver
     )
     logging.info(f"Found {len(player_list)} players.")
 
