@@ -112,7 +112,7 @@ def main():
     # get list of players
     player_url_list = get_player_url_list_source(
         driver=driver
-    )
+    )[:10]
     logging.info(f"Found {len(player_url_list)} players.")
 
     # loop through players
@@ -121,6 +121,7 @@ def main():
     for i, player_url in enumerate(player_url_list):
 
         logging.info(f"Starting {i+1} of {len(player_url_list)}.")
+        logging.info(f"player url: {player_url}")
 
         # initialize player data dictionary
         player_data_dict = {}
@@ -139,6 +140,7 @@ def main():
         }
 
         player_data_list.append(player_data_dict)
+        logging.info(f"Fetched data for: {player_url}")
 
     return player_data_list
 
