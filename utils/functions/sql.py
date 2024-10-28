@@ -124,7 +124,7 @@ def create_and_load_table(
         f"({', '.join(map(repr, row))})" for row in df.values.tolist()
     )
     insert_sql = f"""
-        INSERT INTO TABLE {schema_table_name} ({', '.join(column_type_list)})
+        INSERT INTO {schema_table_name} ({', '.join(column_type_list)})
         VALUES
         {values}
     """
