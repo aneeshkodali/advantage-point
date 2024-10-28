@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-from utils.functions.version_control import get_current_branch
 import datetime
 import logging
 import os
@@ -31,10 +30,6 @@ def create_schema(
 
     Creates schema if it does not exist
     """
-
-    # set schema based on current branch
-    branch = get_current_branch()
-    schema_name = schema_name if branch == 'master' else f"{schema_name}_dev"
 
     # create cursor
     cursor = connection.cursor()
