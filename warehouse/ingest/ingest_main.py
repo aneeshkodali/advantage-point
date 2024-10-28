@@ -3,6 +3,7 @@ from utils.functions.sql import (
     create_connection,
     create_schema
 )
+from utils.functions.version_control import get_current_branch
 from warehouse.ingest.ingest_players import main as ingest_players
 from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
 import logging
@@ -19,11 +20,17 @@ def main():
 
     # create connection
     conn = create_connection()
+
+    # set schema based on current branch
+    branch = get_current_branch()
     
     # create ingest schemas
     logging.info(f"Creating ingestion layer schemas.")
     schema_ingest = os.getenv('SCHEMA_INGESTION')
+    schema_ingest = schema_ingest if branch == 'master' else f"{schema_ingest}_dev"
     schema_ingest_temp = f"{schema_ingest}_temp"
+    schema_ingest_temp = schema_ingest_temp if branch == 'master' else f"{schema_ingest_temp}_dev"
+
     for schema in [schema_ingest, schema_ingest_temp]:
         create_schema(
             connection=conn,
