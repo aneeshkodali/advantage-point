@@ -102,8 +102,10 @@ def create_and_load_table(
 
     # get column data types
     column_type_list = []
+    column_list = []
     for col, dtype in df.dtypes.items():
         sql_type = infer_sql_type(dtype)
+        column_list.append(col)
         column_type_list.append(f"{col} {sql_type}")
 
     # inititialize cursor
@@ -124,7 +126,7 @@ def create_and_load_table(
         f"({', '.join(map(repr, row))})" for row in df.values.tolist()
     )
     insert_sql = f"""
-        INSERT INTO {schema_table_name} ({', '.join(column_type_list)})
+        INSERT INTO {schema_table_name} ({', '.join(column_list)})
         VALUES
         {values}
     """
