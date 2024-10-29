@@ -1,7 +1,11 @@
 from dotenv import load_dotenv
+from typing import (
+    Any
+)
 import datetime
 import logging
 import os
+import pandas as pd
 import psycopg2
 
 def create_connection():
@@ -20,8 +24,8 @@ def create_connection():
     return conn
 
 def create_schema(
-    connection,
-    schema_name
+    connection: psycopg2.connect,
+    schema_name: str
 ):
     """
     Arguments:
@@ -61,12 +65,12 @@ def create_schema(
     # close cursor
     cursor.close()
 
-def infer_sql_type(value):
+def infer_sql_type(python_dtype: Any):
     """
     Arguments:
-    - value: python value
+    - python_dtype: python data type
 
-    Return (postgres) sql data type based on the python data type of the value passed
+    Return (postgres) sql data type based on the python data type passed
     """
 
     #  construct dictionary of type mappings
@@ -79,15 +83,15 @@ def infer_sql_type(value):
     }
 
     # look up sql type; default to TEXT
-    sql_type = type_mapping_dict.get(type(value), 'TEXT')
+    sql_type = type_mapping_dict.get(type(python_dtype), 'TEXT')
 
     return sql_type
 
 def create_and_load_table(
-    connection,
-    df,
-    schema_name,
-    table_name
+    connection: psycopg2.connect,
+    df: pd.DataFrame,
+    schema_name: str,
+    table_name: str
 ):
     """
     Arguments:
@@ -134,11 +138,11 @@ def create_and_load_table(
     cursor.close()
 
 def create_or_alter_target_table(
-    connection,
-    target_schema_name,
-    target_table_name,
-    source_schema_name,
-    source_table_name
+    connection: psycopg2,
+    target_schema_name: str,
+    target_table_name: str,
+    source_schema_name: str,
+    source_table_name: str
 ):
     """
     Arguments:
