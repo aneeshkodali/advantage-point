@@ -28,7 +28,7 @@ def main():
     logging.info(f"Creating ingestion layer schemas.")
     schema_ingest = os.getenv('SCHEMA_INGESTION')
     schema_ingest = schema_ingest if branch == 'master' else f"{schema_ingest}_dev"
-    schema_ingest_temp = f"{schema_ingest}_temp"
+    schema_ingest_temp = f"{os.getenv('SCHEMA_INGESTION')}_temp"
     schema_ingest_temp = schema_ingest_temp if branch == 'master' else f"{schema_ingest_temp}_dev"
 
     for schema in [schema_ingest, schema_ingest_temp]:
