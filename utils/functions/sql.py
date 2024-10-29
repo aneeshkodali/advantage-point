@@ -57,7 +57,6 @@ def create_schema(
         create_schema_sql = f"CREATE SCHEMA {schema_name}"
         logging.info(f"Executing statement:\n {create_schema_sql}")
         cursor.execute(create_schema_sql)
-        connection.commit()
     
     # close cursor
     cursor.close()
@@ -148,6 +147,35 @@ def create_or_alter_target_table(
     - source_schema_name: Schema name for source table
     - source_table_name: Source table name
 
-    Based reates target table if it does not exist or alters target table columns based on 
+    Based on source table columns, creates target table if it does not exist or alters target table columns
+    """
+
+    # create cursor
+    cursor = connection.cursor()
+
+    # check if target table exists
+    target_table_exists_sql = f"""
+        SELECT
+            COUNT(*) > 0 AS target_table_exists_flag
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE
+                SCHEMA_NAME = '{target_schema_name}'
+            AND TABLE_NAME = '{target_table_name}'
+        ;
+    """
+
+    # execute query for target table existence
+    logging.info(f"Executing statement: {target_table_exists_sql}")
+    cursor.execute(target_table_exists_sql)
+    target_table_exists_flag = cursor.fetchone()[0]
+    logging.info(f"Target table {target_schema_name}.{target_table_name} exists: {target_table_exists_flag}")
+
+    # create or alter target tabl
+    if target_table_exists_flag:
+        pass
+    else:
+        pass
+
+
 
 

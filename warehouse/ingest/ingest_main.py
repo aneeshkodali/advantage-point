@@ -1,6 +1,7 @@
 from utils.functions.sql import (
     create_and_load_table,
     create_connection,
+    create_or_alter_target_table,
     create_schema
 )
 from utils.functions.version_control import get_current_branch
@@ -91,8 +92,15 @@ def main():
         )
         logging.info(f"Created temp table for {source_name}: {schema_ingest_temp}.{source_name}")
 
-
         # create or alter target table
+        logging.info(f"Creating or altering target table for {source_name}.")
+        create_or_alter_target_table(
+            connection=conn,
+            target_schema_name=schema_ingest,
+            target_table_name=source_name,
+            source_schema_name=schema_ingest_temp,
+            source_table_name=source_name
+        )
 
         # merge into target table
 
