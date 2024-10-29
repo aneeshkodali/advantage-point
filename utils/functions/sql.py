@@ -86,7 +86,8 @@ def infer_sql_type(value):
 def create_and_load_table(
     connection,
     df,
-    schema_table_name
+    schema_name,
+    table_name
 ):
     """
     Arguments:
