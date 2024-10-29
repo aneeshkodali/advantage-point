@@ -90,9 +90,9 @@ def fetch_player_data_scraped(
     data_dict = {}
     response_var_list = ['fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
     for regex_var in response_var_list:
-        regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*?);"
+        regex_pattern = fr"var {regex_var}\s?=\s?[\"']?(?P<{regex_var}>.*?)[\"']?;"
         regex_var_match = re.search(regex_pattern, response_page_source)
-        val = regex_var_match.group(regex_var).strip('"') or None
+        val = regex_var_match.group(regex_var) or None
         data_dict[regex_var] = val
 
     return data_dict
