@@ -121,15 +121,15 @@ def create_and_load_table(
     logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
 
-    # insert data into table
-    values = ", ".join(
-        f"({', '.join(map(repr, row))})" for row in df.values.tolist()
-    )
-    insert_sql = f"""
-        INSERT INTO {schema_table_name} ({', '.join(column_list)})
-        VALUES
-        {values}
-    """
-    cursor.execute(insert_sql)
+    # Insert data into table
+    insert_sql = f"INSERT INTO {schema_table_name} ({', '.join(column_list)}) VALUES ({', '.join(['%s'] * len(column_list))})"
+    logging.info(f"Running statement: {insert_sql}")
+
+    # Use execute many for bulk insert
+    cursor.executemany(insert_sql, df.values.tolist())
+    connection.commit()
+
+    # closer cursor
+    cursor.close()
 
 
