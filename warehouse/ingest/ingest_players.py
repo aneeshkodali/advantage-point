@@ -126,6 +126,7 @@ def main():
         # initialize player data dictionary
         player_data_dict = {}
         player_data_dict['player_url'] = player_url
+        player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
 
         # get player data from webscrape
         player_data_dict_scraped = fetch_player_data_scraped(
