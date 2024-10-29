@@ -93,7 +93,8 @@ def create_and_load_table(
     Arguments:
     - connection: SQL database connection
     - df: Pandas dataframe
-    - schema_table_name: schema_name.table_name
+    - schema_name: Schema name
+    - table_name: Table name
 
     Does the following tasks:
     - drop (if exists) and create table
@@ -112,17 +113,17 @@ def create_and_load_table(
     cursor = connection.cursor()
 
     # drop table if exists
-    drop_table_sql = f"DROP TABLE IF EXISTS {schema_table_name}"
+    drop_table_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name}"
     logging.info(f"Running statement: {drop_table_sql}")
     cursor.execute(drop_table_sql)
 
     # create table
-    create_table_sql = f"CREATE TABLE {schema_table_name} ({',\n'.join(column_type_list)})"
+    create_table_sql = f"CREATE TABLE {schema_name}.{table_name} ({',\n'.join(column_type_list)})"
     logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
 
     # Insert data into table
-    insert_sql = f"INSERT INTO {schema_table_name} ({', '.join(column_list)}) VALUES ({', '.join(['%s'] * len(column_list))})"
+    insert_sql = f"INSERT INTO {schema_name}.{table_name} ({', '.join(column_list)}) VALUES ({', '.join(['%s'] * len(column_list))})"
     logging.info(f"Running statement: {insert_sql}")
 
     # Use execute many for bulk insert
@@ -131,5 +132,22 @@ def create_and_load_table(
 
     # closer cursor
     cursor.close()
+
+def create_or_alter_target_table(
+    connection,
+    target_schema_name,
+    target_table_name,
+    source_schema_name,
+    source_table_name
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - source_schema_name: Schema name for source table
+    - source_table_name: Source table name
+
+    Based reates target table if it does not exist or alters target table columns based on 
 
 

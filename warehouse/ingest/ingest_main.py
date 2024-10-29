@@ -86,7 +86,8 @@ def main():
         create_and_load_table(
             connection=conn,
             df=source_data_df,
-            schema_table_name=f"{schema_ingest_temp}.{source_name}"
+            schema_name=schema_ingest_temp,
+            table_name=source_name
         )
         logging.info(f"Created temp table for {source_name}: {schema_ingest_temp}.{source_name}")
 
