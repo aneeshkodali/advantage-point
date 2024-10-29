@@ -164,7 +164,7 @@ def create_or_alter_target_table(
             COUNT(*) > 0 AS target_table_exists_flag
         FROM INFORMATION_SCHEMA.TABLES
         WHERE
-                SCHEMA_NAME = '{target_schema_name}'
+                TABLE_SCHEMA = '{target_schema_name}'
             AND TABLE_NAME = '{target_table_name}'
         ;
     """
