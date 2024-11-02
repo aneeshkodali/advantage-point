@@ -142,7 +142,8 @@ def create_or_alter_target_table(
     target_schema_name: str,
     target_table_name: str,
     source_schema_name: str,
-    source_table_name: str
+    source_table_name: str,
+    drop_column_flag: bool
 ):
     """
     Arguments:
@@ -151,6 +152,7 @@ def create_or_alter_target_table(
     - target_table_name: Target table name
     - source_schema_name: Schema name for source table
     - source_table_name: Source table name
+    - drop_column_flag: True/false flag to determine column deletion from target table (true)
 
     Based on source table columns, creates target table if it does not exist or alters target table columns
     """
@@ -177,7 +179,17 @@ def create_or_alter_target_table(
 
     # create or alter target table
     if target_table_exists_flag:
-        pass
+        logging.info(f"Altering target table: {target_schema_name}.{target_table_name}")
+        alter_target_table(
+            connection=connection,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=source_schema_name,
+            source_table_name=source_table_name,
+            drop_column_flag=drop_column_flag
+        )
+        logging.info(f"Target table altered as needed: {target_schema_name}.{target_table_name}")
+
     else:
         logging.info(f"Creating target table: {target_schema_name}.{target_table_name}")
         create_target_table(
@@ -191,7 +203,7 @@ def create_or_alter_target_table(
 
 
 def create_target_table(
-    connection: psycopg2,
+    connection: psycopg2.connect,
     target_schema_name: str,
     target_table_name: str,
     source_schema_name: str,
@@ -214,17 +226,30 @@ def create_target_table(
     # generate sql statemet to get source table column names and data types
     source_table_columns_sql = f"""
         WITH
-            src_columns AS (
+            -- select columns from source table
+            columns_source AS (
                 SELECT
                     CONCAT(COLUMN_NAME, ' ', DATA_TYPE) AS column_name_data_type
                 FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE
                         TABLE_SCHEMA = '{source_schema_name}'
                     AND TABLE_NAME = '{source_table_name}'
+            ),
+            columns_concat AS (
+                -- combine columns into string
+                SELECT
+                    CONCAT(
+                        '(', 
+                        STRING_AGG(column_name_data_type, ', '),
+                        ')'
+                    ) AS column_name_data_type_agg
+                FROM columns_source
+            ),
+            final AS (
+                SELECT * FROM columns_concat
             )
-            SELECT
-                CONCAT('(', STRING_AGG(column_name_data_type, ', '), ')') AS column_name_data_type_agg
-            FROM src_columns
+        SELECT * FROM final
+            
     """
 
     # execute query for source table columns
@@ -242,4 +267,105 @@ def create_target_table(
     logging.info(f"Executing statement: {create_target_table_sql}")
     cursor.execute(create_target_table_sql)
     
+def alter_target_table(
+    connection: psycopg2.connect,
+    target_schema_name: str,
+    target_table_name: str,
+    source_schema_name: str,
+    source_table_name: str,
+    drop_column_flag: bool
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - source_schema_name: Schema name for source table
+    - source_table_name: Source table name
+    - drop_column_flag: True/false flag to determine column deletion from target table (true)
+
+    Based on source table columns, creates target table
+    """
+
+    # create cursor
+    cursor = connection.cursor()
+
+    # generate query to compare columns between source and target tables
+    columns_compare_sql = f"""
+        WITH
+            -- select columns from source table
+            columns_source AS (
+                SELECT
+                    COLUMN_NAME,
+                    DATA_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE
+                        TABLE_SCHEMA = '{source_schema_name}'
+                    AND TABLE_NAME = '{source_table_name}'
+            ),
+            -- select columns from target table
+            columns_target AS (
+                SELECT
+                    COLUMN_NAME,
+                    DATA_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE
+                        TABLE_SCHEMA = '{target_schema_name}'
+                    AND TABLE_NAME = '{target_table_name}'
+            ),
+            -- compare columns
+            columns_joined AS (
+                SELECT
+                    columns_target.COLUMN_NAME AS target_column_name,
+                    columns_target.DATA_TYPE AS target_data_type,
+                    columns_source.COLUMN_NAME AS source_column_name,
+                    columns_source.DATA_TYPE AS source_data_type,
+                    CASE
+                        WHEN (columns_target.COLUMN_NAME IS NULL) AND (columns_source.COLUMN_NAME IS NULL) THEN 'No Change'
+                        WHEN (columns_target.COLUMN_NAME IS NULL) THEN 'Add'
+                        WHEN (columns_source.COLUMN_NAME IS NULL) AND {drop_column_flag=True} THEN 'Drop'
+                        WHEN (columns_target.DATA_TYPE != columns_source.DATA_TYPE) THEN 'Alter'
+                        ELSE 'No Change'
+                    END AS column_comparison_type
+                FROM columns_target
+                FULL OUTER JOIN columns_source ON columns_target.COLUMN_NAME = columns_source.COLUMN_NAME
+            ),
+            -- generate ALTER TABLE statements
+            alter_table_statements AS (
+                SELECT
+                    *,
+                    CONCAT(
+                        'ALTER TABLE ', {target_schema_name}, '.',{target_table_name}, ' ',
+                        CASE
+                            WHEN column_comparison_type = 'Add' THEN CONCAT('ADD ', source_column_name, ' ', source_data_type)
+                            WHEN column_comparison_type = 'Alter' THEN CONCAT('ALTER COLUMN ', target_column_name, ' ', source_data_type)
+                            WHEN column_comparison_type = 'Drop' THEN CONCAT('DROP COLUMN ', target_column_name)
+                            ELSE NULL
+                        END AS alter_table_statement
+                    )
+                FROM columns_joined
+                WHERE column_comparison_type != 'No Change'
+            ),
+            final AS (
+                SELECT * FROM alter_table_statements
+            )
+        SELECT * FROM final
+    """
+
+    # execute query for column_comparisons
+    logging.info(f"Executing statement: {columns_compare_sql}")
+    cursor.execute(columns_compare_sql)
+    columns_compare_results = cursor.fetchall()
+
+    # convert results to list of dictionaries instead of list of tuples
+    columns_compare_results_keys = [desc[0] for desc in cursor.description]
+    columns_compare_results_list = [dict(zip(columns_compare_results_keys, row)) for row in columns_compare_results]
+
+    # loop through list and execute ALTER TABLE statement
+    for columns_compare_result in columns_compare_results_list:
+
+        # parse out ALTER TABLE statement
+        alter_table_statement = columns_compare_result['alter_table_statement']
+        logging.info(f"Running statement: {alter_table_statement}")
+        cursor.execute(alter_table_statement)
 

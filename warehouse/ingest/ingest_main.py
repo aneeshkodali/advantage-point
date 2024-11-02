@@ -58,6 +58,7 @@ def main():
             'source_name': 'players',
             'fn_ingest_data': ingest_players,
             'unique_column_list': ['player_url'],
+            'alter_table_drop_column_flag': False,
         },
     ]
 
@@ -99,7 +100,8 @@ def main():
             target_schema_name=schema_ingest,
             target_table_name=source_name,
             source_schema_name=schema_ingest_temp,
-            source_table_name=source_name
+            source_table_name=source_name,
+            drop_column_flag=source_config_dict['alter_table_drop_column_flag']
         )
 
         # merge into target table
