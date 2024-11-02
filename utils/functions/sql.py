@@ -238,11 +238,7 @@ def create_target_table(
             columns_concat AS (
                 -- combine columns into string
                 SELECT
-                    CONCAT(
-                        '(', 
-                        STRING_AGG(column_name_data_type, ', '),
-                        ')'
-                    ) AS column_name_data_type_agg
+                    STRING_AGG(column_name_data_type, ', ') AS column_name_data_type_agg
                 FROM columns_source
             ),
             final AS (
@@ -257,10 +253,19 @@ def create_target_table(
     cursor.execute(source_table_columns_sql)
     column_name_data_type_agg = cursor.fetchone()[0]
 
-    # generate sql to create target table
+    # generate sql to create target table (includes audit fields)
     create_target_table_sql = f"""
         CREATE TABLE {target_schema_name}.{target_table_name}
-        {column_name_data_type_agg}
+        (
+            {column_name_data_type_agg}
+            audit_field_active_flag BOOLEAN
+            audit_field_record_type VARCHAR(1)
+            audit_field_start_datetime_utc DATETIME,
+            audit_field_end_datetime_utc DATETIME,
+            audit_field_insert_datetime_utc DATETIME,
+            audit_field_update_datetime_utc DATETIME,
+            audit_field_delete_datetime_utc DATETIME
+        )
     """
 
     # execute query for target table creation
