@@ -175,12 +175,71 @@ def create_or_alter_target_table(
     target_table_exists_flag = cursor.fetchone()[0]
     logging.info(f"Target table {target_schema_name}.{target_table_name} exists: {target_table_exists_flag}")
 
-    # create or alter target tabl
+    # create or alter target table
     if target_table_exists_flag:
-        pass
+        logging.info(f"Creating target table: {target_schema_name}.{target_table_name}")
+        create_target_table(
+            connection=connection,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=source_schema_name,
+            source_table_name=source_table_name
+        )
+        logging.info(f"Target table created: {target_schema_name}.{target_table_name}")
     else:
         pass
 
 
+def create_target_table(
+    connection: psycopg2,
+    target_schema_name: str,
+    target_table_name: str,
+    source_schema_name: str,
+    source_table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - source_schema_name: Schema name for source table
+    - source_table_name: Source table name
 
+    Based on source table columns, creates target table
+    """
+
+    # create cursor
+    cursor = connection.cursor()
+
+    # generate sql statemet to get source table column names and data types
+    source_table_columns_sql = f"""
+        WITH
+            src_columns AS (
+                SELECT
+                    CONCAT(COLUMN_NAME, ' ', DATA_TYPE) AS column_name_data_type
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE
+                        TABLE_SCHEMA = '{source_schema_name}'
+                    AND TABLE_NAME = '{source_table_name}'
+            )
+            SELECT
+                CONCAT('(', STRING_AGG(column_name_data_type, ', '), ')') AS column_name_data_type_agg
+            FROM src_columns
+    """
+
+    # execute query for source table columns
+    logging.info(f"Executing statement: {source_table_columns_sql}")
+    cursor.execute(source_table_columns_sql)
+    column_name_data_type_agg = cursor.fetchone()[0]
+
+    # generate sql to create target table
+    create_target_table_sql = f"""
+        CREATE TABLE {target_schema_name}.{target_table_name}
+        {column_name_data_type_agg}
+    """
+
+    # execute query for target table creation
+    logging.info(f"Executing statement: {create_target_table_sql}")
+    cursor.execute(create_target_table_sql)
+    
 
