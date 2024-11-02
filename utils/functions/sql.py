@@ -177,6 +177,8 @@ def create_or_alter_target_table(
 
     # create or alter target table
     if target_table_exists_flag:
+        pass
+    else:
         logging.info(f"Creating target table: {target_schema_name}.{target_table_name}")
         create_target_table(
             connection=connection,
@@ -186,8 +188,6 @@ def create_or_alter_target_table(
             source_table_name=source_table_name
         )
         logging.info(f"Target table created: {target_schema_name}.{target_table_name}")
-    else:
-        pass
 
 
 def create_target_table(
