@@ -328,7 +328,7 @@ def alter_target_table(
                     CASE
                         WHEN (columns_target.COLUMN_NAME IS NULL) AND (columns_source.COLUMN_NAME IS NULL) THEN 'No Change'
                         WHEN (columns_target.COLUMN_NAME IS NULL) THEN 'Add'
-                        WHEN (columns_source.COLUMN_NAME IS NULL) AND {drop_column_flag=True} THEN 'Drop'
+                        WHEN (columns_source.COLUMN_NAME IS NULL) AND ({drop_column_flag} = TRUE) THEN 'Drop'
                         WHEN (columns_target.DATA_TYPE != columns_source.DATA_TYPE) THEN 'Alter'
                         ELSE 'No Change'
                     END AS column_comparison_type
