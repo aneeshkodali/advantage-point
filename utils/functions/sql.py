@@ -271,6 +271,7 @@ def create_target_table(
     # execute query for target table creation
     logging.info(f"Executing statement: {create_target_table_sql}")
     cursor.execute(create_target_table_sql)
+    connection.commit()
     
 def alter_target_table(
     connection: psycopg2.connect,
@@ -373,4 +374,6 @@ def alter_target_table(
         alter_table_statement = columns_compare_result['alter_table_statement']
         logging.info(f"Running statement: {alter_table_statement}")
         cursor.execute(alter_table_statement)
+
+    connection.commit()
 
