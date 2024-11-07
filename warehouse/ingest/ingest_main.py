@@ -2,7 +2,8 @@ from utils.functions.sql import (
     create_and_load_table,
     create_connection,
     create_or_alter_target_table,
-    create_schema
+    create_schema,
+    merge_target_table
 )
 from utils.functions.version_control import get_current_branch
 from warehouse.ingest.ingest_players import main as ingest_players
@@ -59,6 +60,7 @@ def main():
             'fn_ingest_data': ingest_players,
             'unique_column_list': ['player_url'],
             'alter_table_drop_column_flag': False,
+            'merge_table_delete_row_flag': False,
         },
     ]
 
@@ -105,6 +107,15 @@ def main():
         )
 
         # merge into target table
+        logging.info(f"Merging records into target table for {source_name}")
+        merge_target_table(
+            connection=conn,
+            target_schema_name=schema_ingest,
+            target_table_name=source_name,
+            source_schema_name=schema_ingest_temp,
+            source_table_name=source_name,
+            delete_row_flag=source_config_dict['merge_table_delete_row_flag']
+        )
 
         logging.info(f"Completed ingestion: {source_name}")
 

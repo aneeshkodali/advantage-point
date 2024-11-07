@@ -377,3 +377,24 @@ def alter_target_table(
 
     connection.commit()
 
+def merge_target_table(
+    connection: psycopg2.connect,
+    target_schema_name: str,
+    target_table_name: str,
+    source_schema_name: str,
+    source_table_name: str,
+    delete_row_flag: bool
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - source_schema_name: Schema name for source table
+    - source_table_name: Source table name
+    - delete_row_flag: True/false flag to determine row deletion from target table (true)
+
+    Based on source table rows, handles row inserts, updates, deletes for target table
+    """
+
+    pass
