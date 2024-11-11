@@ -354,8 +354,8 @@ def alter_target_table(
                             WHEN column_comparison_type = 'Alter' THEN CONCAT('ALTER COLUMN ', target_column_name, ' ', source_data_type)
                             WHEN column_comparison_type = 'Drop' THEN CONCAT('DROP COLUMN ', target_column_name)
                             ELSE NULL
-                        END AS alter_table_statement
-                    )
+                        END
+                    ) AS alter_table_statement
                 FROM columns_joined
                 WHERE column_comparison_type != 'No Change'
             ),
