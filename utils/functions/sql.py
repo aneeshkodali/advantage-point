@@ -440,7 +440,7 @@ def merge_target_table(
     )
 
     # delete
-    if delete_row_flag = True:
+    if delete_row_flag == True:
         delete_sql = f"""
             UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
             SET
