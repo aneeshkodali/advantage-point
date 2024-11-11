@@ -348,7 +348,7 @@ def alter_target_table(
                 SELECT
                     *,
                     CONCAT(
-                        'ALTER TABLE ', {target_schema_name}, '.',{target_table_name}, ' ',
+                        'ALTER TABLE ', "'{target_schema_name}'", '.', "'{target_table_name}'", ' ',
                         CASE
                             WHEN column_comparison_type = 'Add' THEN CONCAT('ADD ', source_column_name, ' ', source_data_type)
                             WHEN column_comparison_type = 'Alter' THEN CONCAT('ALTER COLUMN ', target_column_name, ' ', source_data_type)
