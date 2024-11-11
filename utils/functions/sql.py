@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from typing import (
-    Any
+    Any,
+    List
 )
 import datetime
 import logging
@@ -138,7 +139,7 @@ def create_and_load_table(
     cursor.close()
 
 def create_or_alter_target_table(
-    connection: psycopg2,
+    connection: psycopg2.connect,
     target_schema_name: str,
     target_table_name: str,
     source_schema_name: str,
@@ -201,6 +202,8 @@ def create_or_alter_target_table(
         )
         logging.info(f"Target table created: {target_schema_name}.{target_table_name}")
 
+    # close cursor
+    cursor.close()
 
 def create_target_table(
     connection: psycopg2.connect,
@@ -272,6 +275,10 @@ def create_target_table(
     logging.info(f"Executing statement: {create_target_table_sql}")
     cursor.execute(create_target_table_sql)
     connection.commit()
+
+    # close cursor
+    cursor.close()
+
     
 def alter_target_table(
     connection: psycopg2.connect,
@@ -377,12 +384,17 @@ def alter_target_table(
 
     connection.commit()
 
+    # close cursor
+    cursor.close()
+
+
 def merge_target_table(
     connection: psycopg2.connect,
     target_schema_name: str,
     target_table_name: str,
     source_schema_name: str,
     source_table_name: str,
+    unique_column_list: List[str],
     delete_row_flag: bool
 ):
     """
@@ -397,4 +409,107 @@ def merge_target_table(
     Based on source table rows, handles row inserts, updates, deletes for target table
     """
 
-    pass
+    # create cursor
+    cursor = connection.cursor()
+
+    # create alias variables (for use in SQL statements)
+    target_alias = 'tgt'
+    source_alias = 'src'
+
+    # create SQL statement for unique column join
+    unique_column_join_on_str = ' AND '.join(
+        [f"{target_alias}.{col} = {source_alias}.{col}" for col in unique_column_list]
+    )
+
+    # get list of columns from source table (for use in INSERT/UPDATE statements)
+    source_columns_sql = f"""
+        SELECT
+            COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE
+                TABLE_SCHEMA = '{source_schema_name}'
+            AND TABLE_NAME = '{source_table_name}'
+    """
+    cursor.execute(source_columns_sql)
+    source_columns_list = [row[0] for row in cursor.fetchall()]
+
+    # create SQL statement for non-unique column join
+    non_unique_column_list = [col for col in source_columns_list if col not in unique_column_list]
+    non_unique_column_join_on_str = ' AND '.join(
+        [f"{target_alias}.{col} = {source_alias}.{col}" for col in non_unique_column_list]
+    )
+
+    # delete
+    if delete_row_flag = True:
+        delete_sql = f"""
+            UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
+            SET
+                {target_alias}.audit_field_active_flag = FALSE,
+                {target_alias}.audit_field_record_type = 'delete',
+                {target_alias}.audit_field_end_datetime_utc = NOW(),
+                {target_alias}.audit_field_delete_datetime_utc = NOW()
+            FROM {source_schema_name}.{source_table_name} AS {source_alias}
+            WHERE
+                    ({target_alias}.audit_field_active_flag = TRUE)
+                AND ({unique_column_join_on_str})
+        """
+        logging.info(f"Running delete statement: {delete_sql}")
+        cursor.execute(delete_sql)
+
+    # update - deactivate active records and insert updated version of records
+    update_existing_sql = f"""
+        UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
+        SET
+                {target_alias}.audit_field_active_flag = FALSE,
+                {target_alias}.audit_field_end_datetime_utc = NOW(),
+                {target_alias}.audit_field_update_datetime_utc = NOW()
+            FROM {source_schema_name}.{source_table_name} AS {source_alias}
+            WHERE
+                    {target_alias}.audit_field_active_flag = TRUE
+                AND ({unique_column_join_on_str})
+                AND NOT ({non_unique_column_join_on_str})
+
+    """
+    logging.info(f"Running update existing statement: {update_existing_sql}")
+    cursor.execute(update_existing_sql)
+
+    update_new_sql = f"""
+        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_column_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        SELECT
+            {', '.join([f"{source_alias}.{col}" for col in source_column_list])},
+            TRUE AS audit_field_active_flag,
+            'update' AS audit_field_record_flag,
+            NOW() AS audit_field_start_datetime_utc,
+            NOW() AS audit_field_insert_datetime_utc
+        FROM {source_schema_name}.{source_table_name} AS {source_alias}
+        LEFT JOIN {target_schema_name}.{target_table_name} AS {target_alias}
+        ON {unique_column_join_on_str}
+        WHERE
+                ({target_alias}.audit_field_active_flag = FALSE)
+            AND ({non_unique_column_comparison_str}) IS DISTINCT FROM FALSE
+    """
+    logging.info(f"Running update new statement: {update_new_sql}")
+    cursor.execute(update_new_sql)
+
+    # insert
+    insert_sql = f"""
+        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_column_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        SELECT
+            {', '.join([f"{source_alias}.{col}" for col in source_column_list])},
+            TRUE AS audit_field_active_flag,
+            'update' AS audit_field_record_flag,
+            NOW() AS audit_field_start_datetime_utc,
+            NOW() AS audit_field_insert_datetime_utc
+        FROM {source_schema_name}.{source_table_name} AS {source_alias}
+        LEFT JOIN {target_schema_name}.{target_table_name} AS {target_alias}
+        ON {unique_column_join_on_str}
+        WHERE {target_alias}.{unique_column_list[0]} IS NULL
+    """
+    logging.info(f"Running insert statement: {insert_sql}")
+    cursor.execute(insert_sql)
+
+    # commit
+    connection.commit()
+
+    # close cursor
+    cursor.close()

@@ -114,6 +114,7 @@ def main():
             target_table_name=source_name,
             source_schema_name=schema_ingest_temp,
             source_table_name=source_name,
+            unique_column_list=source_config_dict['unique_column_list'],
             delete_row_flag=source_config_dict['merge_table_delete_row_flag']
         )
 
