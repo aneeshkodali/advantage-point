@@ -29,7 +29,7 @@ def get_match_url_list_source(
     soup = BeautifulSoup(response_page_source, 'html.parser')
     # links are hrefs in last <p>
     p_tag_match = soup.find_all('p')[-1]
-    match_href_list = [a['href'] for a in p_tag_match.find_all('a', href=True)]
+    match_href_list = [f"https://www.tennisabstract.com/charting/{a['href']}" for a in p_tag_match.find_all('a', href=True)]
 
     return match_href_list
 
