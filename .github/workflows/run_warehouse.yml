@@ -1,7 +1,10 @@
-# Consolidated Workflow: .github/workflows/setup_and_run_warehouse.yml
+old workflow:
+
 name: Run Data Warehouse
 
 on:
+#   schedule:
+#     - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -14,23 +17,22 @@ on:
           - prod
 
 jobs:
-  setup:
+  run_script:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - name: Set up python
+        uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-
-      - name: Install Python requirements
+      - name: Install python requirements
         run: |
           pip install -r requirements.txt
 
@@ -38,48 +40,14 @@ jobs:
         run: |
           sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
 
-      - name: Install Chrome
+      - name: Install chrome
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
-      - name: Upload setup artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: setup-artifacts
-          path: |
-            ~/.cache/pip
-            warehouse/
-
-  run-script:
-    runs-on: ubuntu-latest
-    needs: setup
-    environment: ${{ github.event.inputs.environment }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
-
-      - name: Download setup artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: setup-artifacts
-
-      - name: Restore dependencies
-        run: |
-          cp -r setup-artifacts/* ~/.cache/pip
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-
-      - name: Run Python script
+      - name: Run python script
         env:
           CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
