@@ -148,7 +148,7 @@ def main():
         match_data_list.append(match_data_dict)
         logging.info(f"Fetched data for: {match_url}")
 
-    return player_data_list
+    return match_data_list
 
 if __name__ == "__main__":
     main()
