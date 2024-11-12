@@ -40,16 +40,16 @@ def fetch_match_data_scraped(
     """
     Arguments:
     - driver: Selenium webdriver
-    - player_url: player link
+    - match_url: match link
 
-    Returns dictionary of player information from url
+    Returns dictionary of match information from url
     """
 
     # initialize dictionary
     match_dict = {}
 
     # get url page source
-    driver.get(player_url)
+    driver.get(match_url)
     response_page_source = driver.page_source
 
     # parse page
@@ -109,7 +109,7 @@ def main():
     webdriver_path = os.getenv('CHROMEDRIVER_PATH')
     driver = create_chromedriver(webdriver_path=webdriver_path)
 
-    # get list of players
+    # get list of matches
     match_url_list = get_match_url_list_source(
         driver=driver
     )[:1]
