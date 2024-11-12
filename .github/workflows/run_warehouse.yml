@@ -1,5 +1,3 @@
-old workflow:
-
 name: Run Data Warehouse
 
 on:
