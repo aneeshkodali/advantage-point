@@ -1,8 +1,7 @@
+# Consolidated Workflow: .github/workflows/setup_and_run_warehouse.yml
 name: Run Data Warehouse
 
 on:
-#   schedule:
-#     - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       environment:
@@ -15,22 +14,31 @@ on:
           - prod
 
 jobs:
-  run_script:
+  setup:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
-      - name: Set up python
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
 
-      - name: Install python requirements
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python requirements
         run: |
           pip install -r requirements.txt
 
@@ -38,14 +46,26 @@ jobs:
         run: |
           sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
 
-      - name: Install chrome
+      - name: Install Chrome
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
-      - name: Run python script
+  run-script:
+    runs-on: ubuntu-latest
+    needs: setup
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+      
+      - name: Run Python script
         env:
           CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
