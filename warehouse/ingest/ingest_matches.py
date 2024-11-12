@@ -68,7 +68,7 @@ def fetch_match_data_scraped(
 
     # Find the point log
     pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*?);"
-    pointlog_regex_var_match = re.search(regex_pattern, response_page_source)
+    pointlog_regex_var_match = re.search(pointlog_regex_pattern, response_page_source)
     if pointlog_regex_var_match:
         # Parse pointlog JSON data
         pointlog_json = pointlog_regex_var_match.group('pointlog')
