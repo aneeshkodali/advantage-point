@@ -154,11 +154,11 @@ def main():
         }
 
         # recreate dictionary such that each entry is point
-        for i, point_dict in enumerate(match_data_dict['pointlog'])[:10]:
+        for i, point_dict in enumerate(match_data_dict['match_pointlog'])[:10]:
             logging.info(f"Adding point number {i+1} for match: {match_url}")
             point_dict = {
                 **point_dict,
-                **{k:v for (k, v) in match_data_dict.items() if k != 'pointlog'}
+                **{k:v for (k, v) in match_data_dict.items() if k != 'match_pointlog'}
             }
 
             match_data_list.append(point_dict)
