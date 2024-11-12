@@ -72,7 +72,7 @@ def get_player_url_list_source(
     return player_url_list
 
 def fetch_player_data_scraped(
-    driver: driver,
+    driver: webdriver,
     player_url: str
 ) -> Dict:
     """
