@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from typing import (
     Dict,
     List
@@ -6,10 +7,11 @@ from typing import (
 from utils.functions.selenium_fn import create_chromedriver
 import json
 import logging
+import os
 import re
 
 def get_match_url_list_source(
-    driver
+    driver: webdriver
 ) -> List[str]:
     """
     Arguments:
@@ -32,7 +34,7 @@ def get_match_url_list_source(
     return match_href_list
 
 def fetch_match_data_scraped(
-    driver,
+    driver: webdriver,
     match_url: str
 ) -> Dict:
     """

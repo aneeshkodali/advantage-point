@@ -2,6 +2,7 @@ from typing import (
     Dict,
     List
 )
+from selenium import webdriver
 from utils.functions.selenium_fn import create_chromedriver
 import ast
 import logging
@@ -30,7 +31,7 @@ def create_player_url(
 
 
 def get_player_url_list_source(
-    driver
+    driver: webdriver
 ) -> List:
     """
     Arguments:
@@ -71,7 +72,7 @@ def get_player_url_list_source(
     return player_url_list
 
 def fetch_player_data_scraped(
-    driver,
+    driver: driver,
     player_url: str
 ) -> Dict:
     """
