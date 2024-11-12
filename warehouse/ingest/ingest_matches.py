@@ -127,7 +127,7 @@ def main():
         match_data_dict = {}
         match_data_dict['match_url'] = match_url
         # parse url
-        match_url_parsed_list = match_url.split('charting/')
+        match_url_parsed_list = match_url.split('charting/')[1].replace('.html', '').split('-')
         match_date = match_url_parsed_list[0]
         match_data_dict['match_date'] = match_date
         match_gender = match_url_parsed_list[1]
@@ -138,7 +138,7 @@ def main():
         match_data_dict['match_round'] = match_round
         match_player_one = match_url_parsed_list[4]
         match_data_dict['match_player_one'] = match_player_one.replace('_', ' ')
-        match_player_two = match_url_parsed_list[5].replace('.html', '').replace('_', ' ')
+        match_player_two = match_url_parsed_list[5].replace('_', ' ')
         match_data_dict['match_player_two'] = match_player_two
         
         # get match data from webscrape
