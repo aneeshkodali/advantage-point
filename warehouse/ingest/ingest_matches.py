@@ -93,6 +93,8 @@ def fetch_match_data_scraped(
 
     match_dict['match_pointlog'] = pointlog
 
+    return match_dict
+
 def main():
     
     # set logging
