@@ -123,7 +123,7 @@ def create_and_load_table(
     cursor.execute(drop_table_sql)
 
     # create table
-    create_table_sql = f"CREATE TABLE {schema_name}.{table_name} ({',\n'.join(column_type_list)})"
+    create_table_sql = f"CREATE TABLE {schema_name}.{table_name} ({', '.join(column_type_list)})"
     logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
 
