@@ -6,6 +6,7 @@ from utils.functions.sql import (
     merge_target_table
 )
 from utils.functions.version_control import get_current_branch
+from warehouse.ingest.ingest_matches import main as ingest_matches
 from warehouse.ingest.ingest_players import main as ingest_players
 from warehouse.ingest.ingest_tournaments import main as ingest_tournaments
 import logging
@@ -50,18 +51,25 @@ def main():
 
     # generate list of sources
     source_list = [
+        {
+            'source_name': 'matches',
+            'fn_ingest_data': ingest_matches,
+            'unique_column_list': ['match_url', 'point_number',],
+            'alter_table_drop_column_flag': False,
+            'merge_table_delete_row_flag': False,
+        },
+        # {
+        #     'source_name': 'players',
+        #     'fn_ingest_data': ingest_players,
+        #     'unique_column_list': ['player_url',],
+        #     'alter_table_drop_column_flag': False,
+        #     'merge_table_delete_row_flag': False,
+        # },
         # {
         #     'source_name': 'tournaments',
         #     'fn_ingest_data': ingest_tournaments,
         #     'unique_column_list': ['tournament_url'],
         # },
-        {
-            'source_name': 'players',
-            'fn_ingest_data': ingest_players,
-            'unique_column_list': ['player_url'],
-            'alter_table_drop_column_flag': False,
-            'merge_table_delete_row_flag': False,
-        },
     ]
 
     # loop through sources

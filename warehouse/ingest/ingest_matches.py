@@ -2,8 +2,12 @@ from bs4 import BeautifulSoup
 from typing import (
     List
 )
+from utils.functions.selenium_fn import create_chromedriver
+import json
+import logging
+import re
 
-def get_match_list_source(
+def get_match_url_list_source(
     driver
 ) -> List[str]:
     """
@@ -26,8 +30,122 @@ def get_match_list_source(
 
     return match_href_list
 
+def fetch_match_data_scraped(
+    driver,
+    match_url: str
+) -> Dict:
+    """
+    Arguments:
+    - driver: Selenium webdriver
+    - player_url: player link
+
+    Returns dictionary of player information from url
+    """
+
+    # initialize dictionary
+    match_dict = {}
+
+    # get url page source
+    driver.get(player_url)
+    response_page_source = driver.page_source
+
+    # parse page
+    soup = BeautifulSoup(response_page_source, 'html.parser')
+
+    # Find the <b> tag after a <table> tag
+    table_tag = soup.find('table')  # Find the first <table> tag
+    if table_tag:
+        # Get the next <b> tag after the table
+        match_result_tag = table_tag.find_next('b')
+        if match_result_tag:
+           match_result =  match_result_tag.get_text().strip()
+    else:
+        match_result = None
+    match_dict['match_result'] =  match_result
+
+    # Find the point log
+    pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*?);"
+    pointlog_regex_var_match = re.search(regex_pattern, response_page_source)
+    if pointlog_regex_var_match:
+        # Parse pointlog JSON data
+        pointlog_json = pointlog_regex_var_match.group('pointlog')
+        try:
+            pointlog_data = json.loads(pointlog_json)
+        except json.JSONDecodeError:
+            pointlog_data = []
+    else:
+        pointlog_data = []
+
+    # Check if pointlog data exists and is list-like
+    if isinstance(pointlog_data, list) and pointlog_data:
+        # Find column headers (keys) from the first row
+        header_row = soup.find('table').find('tr')
+        headers = [th.get_text().strip() for th in header_row.find_all('th')]
+
+        # Convert pointlog data to a list of dictionaries with indices
+        pointlog = [
+            {**{headers[i]: point[i] for i in range(len(headers))}, 'point_number': idx + 1}
+            for idx, point in enumerate(pointlog_data)
+        ]
+    else:
+        pointlog = []
+
+    match_dict['match_pointlog'] = pointlog
+
 def main():
-    pass
+    
+    # set logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+    # initialize driver
+    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    driver = create_chromedriver(webdriver_path=webdriver_path)
+
+    # get list of players
+    match_url_list = get_match_url_list_source(
+        driver=driver
+    )[:1]
+    logging.info(f"Found {len(match_url_list)} matches.")
+
+    # loop through matches
+    # initialize list
+    match_data_list = []
+    for i, match_url in enumerate(match_url_list):
+
+        logging.info(f"Starting {i+1} of {len(match_url_list)}.")
+        logging.info(f"match url: {match_url}")
+
+        # initialize match data dictionary
+        match_data_dict = {}
+        match_data_dict['match_url'] = match_url
+        # parse url
+        match_url_parsed_list = match_url.split('charting/')
+        match_date = match_url_parsed_list[0]
+        match_data_dict['match_date'] = match_date
+        match_gender = match_url_parsed_list[1]
+        match_data_dict['match_gender'] = match_gender
+        match_tournament = match_url_parsed_list[2]
+        match_data_dict['match_tournament'] = match_tournament
+        match_round = match_url_parsed_list[3]
+        match_data_dict['match_round'] = match_round
+        match_player_one = match_url_parsed_list[4]
+        match_data_dict['match_player_one'] = match_player_one.replace('_', ' ')
+        match_player_two = match_url_parsed_list[5].replace('.html', '').replace('_', ' ')
+        match_data_dict['match_player_two'] = match_player_two
+        
+        # get match data from webscrape
+        match_data_dict_scraped = fetch_match_data_scraped(
+            driver=driver,
+            match_url=match_url
+        )
+
+        match_data_list.append(match_data_dict)
+        logging.info(f"Fetched data for: {match_url}")
+
+    return player_data_list
 
 if __name__ == "__main__":
     main()
