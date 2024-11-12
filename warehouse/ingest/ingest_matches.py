@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from typing import (
+    Dict,
     List
 )
 from utils.functions.selenium_fn import create_chromedriver
