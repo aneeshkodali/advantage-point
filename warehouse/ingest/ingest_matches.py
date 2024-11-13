@@ -5,7 +5,6 @@ from typing import (
     List
 )
 from utils.functions.selenium_fn import create_chromedriver
-import json
 import logging
 import os
 import re
@@ -69,31 +68,25 @@ def fetch_match_data_scraped(
     # Find the point log
     pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*?);"
     pointlog_regex_var_match = re.search(pointlog_regex_pattern, response_page_source)
-    if pointlog_regex_var_match:
-        # Parse pointlog JSON data
-        pointlog_json = pointlog_regex_var_match.group('pointlog')
-        try:
-            pointlog_data = json.loads(pointlog_json)
-        except json.JSONDecodeError:
-            pointlog_data = []
-    else:
-        pointlog_data = []
+    pointlog_raw = pointlog_regex_var_match.group('pointlog')
 
-    # Check if pointlog data exists and is list-like
-    if isinstance(pointlog_data, list) and pointlog_data:
-        # Find column headers (keys) from the first row
-        header_row = soup.find('table').find('tr')
-        headers = [th.get_text().strip() for th in header_row.find_all('th')]
+    # extract the data
+    pointlog_soup = BeautifulSoup(pointlog_raw, 'hmtl.parser')
+    pointlog_tr_list = pointlog_soup.find_all('tr')
+    pointlog_data_list = []
+    for index, tr in enumerate(pointlog_tr_list):
+        tr_td_list = tr.find_all('td')
+        point_data = {
+            'point_number': index + 1,
+            'server': tr_td_list[0].get_text(strip=True),
+            'sets': tr_td_list[1].get_text(strip=True),
+            'games': tr_td_list[2].get_text(strip=True),
+            'points': tr_td_list[3].get_text(strip=True)
+            'point_description': tr_td_list[4].get_text(strip=True)
+        }
+        pointlog_data_list.append(point_data)
 
-        # Convert pointlog data to a list of dictionaries with indices
-        pointlog = [
-            {**{headers[i]: point[i] for i in range(len(headers))}, 'point_number': idx + 1}
-            for idx, point in enumerate(pointlog_data)
-        ]
-    else:
-        pointlog = []
-
-    match_dict['match_pointlog'] = pointlog
+    match_dict['match_pointlog'] = pointlog_data_list
 
     return match_dict
 
