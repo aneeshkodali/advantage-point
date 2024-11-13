@@ -460,9 +460,9 @@ def merge_target_table(
     update_existing_sql = f"""
         UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
         SET
-                {target_alias}.audit_field_active_flag = FALSE,
-                {target_alias}.audit_field_end_datetime_utc = NOW(),
-                {target_alias}.audit_field_update_datetime_utc = NOW()
+                audit_field_active_flag = FALSE,
+                audit_field_end_datetime_utc = NOW(),
+                audit_field_update_datetime_utc = NOW()
             FROM {source_schema_name}.{source_table_name} AS {source_alias}
             WHERE
                     {target_alias}.audit_field_active_flag = TRUE
