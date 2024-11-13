@@ -81,8 +81,8 @@ def fetch_match_data_scraped(
             'server': tr_td_list[0].get_text(strip=True),
             'sets': tr_td_list[1].get_text(strip=True),
             'games': tr_td_list[2].get_text(strip=True),
-            'points': tr_td_list[3].get_text(strip=True)
-            'point_description': tr_td_list[4].get_text(strip=True)
+            'points': tr_td_list[3].get_text(strip=True),
+            'point_description': tr_td_list[4].get_text(strip=True),
         }
         pointlog_data_list.append(point_data)
 
