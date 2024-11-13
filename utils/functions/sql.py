@@ -262,7 +262,7 @@ def create_target_table(
         (
             {column_name_data_type_agg},
             audit_field_active_flag BOOLEAN,
-            audit_field_record_type VARCHAR(1),
+            audit_field_record_type TEXT,
             audit_field_start_datetime_utc TIMESTAMP,
             audit_field_end_datetime_utc TIMESTAMP,
             audit_field_insert_datetime_utc TIMESTAMP,
