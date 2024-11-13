@@ -474,9 +474,9 @@ def merge_target_table(
     cursor.execute(update_existing_sql)
 
     update_new_sql = f"""
-        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_column_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_columns_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
         SELECT
-            {', '.join([f"{source_alias}.{col}" for col in source_column_list])},
+            {', '.join([f"{source_alias}.{col}" for col in source_columns_list])},
             TRUE AS audit_field_active_flag,
             'update' AS audit_field_record_flag,
             NOW() AS audit_field_start_datetime_utc,
@@ -493,9 +493,9 @@ def merge_target_table(
 
     # insert
     insert_sql = f"""
-        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_column_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_columns_list)}, audit_field_active_flag, audit_field_record_flag, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
         SELECT
-            {', '.join([f"{source_alias}.{col}" for col in source_column_list])},
+            {', '.join([f"{source_alias}.{col}" for col in source_columns_list])},
             TRUE AS audit_field_active_flag,
             'update' AS audit_field_record_flag,
             NOW() AS audit_field_start_datetime_utc,
