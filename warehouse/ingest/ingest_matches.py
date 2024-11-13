@@ -70,9 +70,9 @@ def fetch_match_data_scraped(
     pointlog_regex_var_match = re.search(pointlog_regex_pattern, response_page_source)
     pointlog_raw = pointlog_regex_var_match.group('pointlog')
 
-    # extract the data
+    # extract the data (after 1st tr - headers)
     pointlog_soup = BeautifulSoup(pointlog_raw, 'html.parser')
-    pointlog_tr_list = pointlog_soup.find_all('tr')
+    pointlog_tr_list = pointlog_soup.find_all('tr')[1:]
     pointlog_data_list = []
     for index, tr in enumerate(pointlog_tr_list):
         tr_td_list = tr.find_all('td')
