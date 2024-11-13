@@ -65,14 +65,21 @@ def fetch_match_data_scraped(
         match_result = None
     match_dict['match_result'] =  match_result
 
-    # Find the point log
-    pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*?);"
+    # Find the point log between 'var pointlog =' and last semicolon
+    pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*);"
     pointlog_regex_var_match = re.search(pointlog_regex_pattern, response_page_source)
     pointlog_raw = pointlog_regex_var_match.group('pointlog')
 
     # extract the data (after 1st tr - headers)
     pointlog_soup = BeautifulSoup(pointlog_raw, 'html.parser')
     pointlog_tr_list = pointlog_soup.find_all('tr')[1:]
+
+    # filter out empty rows
+    pointlog_tr_list = [
+        tr for tr in pointlog_tr_list 
+        if all(td.get_text(strip=True) for td in tr.find_all('td'))
+    ]
+    # loop through tr list
     pointlog_data_list = []
     for index, tr in enumerate(pointlog_tr_list):
         tr_td_list = tr.find_all('td')
@@ -130,8 +137,8 @@ def main():
         match_round = match_url_parsed_list[3]
         match_data_dict['match_round'] = match_round
         match_player_one = match_url_parsed_list[4]
-        match_data_dict['match_player_one'] = match_player_one.replace('_', ' ')
-        match_player_two = match_url_parsed_list[5].replace('_', ' ')
+        match_data_dict['match_player_one'] = match_player_one
+        match_player_two = match_url_parsed_list[5]
         match_data_dict['match_player_two'] = match_player_two
         
         # get match data from webscrape
@@ -147,7 +154,7 @@ def main():
         }
 
         # recreate dictionary such that each entry is point
-        for i, point_dict in enumerate(match_data_dict['match_pointlog'][:10]):
+        for i, point_dict in enumerate(match_data_dict['match_pointlog'][:5]):
             logging.info(f"Adding point number {i+1} for match: {match_url}")
             point_dict = {
                 **point_dict,
