@@ -11,7 +11,7 @@ import os
 import re
 
 def get_match_url_list_source(
-    driver: webdriver
+    driver
 ) -> List[str]:
     """
     Arguments:
