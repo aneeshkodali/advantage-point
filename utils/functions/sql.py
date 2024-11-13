@@ -438,6 +438,9 @@ def merge_target_table(
     non_unique_column_join_on_str = ' AND '.join(
         [f"{target_alias}.{col} = {source_alias}.{col}" for col in non_unique_column_list]
     )
+    non_unique_column_comparison_str = ' OR '.join(
+        [f"{target_alias}.{col} IS DISTINCT FROM {source_alias}.{col}" for col in non_unique_column_list]
+    )
 
     # delete
     if delete_row_flag == True:
@@ -486,7 +489,7 @@ def merge_target_table(
         ON {unique_column_join_on_str}
         WHERE
                 ({target_alias}.audit_field_active_flag = FALSE)
-            AND ({non_unique_column_comparison_str}) IS DISTINCT FROM FALSE
+            AND ({non_unique_column_comparison_str})
     """
     logging.info(f"Running update new statement: {update_new_sql}")
     cursor.execute(update_new_sql)
