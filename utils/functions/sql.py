@@ -500,7 +500,7 @@ def merge_target_table(
         SELECT
             {', '.join([f"{source_alias}.{col}" for col in source_columns_list])},
             TRUE AS audit_field_active_flag,
-            'update' AS audit_field_record_type,
+            'insert' AS audit_field_record_type,
             NOW() AS audit_field_start_datetime_utc,
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
