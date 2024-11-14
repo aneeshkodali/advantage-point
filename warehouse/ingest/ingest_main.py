@@ -51,13 +51,13 @@ def main():
 
     # generate list of sources
     source_list = [
-        {
-            'source_name': 'matches',
-            'fn_ingest_data': ingest_matches,
-            'unique_column_list': ['match_url', 'point_number',],
-            'alter_table_drop_column_flag': False,
-            'merge_table_delete_row_flag': False,
-        },
+        # {
+        #     'source_name': 'matches',
+        #     'fn_ingest_data': ingest_matches,
+        #     'unique_column_list': ['match_url', 'point_number',],
+        #     'alter_table_drop_column_flag': False,
+        #     'merge_table_delete_row_flag': False,
+        # },
         {
             'source_name': 'players',
             'fn_ingest_data': ingest_players,
