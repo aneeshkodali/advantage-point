@@ -93,7 +93,10 @@ def fetch_player_data_scraped(
     for regex_var in response_var_list:
         regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*?);"
         regex_var_match = re.search(regex_pattern, response_page_source)
-        val = regex_var_match.group(regex_var) or None
+        if regex_var_match:
+            val = regex_var_match.group(regex_var)
+        else:
+            val = None
         data_dict[regex_var] = val
 
     return data_dict
