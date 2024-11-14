@@ -113,7 +113,7 @@ def main():
     # get list of players
     player_url_list = get_player_url_list_source(
         driver=driver
-    )[:10]
+    )
     logging.info(f"Found {len(player_url_list)} players.")
 
     # loop through players

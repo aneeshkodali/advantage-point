@@ -112,7 +112,7 @@ def main():
     # get list of matches
     match_url_list = get_match_url_list_source(
         driver=driver
-    )[:1]
+    )
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
@@ -154,7 +154,7 @@ def main():
         }
 
         # recreate dictionary such that each entry is point
-        for i, point_dict in enumerate(match_data_dict['match_pointlog'][:5]):
+        for i, point_dict in enumerate(match_data_dict['match_pointlog']):
             logging.info(f"Adding point number {i+1} for match: {match_url}")
             point_dict = {
                 **point_dict,

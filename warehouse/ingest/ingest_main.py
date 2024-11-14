@@ -58,13 +58,13 @@ def main():
             'alter_table_drop_column_flag': False,
             'merge_table_delete_row_flag': False,
         },
-        # {
-        #     'source_name': 'players',
-        #     'fn_ingest_data': ingest_players,
-        #     'unique_column_list': ['player_url',],
-        #     'alter_table_drop_column_flag': False,
-        #     'merge_table_delete_row_flag': False,
-        # },
+        {
+            'source_name': 'players',
+            'fn_ingest_data': ingest_players,
+            'unique_column_list': ['player_url',],
+            'alter_table_drop_column_flag': False,
+            'merge_table_delete_row_flag': False,
+        },
         # {
         #     'source_name': 'tournaments',
         #     'fn_ingest_data': ingest_tournaments,
