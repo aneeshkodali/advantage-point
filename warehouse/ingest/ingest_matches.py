@@ -68,31 +68,34 @@ def fetch_match_data_scraped(
     # Find the point log between 'var pointlog =' and last semicolon
     pointlog_regex_pattern = fr"var pointlog\s?=\s?(?P<pointlog>.*);"
     pointlog_regex_var_match = re.search(pointlog_regex_pattern, response_page_source)
-    pointlog_raw = pointlog_regex_var_match.group('pointlog')
+    if pointlog_regex_var_match:
+        pointlog_raw = pointlog_regex_var_match.group('pointlog')
 
-    # extract the data (after 1st tr - headers)
-    pointlog_soup = BeautifulSoup(pointlog_raw, 'html.parser')
-    pointlog_tr_list = pointlog_soup.find_all('tr')[1:]
+        # extract the data (after 1st tr - headers)
+        pointlog_soup = BeautifulSoup(pointlog_raw, 'html.parser')
+        pointlog_tr_list = pointlog_soup.find_all('tr')[1:]
 
-    # filter out empty rows
-    pointlog_tr_list = [
-        tr for tr in pointlog_tr_list 
-        if all(td.get_text(strip=True) for td in tr.find_all('td'))
-    ]
-    # loop through tr list
-    pointlog_data_list = []
-    for index, tr in enumerate(pointlog_tr_list):
-        tr_td_list = tr.find_all('td')
-        point_data = {
-            'point_number': index + 1,
-            'server': tr_td_list[0].get_text(strip=True),
-            'sets': tr_td_list[1].get_text(strip=True),
-            'games': tr_td_list[2].get_text(strip=True),
-            'points': tr_td_list[3].get_text(strip=True),
-            'point_description': tr_td_list[4].get_text(strip=True),
-        }
-        pointlog_data_list.append(point_data)
-
+        # filter out empty rows
+        pointlog_tr_list = [
+            tr for tr in pointlog_tr_list 
+            if all(td.get_text(strip=True) for td in tr.find_all('td'))
+        ]
+        # loop through tr list
+        pointlog_data_list = []
+        for index, tr in enumerate(pointlog_tr_list):
+            tr_td_list = tr.find_all('td')
+            point_data = {
+                'point_number': index + 1,
+                'server': tr_td_list[0].get_text(strip=True),
+                'sets': tr_td_list[1].get_text(strip=True),
+                'games': tr_td_list[2].get_text(strip=True),
+                'points': tr_td_list[3].get_text(strip=True),
+                'point_description': tr_td_list[4].get_text(strip=True),
+            }
+            pointlog_data_list.append(point_data)
+    else:
+        pointlog_data_list = []
+        
     match_dict['match_pointlog'] = pointlog_data_list
 
     return match_dict
