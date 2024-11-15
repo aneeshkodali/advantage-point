@@ -10,7 +10,8 @@ def main():
     )
 
     # run ingestion layer
-    ingest_main()
+    # ingest_main()
+    logging.info("Running main")
 
 if __name__ == "__main__":
     main()

@@ -15,7 +15,7 @@ on:
           - prod
 
 jobs:
-  run_script:
+  run_ingestion:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
 
@@ -32,7 +32,7 @@ jobs:
 
       - name: Install python requirements
         run: |
-          pip install -r requirements.txt
+          pip install -r ingest/requirements.txt
 
       - name: Remove old Chrome if it exists
         run: |
@@ -53,9 +53,6 @@ jobs:
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           PORT: ${{ vars.SUPABASE_PORT }}
           SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
-          SCHEMA_PRESENTATION: ${{ vars.SCHEMA_PRESENTATION }}
-          SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}
-          SCHEMA_TRANSFORMATION: ${{ vars.SCHEMA_TRANSFORMATION }}
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           python -m warehouse.warehouse_main
