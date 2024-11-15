@@ -17,3 +17,6 @@ for schema in [schema_ingest, schema_ingest_temp]:
         connection=conn,
         schema_name=schema
     )
+
+# close connection
+conn.close()
