@@ -45,6 +45,23 @@ jobs:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
+      - name: Set schema variables
+        id: set-schema
+        run: |
+          # Start by setting the SCHEMA_INGESTION variable from the environment variable
+          SCHEMA_INGESTION="${{ vars.SCHEMA_INGESTION }}"
+          SCHEMA_INGESTION_TEMP="${SCHEMA_INGESTION}_temp"
+
+          # Modify the schema names if the environment is 'dev'
+          if [ "${{ github.event.inputs.environment }}" == "dev" ]; then
+            SCHEMA_INGESTION="${SCHEMA_INGESTION}_dev"
+            SCHEMA_INGESTION_TEMP="${SCHEMA_INGESTION_TEMP}_dev"
+          fi
+
+          # Export the variables to be used in subsequent steps
+          echo "SCHEMA_INGESTION=$SCHEMA_INGESTION" >> $GITHUB_ENV
+          echo "SCHEMA_INGESTION_TEMP=$SCHEMA_INGESTION_TEMP" >> $GITHUB_ENV
+
       - name: Run python script
         env:
           CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
@@ -52,7 +69,8 @@ jobs:
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           PORT: ${{ vars.SUPABASE_PORT }}
-          SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
+          SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
+          SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           python -m warehouse.warehouse_main
