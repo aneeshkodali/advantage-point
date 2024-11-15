@@ -66,6 +66,36 @@ def create_schema(
     # close cursor
     cursor.close()
 
+def get_table_column_list(
+    connection: psycopg2.connect,
+    schema_name,
+    table_name,
+    column_name
+) -> List[Any]:
+    """
+    Arguments:
+    - conn: SQL connection
+    - schema_name: Schema name
+    - table_name: Table name
+    - column_name: Column name
+
+    Returns column values as a list
+    """
+
+    # create cursor
+    cursor = connection.cursor()
+
+    # create sql statement to retrieve urls
+    select_sql = f"""
+        SELECT
+            {column_name}
+        FROM {schema_name}.{table_name}
+    """
+    cursor.execute(select_sql)
+    select_list = [row[0] for row in cursor.fetchall()]
+
+    return select_list
+
 def infer_sql_type(python_dtype: Any):
     """
     Arguments:
