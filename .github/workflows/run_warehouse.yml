@@ -73,7 +73,7 @@ jobs:
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Creating schemas"
-          python -m ingest.create_ingestion_schemas.py
+          python -m ingest.create_ingestion_schemas
 
       # - name: Run python script
       #   env:
