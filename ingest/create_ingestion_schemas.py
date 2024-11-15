@@ -2,7 +2,14 @@ from utils.functions.sql import (
     create_connection,
     create_schema
 )
+import logging
 import os
+
+# set logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 # get schemas
 schema_ingest = os.getenv('SCHEMA_INGESTION')
