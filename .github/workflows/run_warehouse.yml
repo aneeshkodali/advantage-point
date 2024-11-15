@@ -62,9 +62,8 @@ jobs:
           echo "SCHEMA_INGESTION=$SCHEMA_INGESTION" >> $GITHUB_ENV
           echo "SCHEMA_INGESTION_TEMP=$SCHEMA_INGESTION_TEMP" >> $GITHUB_ENV
 
-      - name: Run python script
+      - name: Create schemas
         env:
-          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
@@ -72,5 +71,19 @@ jobs:
           SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
           SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
           USER: ${{ vars.SUPABASE_USER }}
+        run: echo "Creating schemas"
         run: |
-          python -m warehouse.warehouse_main
+          python -m ingest.create_ingestion_schemas.py
+
+      # - name: Run python script
+      #   env:
+      #     CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
+      #     DATABASE: ${{ vars.SUPABASE_DATABASE }}
+      #     HOST: ${{ vars.SUPABASE_HOST }}
+      #     PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+      #     PORT: ${{ vars.SUPABASE_PORT }}
+      #     SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
+      #     SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
+      #     USER: ${{ vars.SUPABASE_USER }}
+      #   run: |
+      #     python -m warehouse.warehouse_main
