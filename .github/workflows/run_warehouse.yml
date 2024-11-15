@@ -71,8 +71,8 @@ jobs:
           SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
           SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
           USER: ${{ vars.SUPABASE_USER }}
-        run: echo "Creating schemas"
         run: |
+          echo "Creating schemas"
           python -m ingest.create_ingestion_schemas.py
 
       # - name: Run python script
