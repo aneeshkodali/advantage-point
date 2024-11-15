@@ -94,7 +94,7 @@ def get_table_column_list(
     cursor.execute(select_sql)
     select_list = [row[0] for row in cursor.fetchall()]
 
-    return select_list
+    return select_list or []
 
 def infer_sql_type(python_dtype: Any):
     """
