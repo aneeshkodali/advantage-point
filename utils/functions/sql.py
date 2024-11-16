@@ -171,13 +171,8 @@ def create_and_load_table(
     # inititialize cursor
     cursor = connection.cursor()
 
-    # drop table if exists
-    drop_table_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name}"
-    logging.info(f"Running statement: {drop_table_sql}")
-    cursor.execute(drop_table_sql)
-
     # create table
-    create_table_sql = f"CREATE TABLE {schema_name}.{table_name} ({', '.join(column_type_list)})"
+    create_table_sql = f"CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} ({', '.join(column_type_list)})"
     logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
 
