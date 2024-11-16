@@ -91,7 +91,7 @@ jobs:
 
   run_ingestion:
     needs: [create_schemas, setup]
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         script_name: ["ingest_player_tennisabstract"]
