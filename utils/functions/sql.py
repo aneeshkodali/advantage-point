@@ -118,6 +118,30 @@ def infer_sql_type(python_dtype: Any):
 
     return sql_type
 
+def drop_table(
+    connection: psycopg2.connect,
+    df: pd.DataFrame,
+    schema_name: str,
+    table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - schema_name: Schema name
+    - table_name: Table name
+
+    Drop table if exists
+    """
+
+    # inititialize cursor
+    cursor = connection.cursor()
+
+    # drop table if exists
+    drop_table_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name}"
+    logging.info(f"Running statement: {drop_table_sql}")
+    cursor.execute(drop_table_sql)
+    logging.info(f"Dropped table: {schema_name}.{table_name}")
+
 def create_and_load_table(
     connection: psycopg2.connect,
     df: pd.DataFrame,
