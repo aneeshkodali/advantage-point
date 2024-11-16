@@ -69,7 +69,7 @@ jobs:
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
-          
+
       - name: Set schema variables
         id: set-schema
         run: |
@@ -101,7 +101,7 @@ jobs:
           python -m ingest.create_ingestion_schemas
 
   run_ingestion:
-    needs: [create_schemas, setup]
+    needs: [create_ingestion_schemas, setup]
     runs-on: ubuntu-latest
     strategy:
       matrix:
