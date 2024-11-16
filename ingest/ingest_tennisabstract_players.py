@@ -5,6 +5,8 @@ from typing import (
 from selenium import webdriver
 from utils.functions.sql import (
     create_connection,
+    drop_table,
+    create_and_load_table,
     get_table_column_list,
 )
 from utils.functions.selenium_fn import create_chromedriver
@@ -118,8 +120,11 @@ def main():
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
-    target_table_name = 'hub_player'
+    hub_table_name = 'hub_player'
+    satellite_table_name = 'sat_player'
     temp_table_name = 'player'
+    unique_column_id = 'player_id'
+    # unique_column_list = ['player_url',]
 
     # create connection
     conn = create_connection()
@@ -135,41 +140,70 @@ def main():
     player_tennisabstract_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
-        table_name=target_table_name,
+        table_name=hub_table_name,
         column_name='player_url'
     )
     player_tennisabstract_url_list = list(filter(lambda url: url not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
+    # drop temp table
+    drop_table(
+        connection=conn,
+        schema_name=temp_schema_name,
+        table_name=temp_table_name
+    )
+
     # loop through players
-    # initialize list
-    player_data_list = []
-    for i, player_url in enumerate(player_tennisabstract_url_list):
+    # initialize chunk logic
+    i = 0
+    chunk_size = 1000
+    for i in range(0, len(player_tennisabstract_url_list), chunk_size):
 
-        logging.info(f"Starting {i+1} of {len(player_tennisabstract_url_list)}.")
-        logging.info(f"player url: {player_url}")
+        logging.info(f"Chunking: {i} to {i + chunk_size}")
 
-        # initialize player data dictionary
-        player_data_dict = {}
-        player_data_dict['player_url'] = player_url
-        player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
+        player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
 
-        # get player data from webscrape
-        player_data_dict_scraped = fetch_player_tennisabstract_data_scraped(
-            driver=driver,
-            player_url=player_url
+        # initialize data list
+        player_data_list = []
+
+        # loop through chunk urls
+        for player_url in player_url_chunk_list:
+
+            logging.info(f"Starting {i+1} of {len(player_tennisabstract_url_list)}.")
+            logging.info(f"player url: {player_url}")
+
+            # initialize player data dictionary
+            player_data_dict = {}
+            player_data_dict['player_url'] = player_url
+            player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
+
+            # get player data from webscrape
+            player_data_dict_scraped = fetch_player_tennisabstract_data_scraped(
+                driver=driver,
+                player_url=player_url
+            )
+
+            # combine dictionaries
+            player_data_dict = {
+                **player_data_dict,
+                **player_data_dict_scraped,
+            }
+
+            player_data_list.append(player_data_dict)
+            logging.info(f"Fetched data for: {player_url}")
+        
+        # create dataframe
+        player_data_df = pd.DataFrame(player_data_list)
+
+        # create or replace temp table and insert
+        logging.info(f"Loading temp table {temp_schema_name}.{temp_table_name} for chunk: {i} to {i + chunk_size}")
+        create_and_load_table(
+            connection=conn,
+            df=player_data_df,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
         )
-
-        # combine dictionaries
-        player_data_dict = {
-            **player_data_dict,
-            **player_data_dict_scraped,
-        }
-
-        player_data_list.append(player_data_dict)
-        logging.info(f"Fetched data for: {player_url}")
-
-    return player_data_list
+        logging.info(f"Loaded temp table {temp_schema_name}.{temp_table_name} for chunk: {i} to {i + chunk_size}")
 
     # close connection
     conn.close()
