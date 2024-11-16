@@ -55,10 +55,21 @@ jobs:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
-  create_schemas:
+  create_ingestion_schemas:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+      
+      - name: Restore Python dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
+          
       - name: Set schema variables
         id: set-schema
         run: |
