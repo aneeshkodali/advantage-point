@@ -120,7 +120,6 @@ def infer_sql_type(python_dtype: Any):
 
 def drop_table(
     connection: psycopg2.connect,
-    df: pd.DataFrame,
     schema_name: str,
     table_name: str
 ):
