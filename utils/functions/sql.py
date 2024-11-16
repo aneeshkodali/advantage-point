@@ -155,8 +155,7 @@ def create_and_load_table(
     - schema_name: Schema name
     - table_name: Table name
 
-    Does the following tasks:
-    - drop (if exists) and create table
+    Creates table (if not exists) and loads data (from dataframe)
     - insert data into table
     """
 
