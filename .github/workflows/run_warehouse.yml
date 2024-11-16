@@ -15,9 +15,11 @@ on:
           - prod
 
 jobs:
-  run_ingestion:
+  setup:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
+    outputs:
+      chromedriver_path: ${{ steps.setup-chrome.outputs.chromedriver-path }}
 
     steps:
       - name: Checkout code
@@ -29,6 +31,14 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
+
+      - name: Cache python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install python requirements
         run: |
@@ -45,6 +55,10 @@ jobs:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
+  create_schemas:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Set schema variables
         id: set-schema
         run: |
@@ -75,15 +89,34 @@ jobs:
           echo "Creating schemas"
           python -m ingest.create_ingestion_schemas
 
-      # - name: Run python script
-      #   env:
-      #     CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
-      #     DATABASE: ${{ vars.SUPABASE_DATABASE }}
-      #     HOST: ${{ vars.SUPABASE_HOST }}
-      #     PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
-      #     PORT: ${{ vars.SUPABASE_PORT }}
-      #     SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
-      #     SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
-      #     USER: ${{ vars.SUPABASE_USER }}
-      #   run: |
-      #     python -m warehouse.warehouse_main
+  run_ingestion:
+    needs: [create_schemas, setup]
+    runs_on: ubuntu-latest
+    strategy:
+      matrix:
+        script_name: ["ingest_player_tennisabstract"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+      
+      - name: Restore Python dependencies cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
+
+      - name: Run ingestion script
+        env:
+          CHROMEDRIVER_PATH: ${{ needs.setup.outputs.chromedriver-path }}
+          DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          HOST: ${{ vars.SUPABASE_HOST }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          PORT: ${{ vars.SUPABASE_PORT }}
+          SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
+          SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
+          USER: ${{ vars.SUPABASE_USER }}
+        run: |
+          echo "Running ingestion script: ${{ matrix.script_name }}"
+          python -m ingest.${{ matrix.script_name }}
