@@ -18,9 +18,10 @@ jobs:
   ingestion:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
-    outputs:
-      chromedriver_path: ${{ steps.setup-chrome.outputs.chromedriver-path }}
-
+    strategy:
+      matrix:
+        scripts:
+          - name: ingest_players_tennisabstract
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -87,5 +88,5 @@ jobs:
           SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
           USER: ${{ vars.SUPABASE_USER }}
         run: |
-          echo "Running ingestion script: ${{ matrix.script_name }}"
-          python -m ingest.${{ matrix.script_name }}
+          echo "Running ingestion script: ${{ matrix.scripts.name }}"
+          python -m ingest.${{ matrix.scripts.name }}
