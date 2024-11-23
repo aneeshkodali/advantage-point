@@ -105,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        script_name: ["ingest_player_tennisabstract"]
+        script_name: ["ingest_players_tennisabstract"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
