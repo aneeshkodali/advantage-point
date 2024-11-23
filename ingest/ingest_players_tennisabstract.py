@@ -146,7 +146,7 @@ def main():
         column_name_list=unique_column_list,
         where_clause_list=['audit_field_active_flag = TRUE']
     )
-    player_tennisabstract_url_list = list(filter(lambda url: url not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
+    player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
@@ -165,7 +165,9 @@ def main():
         player_data_list = []
 
         # loop through chunk urls
-        for player_url in player_url_chunk_list:
+        for player_url_dict in player_url_chunk_list:
+
+            player_url = player_url_dict['player_url']
 
             logging.info(f"Starting {i+1} of {len(player_tennisabstract_url_list)}.")
             logging.info(f"player url: {player_url}")
