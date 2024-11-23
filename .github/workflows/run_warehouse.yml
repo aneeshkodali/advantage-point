@@ -32,17 +32,18 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Cache python dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install python requirements
+      - name: Create virtual environment
+        id: create-venv
         run: |
-          pip install -r ingest/requirements.txt
+          python -m venv venv-ingest
+          source ingest/venv-ingest/bin/activate
+          pip install -r requirements.txt
+
+      - name: Upload virtual environment
+        uses: actions/upload-artifact@v3
+        with:
+          name: venv-ingest
+          path: .venv-ingest
 
       - name: Remove old Chrome if it exists
         run: |
@@ -64,11 +65,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
       
-      - name: Restore Python dependencies cache
-        uses: actions/cache@v3
+      - name: Download virtual environment
+        uses: actions/download-artifact@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
+          name: venv-ingest
 
       - name: Set schema variables
         id: set-schema
@@ -98,6 +98,7 @@ jobs:
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Creating schemas"
+          source ingest/venv-ingest/bin/activate
           python -m ingest.create_ingestion_schemas
 
   run_ingestion:
@@ -112,11 +113,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
       
-      - name: Restore Python dependencies cache
-        uses: actions/cache@v3
+      - name: Download virtual environment
+        uses: actions/download-artifact@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('ingest/requirements.txt') }}
+          name: venv-ingest
 
       - name: Run ingestion script
         env:
@@ -130,4 +130,5 @@ jobs:
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Running ingestion script: ${{ matrix.script_name }}"
+          source ingest/venv-ingest/bin/activate
           python -m ingest.${{ matrix.script_name }}
