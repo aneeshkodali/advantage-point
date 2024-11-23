@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from typing import (
     Any,
+    Dict,
     List
 )
 import datetime
@@ -68,16 +69,18 @@ def create_schema(
 
 def get_table_column_list(
     connection: psycopg2.connect,
-    schema_name,
-    table_name,
-    column_name
-) -> List[Any]:
+    schema_name: str,
+    table_name: str,
+    column_name_list: List[str],
+    where_clause_list: List[str] = ['1 = 1']
+) -> List[Dict]:
     """
     Arguments:
     - conn: SQL connection
     - schema_name: Schema name
     - table_name: Table name
-    - column_name: Column name
+    - column_name_list: List of column names
+    - where_clause_list: List of WHERE clause strings
 
     Returns column values as a list
     """
@@ -85,14 +88,23 @@ def get_table_column_list(
     # create cursor
     cursor = connection.cursor()
 
+    # create sql-like strings from list
+    column_name_join = ', '.join(column_name_list)
+    where_clause_join = ' AND '.join([f"({where_clause})" for where_clause in where_clause_list])
+
     # create sql statement to retrieve urls
     select_sql = f"""
         SELECT
-            {column_name}
+            {column_name_join}
         FROM {schema_name}.{table_name}
+        WHERE {where_clause_join}
     """
+    logging.info(f"Running select statement: {select_sql}")
+    
+    # store results as list of dicts
     cursor.execute(select_sql)
-    select_list = [row[0] for row in cursor.fetchall()]
+    results = cursor.fetchall()
+    select_list = [dict(zip(column_name_list, row)) for row in results]
 
     return select_list or []
 

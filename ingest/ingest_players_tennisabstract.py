@@ -40,7 +40,7 @@ def create_player_tennisabstract_url(
 
 def get_player_tennisabstract_url_list_source(
     driver: webdriver
-) -> List[str]:
+) -> List[Dict]:
     """
     Arguments:
     - driver: Selenium webdriver
@@ -75,7 +75,9 @@ def get_player_tennisabstract_url_list_source(
             player_gender=gender,
             player_name=name
         )
-        player_url_list.append(player_url)
+        player_url_dict = {}
+        player_url_dict['player_url'] = player_url
+        player_url_list.append(player_url_dict)
 
     return player_url_list
 
@@ -140,8 +142,9 @@ def main():
     player_tennisabstract_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
-        table_name=hub_table_name,
-        column_name='player_url'
+        table_name=target_table_name,
+        column_name_list=unique_column_list,
+        where_clause_list=['audit_field_active_flag = TRUE']
     )
     player_tennisabstract_url_list = list(filter(lambda url: url not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
@@ -226,7 +229,7 @@ def main():
             source_schema_name=temp_schema_name,
             source_table_name=temp_table_name,
             unique_column_list=unique_column_list,
-            delete_row_flag=source_config_dict['merge_table_delete_row_flag']
+            delete_row_flag=merge_table_delete_row_flag
         )
         logging.info(f"Merged records into target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
 
