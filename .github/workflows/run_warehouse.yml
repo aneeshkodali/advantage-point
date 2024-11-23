@@ -15,7 +15,7 @@ on:
           - prod
 
 jobs:
-  setup:
+  ingestion:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     outputs:
@@ -32,17 +32,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Create virtual environment
+      - name: Install Dependencies
         run: |
-          python -m venv .venv-ingest
-          source .venv-ingest/bin/activate
           pip install -r ingest/requirements.txt
-
-      - name: Upload virtual environment
-        uses: actions/upload-artifact@v3
-        with:
-          name: venv-ingest
-          path: .venv-ingest
 
       - name: Remove old Chrome if it exists
         run: |
@@ -55,22 +47,7 @@ jobs:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
 
-  create_ingestion_schemas:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
-      
-      - name: Download virtual environment
-        uses: actions/download-artifact@v3
-        with:
-          name: venv-ingest
-
       - name: Set schema variables
-        id: set-schema
         run: |
           # Start by setting the SCHEMA_INGESTION variable from the environment variable
           SCHEMA_INGESTION="${{ vars.SCHEMA_INGESTION }}"
@@ -97,29 +74,11 @@ jobs:
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Creating schemas"
-          source ingest/venv-ingest/bin/activate
           python -m ingest.create_ingestion_schemas
-
-  run_ingestion:
-    needs: [create_ingestion_schemas, setup]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        script_name: ["ingest_players_tennisabstract"]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
-      
-      - name: Download virtual environment
-        uses: actions/download-artifact@v3
-        with:
-          name: venv-ingest
 
       - name: Run ingestion script
         env:
-          CHROMEDRIVER_PATH: ${{ needs.setup.outputs.chromedriver-path }}
+          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
@@ -129,5 +88,4 @@ jobs:
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Running ingestion script: ${{ matrix.script_name }}"
-          source ingest/venv-ingest/bin/activate
           python -m ingest.${{ matrix.script_name }}
