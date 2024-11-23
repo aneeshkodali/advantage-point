@@ -33,11 +33,10 @@ jobs:
           python-version: '3.x'
 
       - name: Create virtual environment
-        id: create-venv
         run: |
-          python -m venv venv-ingest
-          source ingest/venv-ingest/bin/activate
-          pip install -r requirements.txt
+          python -m venv .venv-ingest
+          source .venv-ingest/bin/activate
+          pip install -r ingest/requirements.txt
 
       - name: Upload virtual environment
         uses: actions/upload-artifact@v3
