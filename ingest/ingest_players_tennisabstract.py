@@ -149,22 +149,17 @@ def main():
     player_tennisabstract_url_list = list(filter(lambda url: url not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
-    # drop temp table
-    drop_table(
-        connection=conn,
-        schema_name=temp_schema_name,
-        table_name=temp_table_name
-    )
-
     # loop through players
     # initialize chunk logic
     i = 0
     chunk_size = 1000
     for i in range(0, len(player_tennisabstract_url_list), chunk_size):
 
-        logging.info(f"Chunking: {i} to {i + chunk_size}")
-
         player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
+
+        chunk_size_start = i
+        chunk_size_end = min(i + chunk_size, len(player_url_chunk_list))
+        logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
         # initialize data list
         player_data_list = []
@@ -199,17 +194,25 @@ def main():
         player_data_df = pd.DataFrame(player_data_list)
 
         # create or replace temp table and insert
-        logging.info(f"Loading temp table {temp_schema_name}.{temp_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Loading temp table {temp_schema_name}.{temp_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
+        
+        # drop temp table
+        drop_table(
+            connection=conn,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
+        )
+        
         create_and_load_table(
             connection=conn,
             df=player_data_df,
             schema_name=temp_schema_name,
             table_name=temp_table_name
         )
-        logging.info(f"Loaded temp table {temp_schema_name}.{temp_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Loaded temp table {temp_schema_name}.{temp_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
 
         # create or alter target table
-        logging.info(f"Loading target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Loading target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
         create_or_alter_target_table(
             connection=conn,
             target_schema_name=target_schema_name,
@@ -218,10 +221,10 @@ def main():
             source_table_name=temp_table_name,
             drop_column_flag=alter_table_drop_column_flag
         )
-        logging.info(f"Loaded target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Loaded target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
 
         # merge into target table
-        logging.info(f"Merging records into target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Merging records into target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
         merge_target_table(
             connection=conn,
             target_schema_name=target_schema_name,
@@ -231,7 +234,7 @@ def main():
             unique_column_list=unique_column_list,
             delete_row_flag=merge_table_delete_row_flag
         )
-        logging.info(f"Merged records into target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        logging.info(f"Merged records into target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
 
 
     # close connection
