@@ -100,13 +100,19 @@ def get_table_column_list(
         WHERE {where_clause_join}
     """
     logging.info(f"Running select statement: {select_sql}")
-    
-    # store results as list of dicts
-    cursor.execute(select_sql)
-    results = cursor.fetchall()
-    select_list = [dict(zip(column_name_list, row)) for row in results]
 
-    return select_list or []
+    try:
+    
+        # store results as list of dicts
+        cursor.execute(select_sql)
+        results = cursor.fetchall()
+        select_list = [dict(zip(column_name_list, row)) for row in results]
+
+        return select_list
+
+    except Exception as e:
+        logging.error(f"Error executing statement: {e}")
+        return []
 
 def infer_sql_type(python_dtype: Any):
     """
