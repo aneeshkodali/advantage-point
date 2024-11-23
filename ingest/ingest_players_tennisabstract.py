@@ -120,11 +120,11 @@ def main():
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
-    hub_table_name = 'hub_player'
-    satellite_table_name = 'sat_player'
-    temp_table_name = 'player'
-    unique_column_id = 'player_id'
-    # unique_column_list = ['player_url',]
+    target_table_name = 'players_tennisabstract'
+    temp_table_name = target_table_name
+    unique_column_list = ['player_url',]
+    alter_table_drop_column_flag = False
+    merge_table_delete_row_flag = False
 
     # create connection
     conn = create_connection()
@@ -204,6 +204,32 @@ def main():
             table_name=temp_table_name
         )
         logging.info(f"Loaded temp table {temp_schema_name}.{temp_table_name} for chunk: {i} to {i + chunk_size}")
+
+        # create or alter target table
+        logging.info(f"Loading target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        create_or_alter_target_table(
+            connection=conn,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name,
+            drop_column_flag=alter_table_drop_column_flag
+        )
+        logging.info(f"Loaded target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+
+        # merge into target table
+        logging.info(f"Merging records into target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+        merge_target_table(
+            connection=conn,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name,
+            unique_column_list=unique_column_list,
+            delete_row_flag=source_config_dict['merge_table_delete_row_flag']
+        )
+        logging.info(f"Merged records into target table {target_schema_name}.{target_table_name} for chunk: {i} to {i + chunk_size}")
+
 
     # close connection
     conn.close()
