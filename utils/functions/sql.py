@@ -28,9 +28,11 @@ def create_connection():
     cursor = conn.cursor()
 
     # allow write operations
+    conn.autocommit = True
     cursor.execute("SET session characteristics AS transaction READ WRITE;")
     cursor.execute("SET default_transaction_read_only = 'off';")
 
+    # close cursor
     cursor.close()
     
     return conn
@@ -122,7 +124,13 @@ def get_table_column_list(
 
     except Exception as e:
         logging.info(f"Error executing statement: {e}")
+        # roll back transaction to reset its state
+        connection.rollback()
         return []
+    
+    finally:
+        # close cursor
+        cursor.close()
 
 def infer_sql_type(python_dtype: Any):
     """
@@ -168,6 +176,9 @@ def drop_table(
     logging.info(f"Running statement: {drop_table_sql}")
     cursor.execute(drop_table_sql)
     logging.info(f"Dropped table: {schema_name}.{table_name}")
+
+    # close cursor
+    cursor.close()
 
 def create_and_load_table(
     connection: psycopg2.connect,
