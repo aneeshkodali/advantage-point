@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from typing import (
     Dict,
     List
@@ -68,6 +69,9 @@ def get_player_tennisabstract_url_list_source(
     player_url_list = []
     for player in player_list:
 
+        if 'Seppi' not in player:
+            continue
+
         # each element in list is of format: (<gender>) <name>)
         regex_pattern = r'(?P<gender>\((.*?)\))\s*(?P<name>.*)'
         regex_match = re.search(regex_pattern, player)
@@ -101,30 +105,36 @@ def fetch_player_tennisabstract_data_scraped(
     response_var_list = ['nameparam', 'fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
     data_dict = {var: None for var in response_var_list}
 
-    try:
+    # try:
 
-        # get url page source
-        driver.get(player_url)
+    #     # get url page source
+    #     driver.get(player_url)
 
-        # Wait for the page to fully render (ensure JavaScript is executed)
-        WebDriverWait(driver, 10).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
-        )
-    except Exception as e:
-        logging.info(f"Page did not fully load for URL {player_url}: {e}")
-        return data_dict  # Return dictionary with keys but all values set to None
+    #     # Wait for the page to fully render (ensure JavaScript is executed)
+    #     WebDriverWait(driver, 10).until(
+    #         lambda d: d.execute_script("return document.readyState") == "complete"
+    #     )
+    # except Exception as e:
+    #     logging.info(f"Page did not fully load for URL {player_url}: {e}")
+    #     return data_dict  # Return dictionary with keys but all values set to None
 
-    # get the fully rendered page source
+    # # get the fully rendered page source
+    # response_page_source = driver.page_source
+
+    # for regex_var in response_var_list:
+    #     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
+    #     regex_var_match = re.search(regex_pattern, response_page_source)
+    #     if regex_var_match:
+    #         val = regex_var_match.group(regex_var)
+    #         data_dict[regex_var] = val
+
+    driver.get(player_url)
     response_page_source = driver.page_source
-
-    for regex_var in response_var_list:
-        regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-        logging.info(f"regex pattern: {regex_pattern}")
-        regex_var_match = re.search(regex_pattern, response_page_source)
-        logging.info(f"regex var match: {regex_var_match}")
-        if regex_var_match:
-            val = regex_var_match.group(regex_var)
-            data_dict[regex_var] = val
+    soup = BeautifulSoup(response_page_source, 'html.parser')
+    script_tag = soup.find('script', attrs={'language': 'JavaScript'})
+    logging.info(f"script tag: {script_tag}")
+    script_text = script_tag.text
+    logginf.info(f"script text: {script_text}")
 
     return data_dict
 
@@ -164,7 +174,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
-    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:10]
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
