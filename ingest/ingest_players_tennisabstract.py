@@ -138,17 +138,13 @@ def fetch_player_tennisabstract_data_scraped(
         # find the script tag
         script_tag = soup.find('script', attrs={'language': 'JavaScript'})
         script_text = script_tag.text
-        logging.info(f"script text: {script_text}")
 
         # loop through variable list and add values to dict
         for regex_var in response_var_list:
             regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-            logging.info(f"regex pattern: {regex_pattern}")
             regex_var_match = re.search(regex_pattern, script_text)
-            logging.info(f"regex var match: {regex_var_match}")
             if regex_var_match:
                 val = regex_var_match.group(regex_var)
-                logging.info(f"val: {val}")
                 data_dict[regex_var] = val
 
     except Exception as e:
