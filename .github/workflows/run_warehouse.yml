@@ -26,9 +26,7 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup/ingestion
-        with:
-          chrome-version: ${{ vars.CHROME_VERSION }}
-
+        
       - name: Set schema variables
         run: |
           # Start by setting the SCHEMA_INGESTION variable from the environment variable
@@ -74,14 +72,22 @@ jobs:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
       - name: Setup environment
-        id: setup-env
         uses: ./.github/actions/setup/ingestion
+
+      - name: Remove old Chrome if it exists
+        run: |
+          sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
+
+      - name: Install Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: ${{ vars.CHROME_VERSION }}
-      
+          install-chromedriver: true
+
       - name: Run ingestion script
         env:
-          CHROMEDRIVER_PATH: ${{ steps.setup-env.outputs.chromedriver-path }}
+          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
