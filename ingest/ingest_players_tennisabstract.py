@@ -1,9 +1,10 @@
-from bs4 import BeautifulSoup
 from typing import (
     Dict,
     List
 )
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from utils.functions.sql import (
     create_connection,
     drop_table,
@@ -96,26 +97,32 @@ def fetch_player_tennisabstract_data_scraped(
     Returns dictionary of player information from url
     """
 
-    # get url page source
-    driver.get(player_url)
+    # initialize data to be retrieved
+    response_var_list = ['fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
+    data_dict = {var: None for var in response_var_list}
+
+    try:
+
+        # get url page source
+        driver.get(player_url)
+
+        # Wait for the page to fully render (ensure JavaScript is executed)
+        WebDriverWait(driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
+    except Exception as e:
+        logging.info(f"Page did not fully load for URL {player_url}: {e}")
+        return data_dict  # Return dictionary with keys but all values set to None
+
+    # get the fully rendered page source
     response_page_source = driver.page_source
 
-    # get the <script language="JavaScript"> data
-    soup = BeautifulSoup(response_page_source, 'html.parser')
-    script_tag = soup.find('script', attrs={'language': 'JavaScript'})
-    script_content = script_tag.get_text()
-
-    # initialize data to be retrieved
-    data_dict = {}
-    response_var_list = ['fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
     for regex_var in response_var_list:
         regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-        regex_var_match = re.search(regex_pattern, script_content)
+        regex_var_match = re.search(regex_pattern, response_page_source)
         if regex_var_match:
             val = regex_var_match.group(regex_var)
-        else:
-            val = None
-        data_dict[regex_var] = val
+            data_dict[regex_var] = val
 
     return data_dict
 
