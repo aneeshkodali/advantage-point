@@ -162,7 +162,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
-    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:3]
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
