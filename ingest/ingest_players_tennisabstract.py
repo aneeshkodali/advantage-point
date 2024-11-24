@@ -134,13 +134,18 @@ def fetch_player_tennisabstract_data_scraped(
         driver.get(player_url)
         response_page_source = driver.page_source
         soup = BeautifulSoup(response_page_source, 'html.parser')
+        page_text = soup.get_text()
+        logging.info(f"page text: {page_text}")
 
         # loop through variable list and add values to dict
         for regex_var in response_var_list:
             regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-            regex_var_match = re.search(regex_pattern, soup.get_text())
+            logging.info(f"regex pattern: {regex_pattern}")
+            regex_var_match = re.search(regex_pattern, page_text)
+            logging.info(f"regex var match: {regex_var_match}")
             if regex_var_match:
                 val = regex_var_match.group(regex_var)
+                logging.info(f"val: {val}")
                 data_dict[regex_var] = val
 
     except Exception as e:
