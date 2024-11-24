@@ -92,9 +92,9 @@ def get_table_column_list(
     column_name_join = ', '.join(column_name_list)
     where_clause_join = ' AND '.join([f"({where_clause})" for where_clause in where_clause_list])
 
-    # create sql statement to retrieve urls
+    # create sql statement to retrieve distinct records for columns
     select_sql = f"""
-        SELECT
+        SELECT DISTINCT
             {column_name_join}
         FROM {schema_name}.{table_name}
         WHERE {where_clause_join}
