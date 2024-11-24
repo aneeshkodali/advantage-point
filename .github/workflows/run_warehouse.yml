@@ -47,6 +47,10 @@ jobs:
           echo "SCHEMA_INGESTION=$SCHEMA_INGESTION" >> $GITHUB_ENV
           echo "SCHEMA_INGESTION_TEMP=$SCHEMA_INGESTION_TEMP" >> $GITHUB_ENV
 
+          # Set outputs for the job
+          echo "::set-output name=schema_ingestion::$SCHEMA_INGESTION"
+          echo "::set-output name=schema_ingestion_temp::$SCHEMA_INGESTION_TEMP"
+
       - name: Create schemas
         env:
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
