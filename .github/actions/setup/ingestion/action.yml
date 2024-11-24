@@ -22,3 +22,6 @@ runs:
         with:
           chrome-version: ${{ vars.CHROME_VERSION }}
           install-chromedriver: true
+
+outputs:
+  chromedriver-path: ${{ steps.setup-chrome.outputs.chromedriver-path }}
