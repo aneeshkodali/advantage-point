@@ -165,11 +165,11 @@ def main():
         player_data_list = []
 
         # loop through chunk urls
-        for player_url_dict in player_url_chunk_list:
+        for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
 
             player_url = player_url_dict['player_url']
 
-            logging.info(f"Starting {i+1} of {len(player_tennisabstract_url_list)}.")
+            logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
             logging.info(f"player url: {player_url}")
 
             # initialize player data dictionary
