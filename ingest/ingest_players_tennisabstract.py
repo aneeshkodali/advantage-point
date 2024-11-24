@@ -7,7 +7,9 @@ from utils.functions.sql import (
     create_connection,
     drop_table,
     create_and_load_table,
+    create_or_alter_target_table,
     get_table_column_list,
+    merge_target_table,
 )
 from utils.functions.selenium_fn import create_chromedriver
 import ast
