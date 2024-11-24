@@ -4,24 +4,24 @@ runs:
   using: "composite"
   steps:
     - name: Set up python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
 
     - name: Install Dependencies
-        run: |
-          pip install -r ingest/requirements.txt
+      run: |
+        pip install -r ingest/requirements.txt
 
     - name: Remove old Chrome if it exists
-        run: |
-          sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
+      run: |
+        sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
 
     - name: Install chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: ${{ vars.CHROME_VERSION }}
-          install-chromedriver: true
+      id: setup-chrome
+      uses: browser-actions/setup-chrome@v1
+      with:
+        chrome-version: ${{ vars.CHROME_VERSION }}
+        install-chromedriver: true
 
 outputs:
   chromedriver-path: ${{ steps.setup-chrome.outputs.chromedriver-path }}
