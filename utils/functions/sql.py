@@ -15,6 +15,7 @@ def create_connection():
     Create sql connection
     """
 
+    # create connection
     conn = psycopg2.connect(
         dbname=os.getenv('DATABASE'),
         user=os.getenv('USER'),
@@ -22,6 +23,15 @@ def create_connection():
         host=os.getenv('HOST'),
         port=os.getenv('PORT')
     )
+
+    # create cursor
+    cursor = conn.cursor()
+
+    # allow write operations
+    cursor.execute("SET session characteristics AS transaction READ WRITE;")
+    cursor.execute("SET default_transaction_read_only = 'off';")
+
+    cursor.close()
     
     return conn
 
