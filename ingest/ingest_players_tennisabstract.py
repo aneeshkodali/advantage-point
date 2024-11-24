@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from typing import (
     Dict,
     List
@@ -99,25 +100,22 @@ def fetch_player_tennisabstract_data_scraped(
     driver.get(player_url)
     response_page_source = driver.page_source
 
+    # get the <script language="JavaScript"> data
+    soup = BeautifulSoup(response_page_source, 'html.parser')
+    script_tag = soup.find('script', attrs={'language': 'JavaScript'})
+    script_content = script_tag.get_text()
+
     # initialize data to be retrieved
     data_dict = {}
     response_var_list = ['fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
-    # for regex_var in response_var_list:
-    #     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*?);"
-    #     regex_var_match = re.search(regex_pattern, response_page_source)
-    #     if regex_var_match:
-    #         val = regex_var_match.group(regex_var)
-    #     else:
-    #         val = None
-    #     data_dict[regex_var] = val
-    # Use JavaScript execution to retrieve variables
-    for var_name in response_var_list:
-        try:
-            js_script = f"return typeof {var_name} !== 'undefined' ? {var_name} : null;"
-            val = driver.execute_script(js_script)
-        except Exception as e:
-            val = None  # Handle variables not found or errors in JS execution
-        data_dict[var_name] = val
+    for regex_var in response_var_list:
+        regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
+        regex_var_match = re.search(regex_pattern, script_content)
+        if regex_var_match:
+            val = regex_var_match.group(regex_var)
+        else:
+            val = None
+        data_dict[regex_var] = val
 
     return data_dict
 
@@ -157,7 +155,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
-    player_tennisabstract_url_list = player_tennisabstract_url_list_source
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:10]
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
