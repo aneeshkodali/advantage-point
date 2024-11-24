@@ -134,7 +134,14 @@ def fetch_player_tennisabstract_data_scraped(
     script_tag = soup.find('script', attrs={'language': 'JavaScript'})
     logging.info(f"script tag: {script_tag}")
     script_text = script_tag.text
-    logginf.info(f"script text: {script_text}")
+    logging.info(f"script text: {script_text}")
+    regex_var = 'nameparam'
+    regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
+    logging.info(f"regex pattern: {regex_pattern}")
+    regex_var_match = re.search(regex_pattern, script_text)
+    logging.info(f"regex var match: {regex_var_match}")
+    val = regex_var_match.group(regex_var)
+    logging.info(f"value: {val}")
 
     return data_dict
 
@@ -185,8 +192,8 @@ def main():
 
         player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
 
-        chunk_size_start = i
-        chunk_size_end = min(i + chunk_size, len(player_tennisabstract_url_list))
+        chunk_size_start = i + 1
+        chunk_size_end = min(chunk_size_start + chunk_size, len(player_tennisabstract_url_list))
         logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
         # initialize data list
