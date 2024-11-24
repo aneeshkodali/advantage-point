@@ -18,6 +18,9 @@ jobs:
   create-ingestion-schemas:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
+    outputs:
+      schema_ingestion: ${{ steps.set-schema-vars.outputs.schema_ingestion }}
+      schema_ingestion_temp: ${{ steps.set-schema-vars.outputs.schema_ingestion_temp }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,6 +31,7 @@ jobs:
         uses: ./.github/actions/setup/ingestion
         
       - name: Set schema variables
+        id: set-schema-vars
         run: |
           # Start by setting the SCHEMA_INGESTION variable from the environment variable
           SCHEMA_INGESTION="${{ vars.SCHEMA_INGESTION }}"
@@ -92,8 +96,8 @@ jobs:
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           PORT: ${{ vars.SUPABASE_PORT }}
-          SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
-          SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
+          SCHEMA_INGESTION: ${{ needs.create-ingestion-schemas.outputs.schema_ingestion }}
+          SCHEMA_INGESTION_TEMP: ${{ needs.create-ingestion-schemas.outputs.schema_ingestion_temp }}
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Running ingestion script: ${{ matrix.scripts.name }}"
