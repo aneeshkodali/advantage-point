@@ -8,7 +8,7 @@ from utils.functions.sql import (
     drop_table,
     create_and_load_table,
     create_or_alter_target_table,
-    get_table_column_list,
+    # get_table_column_list,
     merge_target_table,
 )
 from utils.functions.selenium_fn import create_chromedriver
@@ -149,14 +149,15 @@ def main():
     player_tennisabstract_url_list_source = get_player_tennisabstract_url_list_source(
         driver=driver
     )
-    player_tennisabstract_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=target_table_name,
-        column_name_list=unique_column_list,
-        where_clause_list=['audit_field_active_flag = TRUE']
-    )
-    player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
+    # player_tennisabstract_url_list_db = get_table_column_list(
+    #     connection=conn,
+    #     schema_name=target_schema_name,
+    #     table_name=target_table_name,
+    #     column_name_list=unique_column_list,
+    #     where_clause_list=['audit_field_active_flag = TRUE']
+    # )
+    # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
