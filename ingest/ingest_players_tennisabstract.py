@@ -116,7 +116,6 @@ def fetch_player_tennisabstract_data_scraped(
 
     # get the fully rendered page source
     response_page_source = driver.page_source
-    logging.info(f"Page source: {response_page_source}")
 
     for regex_var in response_var_list:
         regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
