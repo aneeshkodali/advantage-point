@@ -1,5 +1,10 @@
 name: Setup Ingestion Environment
 description: Setup environment and dependencies for ingestion layer
+inputs:
+  chrome-version
+    description: "Chrome version to install"
+    required: false
+    default: "latest"
 runs:
   using: "composite"
   steps:
@@ -9,10 +14,12 @@ runs:
         python-version: '3.x'
 
     - name: Install Dependencies
+      shell: bash
       run: |
         pip install -r ingest/requirements.txt
 
     - name: Remove old Chrome if it exists
+      shell: bash
       run: |
         sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
 
@@ -20,7 +27,7 @@ runs:
       id: setup-chrome
       uses: browser-actions/setup-chrome@v1
       with:
-        chrome-version: ${{ vars.CHROME_VERSION }}
+        chrome-version: ${{ inputs.chrome-version }}
         install-chromedriver: true
 
 outputs:

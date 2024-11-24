@@ -26,6 +26,8 @@ jobs:
 
       - name: Setup environment
         uses: ./.github/actions/setup/ingestion
+        with:
+          chrome-version: ${{ vars.CHROME_VERSION }}
 
       - name: Set schema variables
         run: |
@@ -74,6 +76,8 @@ jobs:
       - name: Setup environment
         id: setup-env
         uses: ./.github/actions/setup/ingestion
+        with:
+          chrome-version: ${{ vars.CHROME_VERSION }}
       
       - name: Run ingestion script
         env:
