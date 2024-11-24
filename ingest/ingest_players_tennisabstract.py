@@ -138,7 +138,7 @@ def fetch_player_tennisabstract_data_scraped(
         # loop through variable list and add values to dict
         for regex_var in response_var_list:
             regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-            regex_var_match = re.search(regex_pattern, response_page_source)
+            regex_var_match = re.search(regex_pattern, soup.get_text())
             if regex_var_match:
                 val = regex_var_match.group(regex_var)
                 data_dict[regex_var] = val
