@@ -192,8 +192,8 @@ def main():
 
         player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
 
-        chunk_size_start = i + 1
-        chunk_size_end = min(chunk_size_start + chunk_size, len(player_tennisabstract_url_list))
+        chunk_size_start = i
+        chunk_size_end = min(i + chunk_size, len(player_tennisabstract_url_list))
         logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
         # initialize data list
