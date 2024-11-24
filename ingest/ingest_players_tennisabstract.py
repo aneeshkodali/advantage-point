@@ -132,9 +132,7 @@ def fetch_player_tennisabstract_data_scraped(
     response_page_source = driver.page_source
     soup = BeautifulSoup(response_page_source, 'html.parser')
     script_tag = soup.find('script', attrs={'language': 'JavaScript'})
-    logging.info(f"script tag: {script_tag}")
     script_text = script_tag.text
-    logging.info(f"script text: {script_text}")
     regex_var = 'nameparam'
     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
     logging.info(f"regex pattern: {regex_pattern}")
