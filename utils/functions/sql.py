@@ -524,7 +524,7 @@ def merge_target_table(
 
 
     # create view to store comparison results
-    comparison_schema_name = temp_schema_name
+    comparison_schema_name = source_schema_name
     comparison_view_name = f"vw_compare_{target_table_name}"
     create_comparison_view_sql = f"""
         CREATE OR REPLACE VIEW {comparison_schema_name}.{comparison_view_name} AS
@@ -540,27 +540,27 @@ def merge_target_table(
                     SELECT
                         {unique_column_concat_str_w_source_alias} AS unique_id,
                         {non_unique_column_concat_str} AS compare_id
-                    FROM {temp_schema_name}.{temp_table_name}
+                    FROM {source_schema_name}.{source_table_name}
                 ),
                 joined AS (
                     SELECT
                         {target_alias}.unique_id AS target_unique_id,
                         {target_alias}.compare_id AS target_compare_id,
-                        {source_alias}.unique_id AS temp_unique_id,
-                        {source_alias}.compare_id AS temp_compare_id,
+                        {source_alias}.unique_id AS source_unique_id,
+                        {source_alias}.compare_id AS source_compare_id,
                         CASE
                             WHEN 1=1
                                 AND (target_unique_id IS NULL)
-                                AND (temp_unique_id IS NOT NULL) 
+                                AND (source_unique_id IS NOT NULL) 
                             THEN 'insert'
                             WHEN 1=1
-                                AND (temp_unique_id IS NULL)
+                                AND (source_unique_id IS NULL)
                                 AND (target_unique_id IS NOT NULL)
                                 AND ({delete_row_flag} = TRUE)
                             THEN 'delete'
                             WHEN 1=1
-                                AND (target_unique_id = temp_unique_id)
-                                AND (target_compare_id != temp_compare_id) 
+                                AND (target_unique_id = source_unique_id)
+                                AND (target_compare_id != source_compare_id) 
                             THEN 'update'
                             ELSE 'no change'
                         END AS row_comparison
@@ -616,7 +616,7 @@ def merge_target_table(
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
         LEFT JOIN {compare_schema_name}.{compare_view_name} AS compare
-        ON {unique_column_concat_str_w_source_alias} = compare.temp_unique_id
+        ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
         WHERE compare.row_comparison = 'update'
     """
     logging.info(f"Running update new statement: {update_new_sql}")
@@ -633,7 +633,7 @@ def merge_target_table(
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
         LEFT JOIN {compare_schema_name}.{compare_view_name} AS compare
-        ON {unique_column_concat_str_w_source_alias} = compare.temp_unique_id
+        ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
         WHERE compare.row_comparison = 'insert'
     """
     logging.info(f"Running insert statement: {insert_sql}")
