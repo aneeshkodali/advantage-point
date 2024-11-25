@@ -68,7 +68,7 @@ def get_player_tennisabstract_url_list_source(
     player_url_list = []
     for player in player_list:
 
-        if 'Williams' not in player:
+        if 'Errani' not in player:
             continue
 
         # each element in list is of format: (<gender>) <name>)
@@ -131,9 +131,11 @@ def fetch_player_tennisabstract_data_scraped(
 
         # get url page source
         driver.get(player_url)
-        WebDriverWait(driver, 10).until(
-            lambda d: d.execute_script("return document.readyState") == "complete"
-        )
+        # WebDriverWait(driver, 10).until(
+        #     lambda d: d.execute_script("return document.readyState") == "complete"
+        # )
+        raw_html = driver.execute_script("return document.documentElement.outerHTML;")[:1000]
+        logging.info(f"raw html: {raw_html}")
         response_page_source = driver.page_source
 
         # find the script tag
