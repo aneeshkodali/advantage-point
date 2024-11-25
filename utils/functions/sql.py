@@ -502,13 +502,8 @@ def merge_target_table(
     target_alias = 'tgt'
     source_alias = 'src'
 
-    # create SQL statement for unique column join
-    unique_column_join_on_str = ' AND '.join(
-        [f"{target_alias}.{col} = {source_alias}.{col}" for col in unique_column_list]
-    )
-
     # get list of columns from source table (for use in INSERT/UPDATE statements)
-    source_columns_sql = f"""
+    source_column_sql = f"""
         SELECT
             COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -516,86 +511,140 @@ def merge_target_table(
                 TABLE_SCHEMA = '{source_schema_name}'
             AND TABLE_NAME = '{source_table_name}'
     """
-    cursor.execute(source_columns_sql)
-    source_columns_list = [row[0] for row in cursor.fetchall()]
+    cursor.execute(source_column_sql)
+    source_column_list = [row[0] for row in cursor.fetchall()]
 
-    # create SQL statement for non-unique column join
-    non_unique_column_list = [col for col in source_columns_list if col not in unique_column_list]
-    non_unique_column_join_on_str = ' AND '.join(
-        [f"{target_alias}.{col} = {source_alias}.{col}" for col in non_unique_column_list]
-    )
-    non_unique_column_comparison_str = ' OR '.join(
-        [f"{target_alias}.{col} IS DISTINCT FROM {source_alias}.{col}" for col in non_unique_column_list]
-    )
+    # generate strings for unique/nonunique columns
+    source_column_str = ', '.join(source_column_list)
+    source_column_str_w_source_alias = ', '.join([f"{source_alias}.{col}" for col in source_column_list])
+    unique_column_concat_str_w_target_alias = "CONCAT_WS('_'," + ', '.join([f"{target_alias}.{col}" for col in unique_column_list]) + ")"
+    unique_column_concat_str_w_source_alias = "CONCAT_WS('_'," + ', '.join([f"{source_alias}.{col}" for col in unique_column_list]) + ")"
+    non_unique_column_list = list(filter(lambda col: col not in unique_column_list, source_column_list))
+    non_unique_column_concat_str = "CONCAT_WS('_'," + ', '.join(non_unique_column_list) + ")"
 
-    # delete
-    if delete_row_flag == True:
-        delete_sql = f"""
-            UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
-            SET
-                {target_alias}.audit_field_active_flag = FALSE,
-                {target_alias}.audit_field_record_type = 'delete',
-                {target_alias}.audit_field_end_datetime_utc = NOW(),
-                {target_alias}.audit_field_delete_datetime_utc = NOW()
-            FROM {source_schema_name}.{source_table_name} AS {source_alias}
-            WHERE
-                    ({target_alias}.audit_field_active_flag = TRUE)
-                AND ({unique_column_join_on_str})
-        """
-        logging.info(f"Running delete statement: {delete_sql}")
-        cursor.execute(delete_sql)
 
-    # update - deactivate active records and insert updated version of records
+    # create view to store comparison results
+    comparison_schema_name = temp_schema_name
+    comparison_view_name = f"vw_compare_{target_table_name}"
+    create_comparison_view_sql = f"""
+        CREATE OR REPLACE VIEW {comparison_schema_name}.{comparison_view_name} AS
+            WITH
+                {target_alias} AS (
+                    SELECT
+                        {unique_column_concat_str_w_target_alias} AS unique_id,
+                        {non_unique_column_concat_str} AS compare_id
+                    FROM {target_schema_name}.{target_table_name}
+                    WHERE audit_field_active_flag = TRUE
+                ),
+                {source_alias} AS (
+                    SELECT
+                        {unique_column_concat_str_w_source_alias} AS unique_id,
+                        {non_unique_column_concat_str} AS compare_id
+                    FROM {temp_schema_name}.{temp_table_name}
+                ),
+                joined AS (
+                    SELECT
+                        {target_alias}.unique_id AS target_unique_id,
+                        {target_alias}.compare_id AS target_compare_id,
+                        {source_alias}.unique_id AS temp_unique_id,
+                        {source_alias}.compare_id AS temp_compare_id,
+                        CASE
+                            WHEN 1=1
+                                AND (target_unique_id IS NULL)
+                                AND (temp_unique_id IS NOT NULL) 
+                            THEN 'insert'
+                            WHEN 1=1
+                                AND (temp_unique_id IS NULL)
+                                AND (target_unique_id IS NOT NULL)
+                                AND ({delete_row_flag} = TRUE)
+                            THEN 'delete'
+                            WHEN 1=1
+                                AND (target_unique_id = temp_unique_id)
+                                AND (target_compare_id != temp_compare_id) 
+                            THEN 'update'
+                            ELSE 'no change'
+                        END AS row_comparison
+                        FROM {target_alias}
+                        FULL OUTER JOIN {source_alias} USING (unique_id)
+                        WHERE row_comparison != 'no change'
+                )
+            SELECT * FROM joined
+    """
+    logging.info(f"Running create comparison view sql: {create_comparison_view_sql}")
+    cursor.execute(create_comparison_view_sql)
+
+    # handle deletes
+    delete_sql = f"""
+        UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
+        SET
+            audit_field_active_flag = FALSE,
+            audit_field_record_type = 'delete',
+            audit_field_end_datetime_utc = NOW(),
+            audit_field_delete_datetime_utc = NOW()
+        FROM {comparison_schema_name}.{comparison_view_name} AS compare
+        WHERE 1=1
+            AND ({target_alias}.audit_field_active_flag = TRUE)
+            AND {unique_column_concat_str_w_target_alias} = compare.target_unique_id
+            AND compare.row_comparison = 'delete'
+    """
+    logging.info(f"Running delete statement: {delete_sql}")
+    cursor.execute(delete_sql)
+
+    # handle updates
     update_existing_sql = f"""
         UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
         SET
                 audit_field_active_flag = FALSE,
                 audit_field_end_datetime_utc = NOW(),
                 audit_field_update_datetime_utc = NOW()
-            FROM {source_schema_name}.{source_table_name} AS {source_alias}
-            WHERE
-                    {target_alias}.audit_field_active_flag = TRUE
-                AND ({unique_column_join_on_str})
-                AND NOT ({non_unique_column_join_on_str})
-
+            FROM {comparison_schema_name}.{comparison_view_name} AS compare
+            WHERE 1=1
+                AND ({target_alias}.audit_field_active_flag = TRUE)
+                AND {unique_column_concat_str_w_target_alias} = compare.target_unique_id
+                AND compare.row_comparison = 'update'
     """
     logging.info(f"Running update existing statement: {update_existing_sql}")
     cursor.execute(update_existing_sql)
 
     update_new_sql = f"""
-        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_columns_list)}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        INSERT INTO {target_schema_name}.{target_table_name} ({source_column_str}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
         SELECT
-            {', '.join([f"{source_alias}.{col}" for col in source_columns_list])},
+            {source_column_str_w_source_alias},
             TRUE AS audit_field_active_flag,
             'update' AS audit_field_record_type,
             NOW() AS audit_field_start_datetime_utc,
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
-        LEFT JOIN {target_schema_name}.{target_table_name} AS {target_alias}
-        ON {unique_column_join_on_str}
-        WHERE
-                ({target_alias}.audit_field_active_flag = FALSE)
-            AND ({non_unique_column_comparison_str})
+        LEFT JOIN {compare_schema_name}.{compare_view_name} AS compare
+        ON {unique_column_concat_str_w_source_alias} = compare.temp_unique_id
+        WHERE compare.row_comparison = 'update'
     """
     logging.info(f"Running update new statement: {update_new_sql}")
     cursor.execute(update_new_sql)
 
-    # insert
+    # handle inserts
     insert_sql = f"""
-        INSERT INTO {target_schema_name}.{target_table_name} ({', '.join(source_columns_list)}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
+        INSERT INTO {target_schema_name}.{target_table_name} ({source_column_str}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
         SELECT
-            {', '.join([f"{source_alias}.{col}" for col in source_columns_list])},
+            {source_column_str_w_source_alias},
             TRUE AS audit_field_active_flag,
             'insert' AS audit_field_record_type,
             NOW() AS audit_field_start_datetime_utc,
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
-        LEFT JOIN {target_schema_name}.{target_table_name} AS {target_alias}
-        ON {unique_column_join_on_str}
-        WHERE {target_alias}.{unique_column_list[0]} IS NULL
+        LEFT JOIN {compare_schema_name}.{compare_view_name} AS compare
+        ON {unique_column_concat_str_w_source_alias} = compare.temp_unique_id
+        WHERE compare.row_comparison = 'insert'
     """
     logging.info(f"Running insert statement: {insert_sql}")
     cursor.execute(insert_sql)
+
+    # drop comparison view
+    drop_comparison_view_sql = f"""
+        DROP VIEW {comparison_schema_name}.{comparison_view_name}
+    """
+    logging.info(f"Running drop comparison view sql: {drop_comparison_view_sql}")
+    cursor.execute(drop_comparison_view_sql)
 
     # commit
     connection.commit()
