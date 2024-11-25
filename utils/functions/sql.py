@@ -526,9 +526,9 @@ def merge_target_table(
 
     # create view to store comparison results
     comparison_schema_name = source_schema_name
-    comparison_view_name = f"vw_compare_{target_table_name}"
-    create_comparison_view_sql = f"""
-        CREATE OR REPLACE VIEW {comparison_schema_name}.{comparison_view_name} AS
+    comparison_table_name = f"compare_{target_table_name}"
+    create_comparison_table_sql = f"""
+        CREATE TABLE IF NOT EXISTS {comparison_schema_name}.{comparison_table_name} AS
             WITH
                 {target_alias} AS (
                     SELECT
@@ -573,8 +573,8 @@ def merge_target_table(
             FROM joined
             WHERE row_comparison != 'no change'
     """
-    logging.info(f"Running create comparison view sql: {create_comparison_view_sql}")
-    cursor.execute(create_comparison_view_sql)
+    logging.info(f"Running create comparison table sql: {create_comparison_table_sql}")
+    cursor.execute(create_comparison_table_sql)
 
     # handle deletes
     delete_sql = f"""
@@ -584,7 +584,7 @@ def merge_target_table(
             audit_field_record_type = 'delete',
             audit_field_end_datetime_utc = NOW(),
             audit_field_delete_datetime_utc = NOW()
-        FROM {comparison_schema_name}.{comparison_view_name} AS compare
+        FROM {comparison_schema_name}.{comparison_table_name} AS compare
         WHERE 1=1
             AND ({target_alias}.audit_field_active_flag = TRUE)
             AND {unique_column_concat_str_w_target_alias} = compare.target_unique_id
@@ -600,7 +600,7 @@ def merge_target_table(
                 audit_field_active_flag = FALSE,
                 audit_field_end_datetime_utc = NOW(),
                 audit_field_update_datetime_utc = NOW()
-            FROM {comparison_schema_name}.{comparison_view_name} AS compare
+            FROM {comparison_schema_name}.{comparison_table_name} AS compare
             WHERE 1=1
                 AND ({target_alias}.audit_field_active_flag = TRUE)
                 AND {unique_column_concat_str_w_target_alias} = compare.target_unique_id
@@ -618,7 +618,7 @@ def merge_target_table(
             NOW() AS audit_field_start_datetime_utc,
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
-        LEFT JOIN {comparison_schema_name}.{comparison_view_name} AS compare
+        LEFT JOIN {comparison_schema_name}.{comparison_table_name} AS compare
         ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
         WHERE compare.row_comparison = 'update'
     """
@@ -635,19 +635,19 @@ def merge_target_table(
             NOW() AS audit_field_start_datetime_utc,
             NOW() AS audit_field_insert_datetime_utc
         FROM {source_schema_name}.{source_table_name} AS {source_alias}
-        LEFT JOIN {comparison_schema_name}.{comparison_view_name} AS compare
+        LEFT JOIN {comparison_schema_name}.{comparison_table_name} AS compare
         ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
         WHERE compare.row_comparison = 'insert'
     """
     logging.info(f"Running insert statement: {insert_sql}")
     cursor.execute(insert_sql)
 
-    # drop comparison view
-    drop_comparison_view_sql = f"""
-        DROP VIEW {comparison_schema_name}.{comparison_view_name}
+    # drop comparison table
+    drop_comparison_table_sql = f"""
+        DROP TABLE {comparison_schema_name}.{comparison_table_name}
     """
-    logging.info(f"Running drop comparison view sql: {drop_comparison_view_sql}")
-    cursor.execute(drop_comparison_view_sql)
+    logging.info(f"Running drop comparison table sql: {drop_comparison_table_sql}")
+    cursor.execute(drop_comparison_table_sql)
 
     # commit
     connection.commit()
