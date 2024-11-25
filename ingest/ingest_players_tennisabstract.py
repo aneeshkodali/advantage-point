@@ -4,7 +4,6 @@ from typing import (
     List
 )
 from selenium import webdriver
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from utils.functions.sql import (
     create_connection,
@@ -132,10 +131,13 @@ def fetch_player_tennisabstract_data_scraped(
 
         # get url page source
         driver.get(player_url)
+        WebDriverWait(driver, 10).until(
+            lambda d: d.execute_script("return document.readyState") == "complete"
+        )
         response_page_source = driver.page_source
-        soup = BeautifulSoup(response_page_source, 'html.parser')
 
         # find the script tag
+        soup = BeautifulSoup(response_page_source, 'html.parser')
         script_tag = soup.find('script', attrs={'language': 'JavaScript'})
         script_text = script_tag.text
 
