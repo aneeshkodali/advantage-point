@@ -551,17 +551,17 @@ def merge_target_table(
                         {source_alias}.compare_id AS source_compare_id,
                         CASE
                             WHEN 1=1
-                                AND (target_unique_id IS NULL)
-                                AND (source_unique_id IS NOT NULL) 
+                                AND ({target_alias}.unique_id IS NULL)
+                                AND ({source_alias}.unique_id IS NOT NULL) 
                             THEN 'insert'
                             WHEN 1=1
-                                AND (source_unique_id IS NULL)
-                                AND (target_unique_id IS NOT NULL)
+                                AND ({source_alias}.unique_id IS NULL)
+                                AND ({target_alias}.unique_id IS NOT NULL)
                                 AND ({delete_row_flag} = TRUE)
                             THEN 'delete'
                             WHEN 1=1
-                                AND (target_unique_id = source_unique_id)
-                                AND (target_compare_id != source_compare_id) 
+                                AND ({target_alias}.unique_id = {source_alias}.unique_id)
+                                AND ({target_alias}.compare_id != {source_alias}.compare_id) 
                             THEN 'update'
                             ELSE 'no change'
                         END AS row_comparison
