@@ -104,56 +104,66 @@ def fetch_player_tennisabstract_data_scraped(
     response_var_list = ['nameparam', 'fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
     data_dict = {var: None for var in response_var_list}
 
+    # navigate to the page
+    driver.get(player_url)
+
+    # get variables
+    for var in response_var_list:
+        try:
+            val = driver.execute_script(f"return {var};")
+            data_dict[var] = val
+        except Exception as e:
+            logging.info(f"Error obtaining value for {var}: {e}")
+
+    # # try:
+
+    # #     # get url page source
+    # #     driver.get(player_url)
+
+    # #     # Wait for the page to fully render (ensure JavaScript is executed)
+    # #     WebDriverWait(driver, 10).until(
+    # #         lambda d: d.execute_script("return document.readyState") == "complete"
+    # #     )
+    # # except Exception as e:
+    # #     logging.info(f"Page did not fully load for URL {player_url}: {e}")
+    # #     return data_dict  # Return dictionary with keys but all values set to None
+
+    # # # get the fully rendered page source
+    # # response_page_source = driver.page_source
+
+    # # for regex_var in response_var_list:
+    # #     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
+    # #     regex_var_match = re.search(regex_pattern, response_page_source)
+    # #     if regex_var_match:
+    # #         val = regex_var_match.group(regex_var)
+    # #         data_dict[regex_var] = val
+
     # try:
 
     #     # get url page source
     #     driver.get(player_url)
+    #     # WebDriverWait(driver, 10).until(
+    #     #     lambda d: d.execute_script("return document.readyState") == "complete"
+    #     # )
+        
+    #     response_page_source = driver.page_source
 
-    #     # Wait for the page to fully render (ensure JavaScript is executed)
-    #     WebDriverWait(driver, 10).until(
-    #         lambda d: d.execute_script("return document.readyState") == "complete"
-    #     )
+    #     # find the script tag
+    #     soup = BeautifulSoup(response_page_source, 'html.parser')
+    #     script_tag = soup.find('script', attrs={'language': 'JavaScript'})
+    #     script_text = script_tag.text
+
+    #     # loop through variable list and add values to dict
+    #     for regex_var in response_var_list:
+    #         regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
+    #         regex_var_match = re.search(regex_pattern, script_text)
+    #         if regex_var_match:
+    #             val = regex_var_match.group(regex_var)
+    #             data_dict[regex_var] = val
+
     # except Exception as e:
-    #     logging.info(f"Page did not fully load for URL {player_url}: {e}")
-    #     return data_dict  # Return dictionary with keys but all values set to None
-
-    # # get the fully rendered page source
-    # response_page_source = driver.page_source
-
-    # for regex_var in response_var_list:
-    #     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-    #     regex_var_match = re.search(regex_pattern, response_page_source)
-    #     if regex_var_match:
-    #         val = regex_var_match.group(regex_var)
-    #         data_dict[regex_var] = val
-
-    try:
-
-        # get url page source
-        driver.get(player_url)
-        # WebDriverWait(driver, 10).until(
-        #     lambda d: d.execute_script("return document.readyState") == "complete"
-        # )
-        raw_html = driver.execute_script("return document.documentElement.outerHTML;")[:1000]
-        logging.info(f"raw html: {raw_html}")
-        response_page_source = driver.page_source
-
-        # find the script tag
-        soup = BeautifulSoup(response_page_source, 'html.parser')
-        script_tag = soup.find('script', attrs={'language': 'JavaScript'})
-        script_text = script_tag.text
-
-        # loop through variable list and add values to dict
-        for regex_var in response_var_list:
-            regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-            regex_var_match = re.search(regex_pattern, script_text)
-            if regex_var_match:
-                val = regex_var_match.group(regex_var)
-                data_dict[regex_var] = val
-
-    except Exception as e:
-        logging.info(f"Error encountered when getting data for {player_url}: {e}")
-        return data_dict
+    #     logging.info(f"Error encountered when getting data for {player_url}: {e}")
+    #     return data_dict
 
     return data_dict
 
@@ -193,7 +203,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
-    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:20]
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:30]
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
