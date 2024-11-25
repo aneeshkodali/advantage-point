@@ -567,9 +567,11 @@ def merge_target_table(
                         END AS row_comparison
                         FROM {target_alias}
                         FULL OUTER JOIN {source_alias} USING (unique_id)
-                        WHERE row_comparison != 'no change'
                 )
-            SELECT * FROM joined
+            SELECT
+                *
+            FROM joined
+            WHERE row_comparison != 'no change'
     """
     logging.info(f"Running create comparison view sql: {create_comparison_view_sql}")
     cursor.execute(create_comparison_view_sql)
