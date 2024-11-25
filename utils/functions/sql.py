@@ -517,6 +517,7 @@ def merge_target_table(
     # generate strings for unique/nonunique columns
     source_column_str = ', '.join(source_column_list)
     source_column_str_w_source_alias = ', '.join([f"{source_alias}.{col}" for col in source_column_list])
+    unique_column_concat_str = "CONCAT_WS('_'," + ', '.join(unique_column_list) + ")"
     unique_column_concat_str_w_target_alias = "CONCAT_WS('_'," + ', '.join([f"{target_alias}.{col}" for col in unique_column_list]) + ")"
     unique_column_concat_str_w_source_alias = "CONCAT_WS('_'," + ', '.join([f"{source_alias}.{col}" for col in unique_column_list]) + ")"
     non_unique_column_list = list(filter(lambda col: col not in unique_column_list, source_column_list))
@@ -531,14 +532,14 @@ def merge_target_table(
             WITH
                 {target_alias} AS (
                     SELECT
-                        {unique_column_concat_str_w_target_alias} AS unique_id,
+                        {unique_column_concat_str} AS unique_id,
                         {non_unique_column_concat_str} AS compare_id
                     FROM {target_schema_name}.{target_table_name}
                     WHERE audit_field_active_flag = TRUE
                 ),
                 {source_alias} AS (
                     SELECT
-                        {unique_column_concat_str_w_source_alias} AS unique_id,
+                        {unique_column_concat_str} AS unique_id,
                         {non_unique_column_concat_str} AS compare_id
                     FROM {source_schema_name}.{source_table_name}
                 ),
