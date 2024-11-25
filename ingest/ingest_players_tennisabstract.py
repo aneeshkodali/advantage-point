@@ -68,9 +68,6 @@ def get_player_tennisabstract_url_list_source(
     player_url_list = []
     for player in player_list:
 
-        if 'Errani' not in player:
-            continue
-
         # each element in list is of format: (<gender>) <name>)
         regex_pattern = r'(?P<gender>\((.*?)\))\s*(?P<name>.*)'
         regex_match = re.search(regex_pattern, player)
