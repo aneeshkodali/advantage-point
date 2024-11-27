@@ -13,6 +13,9 @@ from utils.functions.sql import (
     # get_table_column_list,
     merge_target_table,
 )
+from utils.functions.scrape import (
+    scrape_page_source_var
+)
 from utils.functions.selenium_fn import create_chromedriver
 import ast
 import logging
@@ -59,9 +62,13 @@ def get_player_tennisabstract_url_list_source(
 
     # retrieve list-like string
     regex_var = 'playerlist'
-    regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*?);"
-    regex_var_match = re.search(regex_pattern, response_page_source)
-    val = regex_var_match.group(regex_var)
+    # regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*?);"
+    # regex_var_match = re.search(regex_pattern, response_page_source)
+    # val = regex_var_match.group(regex_var)
+    val = scrape_page_source_var(
+        page_source=response_page_source,
+        var=regex_var
+    )
     player_list = ast.literal_eval(val)
 
     # loop through each element and create url
@@ -104,14 +111,32 @@ def fetch_player_tennisabstract_data_scraped(
     # navigate to the page
     driver.get(player_url)
 
+    # wait for the page to fully render (ensure JavaScript is executed)
+    WebDriverWait(driver, 10).until(
+        lambda d: d.execute_script("return document.readyState") == "complete"
+    )
+
+    # get the fully rendered page source
+    response_page_source = driver.page_source
+
+
     # get variables
     for var in response_var_list:
+        # try:
+        #     val = driver.execute_script(f"return {var};")
+        #     data_dict[var] = val
+        # except Exception as e:
+        #     logging.info(f"Error obtaining value for {var}: {e}")
+
         try:
-            val = driver.execute_script(f"return {var};")
+            val = scrape_page_source_var(
+                page_source=response_page_source,
+                var=var
+            )
             logging.info(f"{var}: {val}")
-            data_dict[var] = val
+            data_dict[regex_var] = val
         except Exception as e:
-            logging.info(f"Error obtaining value for {var}: {e}")
+            logging.info(f"Error encountered when getting data for {player_url}: {e}")
 
     # # try:
 
