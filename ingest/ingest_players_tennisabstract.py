@@ -108,6 +108,7 @@ def fetch_player_tennisabstract_data_scraped(
     for var in response_var_list:
         try:
             val = driver.execute_script(f"return {var};")
+            logging.info(f"{var}: {val}")
             data_dict[var] = val
         except Exception as e:
             logging.info(f"Error obtaining value for {var}: {e}")
