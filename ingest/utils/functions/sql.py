@@ -696,7 +696,7 @@ def ingest_df_to_sql(
     
     # create temp table
     create_and_load_table(
-        connection=conn,
+        connection=connection,
         df=df,
         schema_name=temp_schema_name,
         table_name=temp_table_name
@@ -704,7 +704,7 @@ def ingest_df_to_sql(
 
     # create or alter target table
     create_or_alter_target_table(
-        connection=conn,
+        connection=connection,
         target_schema_name=target_schema_name,
         target_table_name=target_table_name,
         source_schema_name=temp_schema_name,
@@ -714,7 +714,7 @@ def ingest_df_to_sql(
 
     # merge into target table
     merge_target_table(
-        connection=conn,
+        connection=connection,
         target_schema_name=target_schema_name,
         target_table_name=target_table_name,
         source_schema_name=temp_schema_name,
