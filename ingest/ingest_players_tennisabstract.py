@@ -260,8 +260,8 @@ def main():
                 executor.submit(
                     get_player_tennisabstract_data,
                     driver,
-                    player_url_dict['player_url'] for player_url_dict in player_url_chunk_list
-                )
+                    player_url_dict['player_url']
+                ): player_url_dict for player_url_dict in player_url_chunk_list
             }
 
             for future in futures:
