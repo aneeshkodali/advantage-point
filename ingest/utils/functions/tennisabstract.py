@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from ingest.utils.functions.scrape import (
-    scrape_page_source_var
+    make_request,
+    scrape_page_source_var,
 )
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -23,11 +24,13 @@ def get_match_url_list(
 
     # retrieve url page source
     match_list_url = 'https://www.tennisabstract.com/charting/'
-    driver.get(match_list_url)
-    response_page_source = driver.page_source
+    # driver.get(match_list_url)
+    # response_page_source = driver.page_source
+    response = make_request(url=match_list_url)
 
     # parse page source
-    soup = BeautifulSoup(response_page_source, 'html.parser')
+    # soup = BeautifulSoup(response_page_source, 'html.parser')
+    soup = BeautifulSoup(response.text, 'html.parser')
     # links are hrefs in last <p>
     p_tag_match = soup.find_all('p')[-1]
     match_href_list = [f"https://www.tennisabstract.com/charting/{a['href']}" for a in p_tag_match.find_all('a', href=True)]
@@ -95,16 +98,19 @@ def get_match_data_scraped(
         try:
 
             # navigate to the page
-            driver.get(match_url)
+            # driver.get(match_url)
+            response = make_request(url=match_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            tbody = soup.find('tbody')
 
             # wait for the page to fully render
-            WebDriverWait(driver, 10).until(
-                lambda d: d.execute_script("return document.readyState") == "complete"
-            )
+            # WebDriverWait(driver, 10).until(
+            #     lambda d: d.execute_script("return document.readyState") == "complete"
+            # )
 
             # get the match title (<h2>)
             try:
-                match_title = driver.find_element(By.XPATH, "//tbody//h2").text
+                match_title = tbody.find('h2').text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
                 match_title = None
@@ -112,7 +118,7 @@ def get_match_data_scraped(
 
             # get the match result (b)
             try:
-                match_result = driver.find_element(By.XPATH, "//tbody//b").text
+                match_result = tbody.find('b').text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_result: {e}")
                 match_result = None
