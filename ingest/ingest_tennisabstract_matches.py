@@ -11,6 +11,8 @@ from ingest.utils.functions.tennisabstract import (
 import logging
 import os
 import pandas as pd
+import random
+import time
 
 
 def main():
@@ -81,6 +83,7 @@ def main():
                 retries=3,
                 delay=5
             )
+            time.sleep(random.uniform(1, 5))
 
             match_data_list.append(match_data_dict)
             logging.info(f"Fetched data for: {match_url}")
