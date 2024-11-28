@@ -163,6 +163,41 @@ def fetch_player_tennisabstract_data_scraped(
     logging.info(f"Returning empty dictionary")
     return {}
 
+def fetch_player_tennisabstract_data(
+    driver: webdriver,
+    player_url: str
+) -> Dict:
+    """
+    Arguments:
+    - driver: Selenium webdriver
+    - player_url: player link
+
+    Returns dictionary of player information from url
+    """
+
+    # initialize player data dictionary
+    player_data_dict = {}
+    player_data_dict['player_url'] = player_url
+    player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
+
+    # get player data from webscrape
+    player_data_dict_scraped = fetch_player_tennisabstract_data_scraped(
+        driver=driver,
+        player_url=player_url,
+        retries=3,
+        delay=5
+    )
+
+    # combine dictionaries
+    player_data_dict = {
+        **player_data_dict,
+        **player_data_dict_scraped,
+    }
+
+    return player_data_dict
+
+
+
 def main():
     
     # set logging
@@ -225,24 +260,10 @@ def main():
             logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
             logging.info(f"player url: {player_url}")
 
-            # initialize player data dictionary
-            player_data_dict = {}
-            player_data_dict['player_url'] = player_url
-            player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
-
-            # get player data from webscrape
-            player_data_dict_scraped = fetch_player_tennisabstract_data_scraped(
+            player_data_dict = fetch_player_tennisabstract_data(
                 driver=driver,
-                player_url=player_url,
-                retries=3,
-                delay=5
+                player_url=player_url
             )
-
-            # combine dictionaries
-            player_data_dict = {
-                **player_data_dict,
-                **player_data_dict_scraped,
-            }
 
             player_data_list.append(player_data_dict)
             logging.info(f"Fetched data for: {player_url}")
