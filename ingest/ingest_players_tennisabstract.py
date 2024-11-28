@@ -77,6 +77,9 @@ def get_player_tennisabstract_url_list_source(
     player_url_list = []
     for player in player_list:
 
+        if 'Seppi' not in player:
+            continue
+
         # each element in list is of format: (<gender>) <name>)
         regex_pattern = r'(?P<gender>\((.*?)\))\s*(?P<name>.*)'
         regex_match = re.search(regex_pattern, player)
@@ -123,6 +126,10 @@ def fetch_player_tennisabstract_data_scraped(
     # response_page_source = driver.page_source
     script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
     script_content = script_tag.get_attribute("innerHTML")
+
+    logging.info(f"script_content: {script_content[:500]}")
+
+    
 
 
     # get variables
