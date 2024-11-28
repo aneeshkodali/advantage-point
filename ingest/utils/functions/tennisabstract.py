@@ -101,8 +101,8 @@ def get_match_data_scraped(
             # driver.get(match_url)
             response = make_request(url=match_url)
             soup = BeautifulSoup(response.text, 'html.parser')
-            logging.info(f"Soup: {soup}")
             tbody = soup.find('tbody')
+            logging.info(f"tbody: {tbody[:500]}")
 
             # wait for the page to fully render
             # WebDriverWait(driver, 10).until(
@@ -127,7 +127,7 @@ def get_match_data_scraped(
 
             # check if all values in dict are None -> return empty dict
             if all(value is None for value in match_dict.values()):
-                logging.info(f"All values None for {match_url}. Returning empty dictionary.")
+                logging.info(f"All values None for {match_url} - Returning empty dictionary.")
                 return {}
 
             # return dictionary if data successfully extracted
