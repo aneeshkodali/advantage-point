@@ -9,6 +9,7 @@ from typing import (
     Dict,
     List,
 )
+import logging
 
 def get_match_url_list(
     driver: webdriver
@@ -218,6 +219,7 @@ def get_match_point_data(
 
                 # loop through tr list
                 for index, tr in enumerate(pointlog_tr_list):
+                    logging.info(f"Point {index+1} out of {len(pointlog_tr_list)}")
                     tr_td_list = tr.find_all('td')
                     point_data = {
                         'match_url': match_url,
