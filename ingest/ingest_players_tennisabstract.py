@@ -116,19 +116,26 @@ def fetch_player_tennisabstract_data_scraped(
     # navigate to the page
     driver.get(player_url)
 
-    # wait for the page to fully render (ensure JavaScript is executed)
-    WebDriverWait(driver, 20).until(
-        # lambda d: d.execute_script("return document.readyState") == "complete"
-        EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
-    )
+    # try to render page
+    try:
 
-    # get the fully rendered page source
-    # response_page_source = driver.page_source
-    script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
-    script_content = script_tag.get_attribute("innerHTML")
+        # wait for the page to fully render (ensure JavaScript is executed)
+        WebDriverWait(driver, 20).until(
+            # lambda d: d.execute_script("return document.readyState") == "complete"
+            EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
+        )
 
-    logging.info(f"script_content: {script_content[:500]}")
+        # get the fully rendered page source
+        # response_page_source = driver.page_source
+        script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
+        script_content = script_tag.get_attribute("innerHTML")
 
+        logging.info(f"script_content: {script_content[:500]}")
+
+    # return empty dict if error
+    except Exception as e:
+        logging.info(f"Failed to load page source for {player_url}: {e}")
+        return {}
 
 
 
@@ -150,6 +157,10 @@ def fetch_player_tennisabstract_data_scraped(
             data_dict[var] = val
         except Exception as e:
             logging.info(f"Error encountered when getting data for variable {var}: {e}")
+
+    # check if all values in dict are None -> return empty dict
+    if all(value is None for value in data_dict.values()):
+        return {}
 
     # # try:
 
