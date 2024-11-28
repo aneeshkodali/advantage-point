@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 from typing import (
     Dict,
     List
@@ -254,38 +253,21 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # use threading for parallel processing within chunk
-        with ThreadPoolExecutor(max_threads) as executor:
-            futures = {
-                executor.submit(
-                    get_player_tennisabstract_data,
-                    driver,
-                    player_url_dict['player_url']
-                ): player_url_dict for player_url_dict in player_url_chunk_list
-            }
+        # loop through chunk urls
+        for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
 
-            for future in futures:
-                try:
-                    result = future.result()
-                    player_data_list.append(result)
-                except Exception as e:
-                    logging.info(f"Error processing: {e}")
+            player_url = player_url_dict['player_url']
 
-        # # loop through chunk urls
-        # for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
+            logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
+            logging.info(f"player url: {player_url}")
 
-        #     player_url = player_url_dict['player_url']
+            player_data_dict = get_player_tennisabstract_data(
+                driver=driver,
+                player_url=player_url
+            )
 
-        #     logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
-        #     logging.info(f"player url: {player_url}")
-
-        #     player_data_dict = get_player_tennisabstract_data(
-        #         driver=driver,
-        #         player_url=player_url
-        #     )
-
-        #     player_data_list.append(player_data_dict)
-        #     logging.info(f"Fetched data for: {player_url}")
+            player_data_list.append(player_data_dict)
+            logging.info(f"Fetched data for: {player_url}")
         
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
