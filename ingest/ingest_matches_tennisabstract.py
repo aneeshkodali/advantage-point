@@ -2,8 +2,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from utils.functions.selenium_fn import create_chromedriver
-from utils.functions.sql import (
+from ingest.utils.functions.selenium_fn import create_chromedriver
+from ingest.utils.functions.sql import (
     create_connection,
     drop_table,
     create_and_load_table,
