@@ -1,29 +1,16 @@
-# from bs4 import BeautifulSoup
-# from selenium import webdriver
 from ingest.utils.functions.selenium_fn import create_chromedriver
 from ingest.utils.functions.sql import (
     create_connection,
-    drop_table,
-    create_and_load_table,
-    create_or_alter_target_table,
     # get_table_column_list,
-    merge_target_table,
+    ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract import (
     get_match_url_list,
     get_match_data,
 )
-# from typing import (
-#     Dict,
-#     List,
-# )
 import logging
 import os
 import pandas as pd
-
-
-
-
 
 
 def main():
@@ -99,49 +86,18 @@ def main():
         # create dataframe
         match_data_df = pd.DataFrame(match_data_list)
 
-        # create or replace temp table and insert
-        logging.info(f"Loading temp table {temp_schema_name}.{temp_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-        
-        # drop temp table
-        drop_table(
-            connection=conn,
-            schema_name=temp_schema_name,
-            table_name=temp_table_name
-        )
-        
-        create_and_load_table(
+        # ingest dataframe to sql
+        ingest_df_to_sql(
             connection=conn,
             df=match_data_df,
-            schema_name=temp_schema_name,
-            table_name=temp_table_name
-        )
-        logging.info(f"Loaded temp table {temp_schema_name}.{temp_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-
-        # create or alter target table
-        logging.info(f"Loading target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-        create_or_alter_target_table(
-            connection=conn,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
-            source_schema_name=temp_schema_name,
-            source_table_name=temp_table_name,
-            drop_column_flag=alter_table_drop_column_flag
-        )
-        logging.info(f"Loaded target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-
-        # merge into target table
-        logging.info(f"Merging records into target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-        merge_target_table(
-            connection=conn,
-            target_schema_name=target_schema_name,
-            target_table_name=target_table_name,
-            source_schema_name=temp_schema_name,
-            source_table_name=temp_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=temp_table_name,
             unique_column_list=unique_column_list,
+            drop_column_flag=alter_table_drop_column_flag,
             delete_row_flag=merge_table_delete_row_flag
         )
-        logging.info(f"Merged records into target table {target_schema_name}.{target_table_name} for chunk: {chunk_size_start} to {chunk_size_end}")
-
 
     # close connection
     conn.close()

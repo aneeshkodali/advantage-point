@@ -654,3 +654,71 @@ def merge_target_table(
 
     # close cursor
     cursor.close()
+
+def ingest_df_to_sql(
+    connection: psycopg2.connect,
+    df: pd.DataFrame,
+    target_schema_name: str,
+    target_table_name: str,
+    temp_schema_name: str,
+    temp_table_name: str,
+    unique_column_list: List[str],
+    drop_column_flag: bool,
+    delete_row_flag: bool
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - df: Pandas dataframe
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - temp_schema_name: Schema name for temp table
+    - temp_table_name: Temp table name
+    - unique_column_list: List of fields that define uniqueness
+    - drop_column_flag: True/false flag to determine column deletion from target table (true)
+    - delete_row_flag: True/false flag to determine row deletion from target table (true)
+
+    Ingests dataframe data into database:
+    - create temp table using dataframe data
+    - create or alter target table using temp table schema
+    - merge records from temp table into target table, handling inserts, (type II) updates, deletes
+    """
+
+    # convert null values to SQL-compatible null values
+    df = df.where(pd.notnull(df), None)
+    
+    # drop temp table
+    drop_table(
+        connection=connection,
+        schema_name=temp_schema_name,
+        table_name=temp_table_name
+    )
+    
+    # create temp table
+    create_and_load_table(
+        connection=conn,
+        df=df,
+        schema_name=temp_schema_name,
+        table_name=temp_table_name
+    )
+
+    # create or alter target table
+    create_or_alter_target_table(
+        connection=conn,
+        target_schema_name=target_schema_name,
+        target_table_name=target_table_name,
+        source_schema_name=temp_schema_name,
+        source_table_name=temp_table_name,
+        drop_column_flag=drop_column_flag
+    )
+
+    # merge into target table
+    merge_target_table(
+        connection=conn,
+        target_schema_name=target_schema_name,
+        target_table_name=target_table_name,
+        source_schema_name=temp_schema_name,
+        source_table_name=temp_table_name,
+        unique_column_list=unique_column_list,
+        delete_row_flag=delete_row_flag
+    )
