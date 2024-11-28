@@ -27,6 +27,7 @@ def get_match_url_list(
     # driver.get(match_list_url)
     # response_page_source = driver.page_source
     response = make_request(url=match_list_url)
+    logging.info(f"Response text: {response.text[:500]}")
 
     # parse page source
     # soup = BeautifulSoup(response_page_source, 'html.parser')
