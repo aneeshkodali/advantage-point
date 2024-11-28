@@ -5,7 +5,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from utils.functions.selenium_fn import create_chromedriver
 from utils.functions.sql import (
     create_connection,
-    get_table_column_list,
+    drop_table,
+    create_and_load_table,
+    create_or_alter_target_table,
+    # get_table_column_list,
+    merge_target_table,
 )
 from typing import (
     Dict,
@@ -186,14 +190,15 @@ def main():
     match_tennisabstract_url_list_source = get_match_tennisabstract_url_list_source(
         driver=driver
     )
-    match_tennisabstract_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=target_table_name,
-        column_name_list=unique_column_list,
-        where_clause_list=['audit_field_active_flag = TRUE']
-    )
-    match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
+    # match_tennisabstract_url_list_db = get_table_column_list(
+    #     connection=conn,
+    #     schema_name=target_schema_name,
+    #     table_name=target_table_name,
+    #     column_name_list=unique_column_list,
+    #     where_clause_list=['audit_field_active_flag = TRUE']
+    # )
+    # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
+    match_tennisabstract_url_list = match_tennisabstract_url_list_source[:100]
     logging.info(f"Found {len(match_tennisabstract_url_list)} matches.")
 
     # loop through matches
