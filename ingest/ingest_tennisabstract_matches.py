@@ -51,7 +51,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
-    match_url_list = match_url_list_tennisabstract[:100]
+    match_url_list = match_url_list_tennisabstract[:5]
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches

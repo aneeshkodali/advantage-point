@@ -100,7 +100,10 @@ def get_match_data_scraped(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
+            logging.info(f"Response: {response}")
+            logging.info(f"Response text: {response.text[:400]}")
             soup = BeautifulSoup(response.text, 'html.parser')
+            logging.info(f"Soup: {soup}")
             tbody = soup.find('tbody')
 
             # wait for the page to fully render
