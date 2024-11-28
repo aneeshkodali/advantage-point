@@ -1,4 +1,7 @@
 from bs4 import BeautifulSoup
+from ingest.utils.functions.scrape import (
+    scrape_page_source_var
+)
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -75,6 +78,8 @@ def get_match_data_scraped(
     Arguments:
     - driver: Selenium webdriver
     - match_url: match link
+    - retries: Number of retry attempts
+    - delay: Time (in seconds) between retries
 
     Returns dictionary of match information from url
     """
@@ -159,3 +164,85 @@ def get_match_data(
     }
 
     return match_data_dict
+
+def get_match_point_data(
+    driver: webdriver,
+    match_url: str,
+    retries: int,
+    delay: int
+) -> List:
+    """
+    Arguments:
+    - driver: Selenium webdriver
+    - match_url: match link
+    - retries: Number of retry attempts
+    - delay: Time (in seconds) between retries
+
+    Returns list of dictionaries of match point data
+    """
+
+    # initialize data
+    match_point_list = []
+
+    attempt = 0
+
+    while attempt < retries:
+
+        try:
+
+            # navigate to the page
+            driver.get(match_url)
+
+            # wait for the pointlog to render
+            WebDriverWait(driver, 10).until(
+                lambda d: d.execute_script("return typeof pointlog !== 'undefined'")
+            )
+            response_page_source = driver.page_source
+
+            # get the pointlog data
+            pointlog_raw = scrape_page_source_var(
+                page_source=response_page_source,
+                var='pointlog'
+            )
+
+            try:
+                # extract the data (after 1st tr - headers)
+                pointlog_soup = BeautifulSoup(pointlog_raw, 'html.parser')
+                pointlog_tr_list = pointlog_soup.find_all('tr')[1:]
+
+                # filter out empty rows
+                pointlog_tr_list = [
+                    tr for tr in pointlog_tr_list 
+                    if all(td.get_text(strip=True) for td in tr.find_all('td'))
+                ]
+
+                # loop through tr list
+                for index, tr in enumerate(pointlog_tr_list):
+                    tr_td_list = tr.find_all('td')
+                    point_data = {
+                        'match_url': match_url,
+                        'point_number': index + 1,
+                        'server': tr_td_list[0].get_text(strip=True),
+                        'sets': tr_td_list[1].get_text(strip=True),
+                        'games': tr_td_list[2].get_text(strip=True),
+                        'points': tr_td_list[3].get_text(strip=True),
+                        'point_description': tr_td_list[4].get_text(strip=True),
+                    }
+                    match_point_list.append(point_data)
+            except Exception as e:
+                logging.info(f"Error getting point data for {match_url}: {e}")
+                return []
+
+        except (TimeoutException, WebDriverException) as e:
+            attempt += 1
+            logging.warning(f"Attempt {attempt} failed for {match_url}: {e}")
+            if attempt < retries:
+                logging.info(f"Retrying in {delay*attempt} seconds...")
+                time.sleep(delay)  # Delay before retrying
+            else:
+                logging.error(f"Max retries reached for {match_url}.")
+
+    # Return empty list if all retries fail
+    logging.info(f"Returning empty list")
+    return []
+
