@@ -38,7 +38,7 @@ def main():
     driver = create_chromedriver(webdriver_path=webdriver_path)
 
     # get list of matches
-    match_tennisabstract_url_list_source = get_match_tennisabstract_url_list_source(
+    match_url_list_tennisabstract = get_match_url_list_tennisabstract(
         driver=driver
     )
     # match_tennisabstract_url_list_db = get_table_column_list(
@@ -49,19 +49,19 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
-    match_tennisabstract_url_list = get_match_url_list_tennisabstract[:100]
-    logging.info(f"Found {len(match_tennisabstract_url_list)} matches.")
+    match_url_list = match_url_list_tennisabstract[:100]
+    logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
     # initialize chunk logic
     i = 0
     chunk_size = 100
-    for i in range(0, len(match_tennisabstract_url_list), chunk_size):
+    for i in range(0, len(match_url_list), chunk_size):
 
-        match_url_chunk_list = match_tennisabstract_url_list[i:i + chunk_size]
+        match_url_chunk_list = match_url_list[i:i + chunk_size]
 
         chunk_size_start = i
-        chunk_size_end = min(i + chunk_size, len(match_tennisabstract_url_list))
+        chunk_size_end = min(i + chunk_size, len(match_url_list))
         logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
         # initialize data list
@@ -72,7 +72,7 @@ def main():
 
             match_url = match_url_dict['match_url']
 
-            logging.info(f"Starting {idx+1} of {len(match_tennisabstract_url_list)}.")
+            logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
             logging.info(f"match url: {match_url}")
 
             match_data_dict = get_match_tennisabstract_data(
