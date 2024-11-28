@@ -5,7 +5,7 @@ from ingest.utils.functions.sql import (
     ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract import (
-    get_match_url_list,
+    get_match_url_list as get_match_url_list_tennisabstract,
     get_match_data,
 )
 import logging
@@ -49,7 +49,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
-    match_tennisabstract_url_list = match_tennisabstract_url_list_source[:100]
+    match_tennisabstract_url_list = get_match_url_list_tennisabstract[:100]
     logging.info(f"Found {len(match_tennisabstract_url_list)} matches.")
 
     # loop through matches
