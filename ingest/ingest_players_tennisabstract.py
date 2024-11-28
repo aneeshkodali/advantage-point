@@ -133,6 +133,7 @@ def fetch_player_tennisabstract_data_scraped(
                 page_source=response_page_source,
                 var=var
             )
+            logging.info(f"{var}: {val}")
             data_dict[var] = val
         except Exception as e:
             logging.info(f"Error encountered when getting data for variable {var}: {e}")
