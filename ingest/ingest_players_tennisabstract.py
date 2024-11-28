@@ -123,7 +123,7 @@ def fetch_player_tennisabstract_data_scraped(
             driver.get(player_url)
 
             # wait for the page to fully render (ensure JavaScript is executed)
-            WebDriverWait(driver, 20).until(
+            WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
             )
 
@@ -154,12 +154,13 @@ def fetch_player_tennisabstract_data_scraped(
             attempt += 1
             logging.warning(f"Attempt {attempt} failed for {player_url}: {e}")
             if attempt < retries:
-                logging.info(f"Retrying in {delay**attempt} seconds...")
+                logging.info(f"Retrying in {delay*attempt} seconds...")
                 time.sleep(delay)  # Delay before retrying
             else:
-                logging.error(f"Max retries reached for {player_url}. Returning empty dictionary.")
+                logging.error(f"Max retries reached for {player_url}.")
 
     # Return empty dictionary if all retries fail
+    logging.info(f"Returning empty dictionary")
     return {}
 
 def main():
