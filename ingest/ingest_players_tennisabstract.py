@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from typing import (
     Dict,
     List
@@ -163,7 +164,7 @@ def fetch_player_tennisabstract_data_scraped(
     logging.info(f"Returning empty dictionary")
     return {}
 
-def fetch_player_tennisabstract_data(
+def get_player_tennisabstract_data(
     driver: webdriver,
     player_url: str
 ) -> Dict:
@@ -172,7 +173,7 @@ def fetch_player_tennisabstract_data(
     - driver: Selenium webdriver
     - player_url: player link
 
-    Returns dictionary of player information from url
+    Returns dictionary of complete player information from url
     """
 
     # initialize player data dictionary
@@ -234,13 +235,14 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # player_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in player_tennisabstract_url_list_db, player_tennisabstract_url_list_source))
-    player_tennisabstract_url_list = player_tennisabstract_url_list_source
+    player_tennisabstract_url_list = player_tennisabstract_url_list_source[:200]
     logging.info(f"Found {len(player_tennisabstract_url_list)} players.")
 
     # loop through players
     # initialize chunk logic
     i = 0
     chunk_size = 100
+    max_threads = 5
     for i in range(0, len(player_tennisabstract_url_list), chunk_size):
 
         player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
@@ -252,21 +254,38 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # loop through chunk urls
-        for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
+        # use threading for parallel processing within chunk
+        with ThreadPoolExecutor(max_threads) as executor:
+            futures = {
+                executor.submit(
+                    get_player_tennisabstract_data,
+                    driver,
+                    player_url_dict['player_url'] for player_url_dict in player_url_chunk_list
+                )
+            }
 
-            player_url = player_url_dict['player_url']
+            for future in futures:
+                try:
+                    result = future.result()
+                    player_data_list.append(result)
+                except Exception as e:
+                    logging.info(f"Error processing: {e}")
 
-            logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
-            logging.info(f"player url: {player_url}")
+        # # loop through chunk urls
+        # for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
 
-            player_data_dict = fetch_player_tennisabstract_data(
-                driver=driver,
-                player_url=player_url
-            )
+        #     player_url = player_url_dict['player_url']
 
-            player_data_list.append(player_data_dict)
-            logging.info(f"Fetched data for: {player_url}")
+        #     logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
+        #     logging.info(f"player url: {player_url}")
+
+        #     player_data_dict = get_player_tennisabstract_data(
+        #         driver=driver,
+        #         player_url=player_url
+        #     )
+
+        #     player_data_list.append(player_data_dict)
+        #     logging.info(f"Fetched data for: {player_url}")
         
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
