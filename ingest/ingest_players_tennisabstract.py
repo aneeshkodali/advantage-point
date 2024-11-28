@@ -204,7 +204,7 @@ def main():
     # loop through players
     # initialize chunk logic
     i = 0
-    chunk_size = 1000
+    chunk_size = 100
     for i in range(0, len(player_tennisabstract_url_list), chunk_size):
 
         player_url_chunk_list = player_tennisabstract_url_list[i:i + chunk_size]
