@@ -1,7 +1,5 @@
 # from bs4 import BeautifulSoup
 # from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from ingest.utils.functions.selenium_fn import create_chromedriver
 from ingest.utils.functions.sql import (
     create_connection,
@@ -39,7 +37,7 @@ def main():
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
-    target_table_name = 'matches_tennisabstract'
+    target_table_name = 'tennisabstract_matches'
     temp_table_name = target_table_name
     unique_column_list = ['match_url',]
     alter_table_drop_column_flag = False
