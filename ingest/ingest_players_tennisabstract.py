@@ -135,7 +135,7 @@ def fetch_player_tennisabstract_data_scraped(
         try:
             val = scrape_page_source_var(
                 # page_source=response_page_source,
-                page_source=script_content
+                page_source=script_content,
                 var=var
             )
             logging.info(f"{var}: {val}")
