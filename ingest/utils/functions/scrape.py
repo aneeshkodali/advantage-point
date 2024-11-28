@@ -24,9 +24,6 @@ def make_request(
     # create request header
     headers = {
         "User-Agent": random.choice(user_agent_list),
-        # "Accept-Language": "en-US,en;q=0.9",
-        # "Accept-Encoding": "gzip, deflate, br",
-        # "Connection": "keep-alive",
     }
 
     # make request
