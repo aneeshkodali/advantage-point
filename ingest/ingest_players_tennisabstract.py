@@ -77,7 +77,7 @@ def get_player_tennisabstract_url_list_source(
     player_url_list = []
     for player in player_list:
 
-        if 'Seppi' not in player or 'William' not in player:
+        if ('Seppi' not in player) and ('William' not in player):
             continue
 
         # each element in list is of format: (<gender>) <name>)
