@@ -4,6 +4,7 @@ from typing import (
     List
 )
 from selenium import webdriver
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from utils.functions.sql import (
     create_connection,
@@ -113,11 +114,14 @@ def fetch_player_tennisabstract_data_scraped(
 
     # wait for the page to fully render (ensure JavaScript is executed)
     WebDriverWait(driver, 10).until(
-        lambda d: d.execute_script("return document.readyState") == "complete"
+        # lambda d: d.execute_script("return document.readyState") == "complete"
+        EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
     )
 
     # get the fully rendered page source
-    response_page_source = driver.page_source
+    # response_page_source = driver.page_source
+    script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
+    script_content = script_tag.get_attribute("innerHTML")
 
 
     # get variables
@@ -130,7 +134,8 @@ def fetch_player_tennisabstract_data_scraped(
 
         try:
             val = scrape_page_source_var(
-                page_source=response_page_source,
+                # page_source=response_page_source,
+                page_source=script_content
                 var=var
             )
             logging.info(f"{var}: {val}")
