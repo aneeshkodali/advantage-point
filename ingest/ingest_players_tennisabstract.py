@@ -1,9 +1,9 @@
-from bs4 import BeautifulSoup
 from typing import (
     Dict,
     List
 )
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,6 +25,7 @@ import os
 import pandas as pd
 import psycopg2
 import re
+import time
 
 def create_player_tennisabstract_url(
     player_gender: str,
@@ -99,7 +100,9 @@ def get_player_tennisabstract_url_list_source(
 
 def fetch_player_tennisabstract_data_scraped(
     driver: webdriver,
-    player_url: str
+    player_url: str,
+    retries: int = 3,
+    delay: int = 5
 ) -> Dict:
     """
     Arguments:
@@ -113,106 +116,54 @@ def fetch_player_tennisabstract_data_scraped(
     response_var_list = ['nameparam', 'fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
     data_dict = {var: None for var in response_var_list}
 
-    # navigate to the page
-    driver.get(player_url)
+    attempt = 0
 
-    # try to render page
-    try:
-
-        # wait for the page to fully render (ensure JavaScript is executed)
-        WebDriverWait(driver, 20).until(
-            # lambda d: d.execute_script("return document.readyState") == "complete"
-            EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
-        )
-
-        # get the fully rendered page source
-        # response_page_source = driver.page_source
-        script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
-        script_content = script_tag.get_attribute("innerHTML")
-
-        logging.info(f"script_content: {script_content[:500]}")
-
-    # return empty dict if error
-    except Exception as e:
-        logging.info(f"Failed to load page source for {player_url}: {e}")
-        return {}
-
-
-
-    # get variables
-    for var in response_var_list:
-        # try:
-        #     val = driver.execute_script(f"return {var};")
-        #     data_dict[var] = val
-        # except Exception as e:
-        #     logging.info(f"Error obtaining value for {var}: {e}")
+    while attempt < retries:
 
         try:
-            val = scrape_page_source_var(
-                # page_source=response_page_source,
-                page_source=script_content,
-                var=var
+
+            # navigate to the page
+            driver.get(player_url)
+
+            # wait for the page to fully render (ensure JavaScript is executed)
+            WebDriverWait(driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
             )
-            logging.info(f"{var}: {val}")
-            data_dict[var] = val
-        except Exception as e:
-            logging.info(f"Error encountered when getting data for variable {var}: {e}")
 
-    # check if all values in dict are None -> return empty dict
-    if all(value is None for value in data_dict.values()):
-        return {}
+            # locate script tag
+            script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
+            script_content = script_tag.get_attribute("innerHTML")
 
-    # # try:
+            # get variables
+            for var in response_var_list:
+                try:
+                    val = scrape_page_source_var(
+                        page_source=script_content,
+                        var=var
+                    )
+                    data_dict[var] = val
+                except Exception as e:
+                    logging.info(f"Error encountered when getting data for variable {var}: {e}")
 
-    # #     # get url page source
-    # #     driver.get(player_url)
+            # check if all values in dict are None -> return empty dict
+            if all(value is None for value in data_dict.values()):
+                logging.info(f"All values None for {player_url}. Returning empty dictionary.")
+                return {}
 
-    # #     # Wait for the page to fully render (ensure JavaScript is executed)
-    # #     WebDriverWait(driver, 10).until(
-    # #         lambda d: d.execute_script("return document.readyState") == "complete"
-    # #     )
-    # # except Exception as e:
-    # #     logging.info(f"Page did not fully load for URL {player_url}: {e}")
-    # #     return data_dict  # Return dictionary with keys but all values set to None
+            # return dictionary if data successfully extracted
+            return data_dict
 
-    # # # get the fully rendered page source
-    # # response_page_source = driver.page_source
+        except (TimeoutException, WebDriverException) as e:
+            attempt += 1
+            logging.warning(f"Attempt {attempt} failed for {player_url}: {e}")
+            if attempt < retries:
+                logging.info(f"Retrying in {delay**attempt} seconds...")
+                time.sleep(delay)  # Delay before retrying
+            else:
+                logging.error(f"Max retries reached for {player_url}. Returning empty dictionary.")
 
-    # # for regex_var in response_var_list:
-    # #     regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-    # #     regex_var_match = re.search(regex_pattern, response_page_source)
-    # #     if regex_var_match:
-    # #         val = regex_var_match.group(regex_var)
-    # #         data_dict[regex_var] = val
-
-    # try:
-
-    #     # get url page source
-    #     driver.get(player_url)
-    #     # WebDriverWait(driver, 10).until(
-    #     #     lambda d: d.execute_script("return document.readyState") == "complete"
-    #     # )
-        
-    #     response_page_source = driver.page_source
-
-    #     # find the script tag
-    #     soup = BeautifulSoup(response_page_source, 'html.parser')
-    #     script_tag = soup.find('script', attrs={'language': 'JavaScript'})
-    #     script_text = script_tag.text
-
-    #     # loop through variable list and add values to dict
-    #     for regex_var in response_var_list:
-    #         regex_pattern = fr"var {regex_var}\s?=\s?(?P<{regex_var}>.*);"
-    #         regex_var_match = re.search(regex_pattern, script_text)
-    #         if regex_var_match:
-    #             val = regex_var_match.group(regex_var)
-    #             data_dict[regex_var] = val
-
-    # except Exception as e:
-    #     logging.info(f"Error encountered when getting data for {player_url}: {e}")
-    #     return data_dict
-
-    return data_dict
+    # Return empty dictionary if all retries fail
+    return {}
 
 def main():
     
@@ -284,7 +235,9 @@ def main():
             # get player data from webscrape
             player_data_dict_scraped = fetch_player_tennisabstract_data_scraped(
                 driver=driver,
-                player_url=player_url
+                player_url=player_url,
+                retries=3,
+                delay=5
             )
 
             # combine dictionaries
