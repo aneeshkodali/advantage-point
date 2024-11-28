@@ -77,7 +77,9 @@ def main():
 
             match_data_dict = get_match_data(
                 driver=driver,
-                match_url=match_url
+                match_url=match_url,
+                retries=3,
+                delay=5
             )
 
             match_data_list.append(match_data_dict)
