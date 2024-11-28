@@ -117,7 +117,7 @@ def fetch_player_tennisabstract_data_scraped(
     driver.get(player_url)
 
     # wait for the page to fully render (ensure JavaScript is executed)
-    WebDriverWait(driver, 10).until(
+    WebDriverWait(driver, 20).until(
         # lambda d: d.execute_script("return document.readyState") == "complete"
         EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
     )
@@ -129,7 +129,7 @@ def fetch_player_tennisabstract_data_scraped(
 
     logging.info(f"script_content: {script_content[:500]}")
 
-    
+
 
 
     # get variables
