@@ -75,7 +75,7 @@ def main():
             logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
             logging.info(f"match url: {match_url}")
 
-            match_data_dict = get_match_tennisabstract_data(
+            match_data_dict = get_match_data(
                 driver=driver,
                 match_url=match_url
             )
