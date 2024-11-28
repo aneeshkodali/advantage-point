@@ -54,55 +54,55 @@ def main():
     match_url_list = match_url_list_tennisabstract[:5]
     logging.info(f"Found {len(match_url_list)} matches.")
 
-    # # loop through matches
-    # # initialize chunk logic
-    # i = 0
-    # chunk_size = 100
-    # for i in range(0, len(match_url_list), chunk_size):
+    # loop through matches
+    # initialize chunk logic
+    i = 0
+    chunk_size = 100
+    for i in range(0, len(match_url_list), chunk_size):
 
-    #     match_url_chunk_list = match_url_list[i:i + chunk_size]
+        match_url_chunk_list = match_url_list[i:i + chunk_size]
 
-    #     chunk_size_start = i
-    #     chunk_size_end = min(i + chunk_size, len(match_url_list))
-    #     logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
+        chunk_size_start = i
+        chunk_size_end = min(i + chunk_size, len(match_url_list))
+        logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
-    #     # initialize data list
-    #     match_data_list = []
+        # initialize data list
+        match_data_list = []
 
-    #     # loop through chunk urls
-    #     for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
+        # loop through chunk urls
+        for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
 
-    #         match_url = match_url_dict['match_url']
+            match_url = match_url_dict['match_url']
 
-    #         logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
-    #         logging.info(f"match url: {match_url}")
+            logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
+            logging.info(f"match url: {match_url}")
 
-    #         match_data_dict = get_match_data(
-    #             driver=driver,
-    #             match_url=match_url,
-    #             retries=3,
-    #             delay=5
-    #         )
-    #         time.sleep(random.uniform(1, 5))
+            match_data_dict = get_match_data(
+                driver=driver,
+                match_url=match_url,
+                retries=3,
+                delay=5
+            )
+            time.sleep(random.uniform(1, 5))
 
-    #         match_data_list.append(match_data_dict)
-    #         logging.info(f"Fetched data for: {match_url}")
+            match_data_list.append(match_data_dict)
+            logging.info(f"Fetched data for: {match_url}")
         
-    #     # create dataframe
-    #     match_data_df = pd.DataFrame(match_data_list)
+        # create dataframe
+        match_data_df = pd.DataFrame(match_data_list)
 
-    #     # ingest dataframe to sql
-    #     ingest_df_to_sql(
-    #         connection=conn,
-    #         df=match_data_df,
-    #         target_schema_name=target_schema_name,
-    #         target_table_name=target_table_name,
-    #         temp_schema_name=temp_schema_name,
-    #         temp_table_name=temp_table_name,
-    #         unique_column_list=unique_column_list,
-    #         drop_column_flag=alter_table_drop_column_flag,
-    #         delete_row_flag=merge_table_delete_row_flag
-    #     )
+        # ingest dataframe to sql
+        ingest_df_to_sql(
+            connection=conn,
+            df=match_data_df,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=temp_table_name,
+            unique_column_list=unique_column_list,
+            drop_column_flag=alter_table_drop_column_flag,
+            delete_row_flag=merge_table_delete_row_flag
+        )
 
     # close connection
     conn.close()

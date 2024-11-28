@@ -27,7 +27,6 @@ def get_match_url_list(
     # driver.get(match_list_url)
     # response_page_source = driver.page_source
     response = make_request(url=match_list_url)
-    logging.info(f"Response text: {response.text[:500]}")
 
     # parse page source
     # soup = BeautifulSoup(response_page_source, 'html.parser')
@@ -101,8 +100,6 @@ def get_match_data_scraped(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
-            logging.info(f"Response: {response}")
-            logging.info(f"Response text: {response.text[:400]}")
             soup = BeautifulSoup(response.text, 'html.parser')
             logging.info(f"Soup: {soup}")
             tbody = soup.find('tbody')
