@@ -1,5 +1,5 @@
-from bs4 import BeautifulSoup
-from selenium import webdriver
+# from bs4 import BeautifulSoup
+# from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from ingest.utils.functions.selenium_fn import create_chromedriver
@@ -11,10 +11,13 @@ from ingest.utils.functions.sql import (
     # get_table_column_list,
     merge_target_table,
 )
-from typing import (
-    Dict,
-    List,
+from ingest.utils.functions.tennisabstract import (
+    get_match_url_list,
 )
+# from typing import (
+#     Dict,
+#     List,
+# )
 import logging
 import os
 import pandas as pd
