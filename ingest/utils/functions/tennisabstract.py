@@ -101,9 +101,7 @@ def get_match_data_scraped(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
-            logging.info(f"response: {response.text}")
             soup = BeautifulSoup(response.text, 'html.parser')
-            tbody = soup.find('tbody')
 
             # wait for the page to fully render
             # WebDriverWait(driver, 10).until(
@@ -112,7 +110,7 @@ def get_match_data_scraped(
 
             # get the match title (<h2>)
             try:
-                match_title = tbody.find('h2').text
+                match_title = soup.find('table').find('h2').text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
                 match_title = None
@@ -120,7 +118,7 @@ def get_match_data_scraped(
 
             # get the match result (b)
             try:
-                match_result = tbody.find('b').text
+                match_result = soup.find('table').find('b').text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_result: {e}")
                 match_result = None
