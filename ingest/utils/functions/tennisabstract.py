@@ -102,12 +102,12 @@ def get_match_data_scraped(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
-            logging.info(f"response: {response.text[:500]}")
+            # logging.info(f"response: {response.text[:500]}")
             soup = BeautifulSoup(response.text, 'html.parser')
             # logging.info(f"soup: {soup[:500]}")
-            logging.info(f"title tag: {soup.find('title').text}")
-            logging.info(f"match title: {soup.find('h2').text}")
-            logging.info(f"match title regex: {soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text}")
+            # logging.info(f"title tag: {soup.find('title').text}")
+            # logging.info(f"match title: {soup.find('h2').text}")
+            # logging.info(f"match title regex: {soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text}")
                 
 
             # wait for the page to fully render
@@ -117,7 +117,8 @@ def get_match_data_scraped(
 
             # get the match title (<h2>): <match info>: <player1> vs <player2>
             try:
-                match_title = soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text
+                # match_title = soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text
+                match_title = soup.find('title').text.split(' Detailed Stats | Tennis Abstract')[0]
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
                 match_title = None
