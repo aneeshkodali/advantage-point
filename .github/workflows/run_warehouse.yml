@@ -72,9 +72,9 @@ jobs:
     strategy:
       matrix:
         scripts:
-          # - name: ingest_players_tennisabstract
-          - name: ingest_tennisabstract_matches
           - name: ingest_tennisabstract_match_points
+          - name: ingest_tennisabstract_matches
+          - name: ingest_tennisabstract_players
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

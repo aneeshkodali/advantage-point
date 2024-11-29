@@ -157,7 +157,6 @@ def get_match_data(
     )
     # get match data from webscrape
     match_data_dict_scraped = get_match_data_scraped(
-        # driver=driver,
         match_url=match_url,
         retries=retries,
         delay=delay
@@ -245,3 +244,170 @@ def get_match_point_data(
     logging.info(f"Returning empty list")
     return []
 
+def create_player_url(
+    player_gender: str,
+    player_name: str
+) -> str:
+    """
+    Arguments:
+    - player_gender: gender (M or W)
+    - player_name: player full name
+
+    Returns url
+    """
+
+    # format parts of url string
+    url_player_str = 'player' if player_gender == 'M' else 'wplayer'
+    url_player_name = player_name.replace(' ', '')
+
+    player_url = f"https://www.tennisabstract.com/cgi-bin/{url_player_str}.cgi?p={url_player_name}"
+
+    return player_url
+
+def get_player_url_list() -> List[Dict]:
+    """
+    Returns list of player urls from source (url)
+    """
+
+    # retrieve url page
+    player_list_url = 'https://www.tennisabstract.com/jsplayers/mwplayerlist.js'
+    response = make_request(player_list_url)
+    
+    # retrieve list-like string
+    val = scrape_javascript_var(
+                content=response.text,
+                var='playerlist'
+    )
+    # convert to list
+    player_list = ast.literal_eval(player_list)
+
+    # loop through each element and create url
+    player_url_list = []
+    for player in player_list:
+
+        # each element in list is of format: (<gender>) <name>)
+        regex_pattern = r'(?P<gender>\((.*?)\))\s*(?P<name>.*)'
+        regex_match = re.search(regex_pattern, player)
+        gender = regex_match.group('gender').strip('()')
+        name = regex_match.group('name')
+
+        # create url
+        player_url = create_player_tennisabstract_url(
+            player_gender=gender,
+            player_name=name
+        )
+        player_url_dict = {}
+        player_url_dict['player_url'] = player_url
+        player_url_list.append(player_url_dict)
+
+    return player_url_list
+
+def get_player_data_url(
+    player_url: str
+) -> Dict:
+    """
+    Arguments:
+    - player_url: player link
+
+    Returns dictionary of player information from url
+    """
+
+    # get player data
+    player_data_dict = {}
+    player_data_dict['player_url'] = player_url
+    player_data_dict['player_gender'] = 'W' if 'wplayer' in player_url else 'M'
+
+    return player_data_dict
+
+def get_player_data_scraped(
+    player_url: str,
+    retries: int,
+    delay: int
+) -> Dict:
+    """
+    Arguments:
+    - player_url: player link
+    - retries: Number of retry attempts
+    - delay: Time (in seconds) between retries
+
+    Returns dictionary of player information from url
+    """
+
+    # initialize data
+    # initialize data to be retrieved
+    response_var_list = ['nameparam', 'fullname', 'lastname', 'currentrank', 'peakrank', 'peakfirst', 'peaklast', 'dob', 'ht', 'hand', 'backhand', 'country', 'shortlist', 'careerjs', 'active', 'lastdate', 'twitter', 'current_dubs', 'peak_dubs', 'peakfirst_dubs', 'liverank', 'chartagg', 'photog', 'photog_credit', 'photog_link', 'itf_id', 'atp_id', 'dc_id', 'wiki_id']
+    player_dict = {var: None for var in response_var_list}
+
+    attempt = 0
+
+    while attempt < retries:
+
+        try:
+
+            # navigate to the page
+            response = make_request(url=player_url)
+                
+            for var in response_var_list:
+                try:
+                    val = scrape_javascript_var(
+                        page_source=response.text,
+                        var=var
+                    )
+                    player_dict[var] = val
+                except Exception as e:
+                    logging.info(f"Error encountered when getting data for variable {var}: {e}")
+
+            # check if all values in dict are None -> return empty dict
+            if all(value is None for value in player_dict.values()):
+                logging.info(f"All values None for {player_url} - Returning empty dictionary.")
+                return {}
+
+            # return dictionary if data successfully extracted
+            return match_dict
+
+        except Exception as e:
+            attempt += 1
+            logging.warning(f"Attempt {attempt} failed for {player_url}: {e}")
+            if attempt < retries:
+                logging.info(f"Retrying in {delay} seconds...")
+                time.sleep(delay)  # Delay before retrying
+            else:
+                logging.error(f"Max retries reached for {player_url}.")
+
+    # Return empty dictionary if all retries fail
+    logging.info(f"Returning empty dictionary")
+    return {}
+
+def get_player_data(
+    player_url: str,
+    retries: int,
+    delay: int 
+) -> Dict:
+    """
+    Arguments:
+    - player_url: player link
+    - retries: Number of retry attempts
+    - delay: Time (in seconds) between retries
+
+    Returns dictionary of player information from url
+    """
+
+
+    # get player data from url
+    player_data_dict_url = get_player_data_url(
+        player_url=player_url
+    )
+    # get player data from webscrape
+    player_data_dict_scraped = get_player_data_scraped(
+        player_url=player_url,
+        retries=retries,
+        delay=delay
+    )
+
+    # combine dictionaries
+    player_data_dict = {
+        **player_data_dict_url,
+        **player_data_dict_scraped,
+    }
+
+    return player_data_dict
