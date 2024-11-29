@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 import logging
+import time
 
 def get_match_url_list(
     driver: webdriver
