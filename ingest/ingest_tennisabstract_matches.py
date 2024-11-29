@@ -51,7 +51,7 @@ def main():
     #     where_clause_list=['audit_field_active_flag = TRUE']
     # )
     # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
-    match_url_list = match_url_list_tennisabstract[:1]
+    match_url_list = match_url_list_tennisabstract[:30]
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
@@ -83,8 +83,7 @@ def main():
                 retries=3,
                 delay=5
             )
-            # time.sleep(random.uniform(1, 5))
-            logging.info(f"match dict: {match_data_dict}")
+            time.sleep(random.uniform(1, 5))
 
             match_data_list.append(match_data_dict)
             logging.info(f"Fetched data for: {match_url}")
