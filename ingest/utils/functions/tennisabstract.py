@@ -239,6 +239,7 @@ def get_match_point_data(
                         'point_description': tr_td_list[4].get_text(strip=True),
                     }
                     match_point_list.append(point_data)
+                return match_point_list
             except Exception as e:
                 logging.info(f"Error getting point data for {match_url}: {e}")
                 return []
