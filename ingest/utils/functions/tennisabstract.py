@@ -351,7 +351,7 @@ def get_player_data_scraped(
             for var in response_var_list:
                 try:
                     val = scrape_javascript_var(
-                        page_source=response.text,
+                        content=response.text,
                         var=var
                     )
                     player_dict[var] = val
