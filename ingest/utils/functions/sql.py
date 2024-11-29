@@ -106,7 +106,7 @@ def get_table_column_list(
 
     # create sql statement to retrieve records for columns
     select_sql = f"""
-        SELECT
+        SELECT DISTINCT
             {column_name_join}
         FROM {schema_name}.{table_name}
         WHERE {where_clause_join}

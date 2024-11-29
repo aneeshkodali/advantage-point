@@ -44,10 +44,8 @@ def main():
         where_clause_list=['audit_field_active_flag = TRUE']
     )
     match_url_list = list(
-        set(
-            filter(
-                lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract
-            )
+        filter(
+            lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract
         )
     )[:100]
     logging.info(f"Found {len(match_url_list)} matches.")
