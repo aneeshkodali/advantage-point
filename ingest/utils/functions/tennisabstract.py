@@ -14,7 +14,7 @@ import logging
 import time
 
 def get_match_url_list(
-    driver: webdriver
+    # driver: webdriver
 ) -> List[Dict]:
     """
     Arguments:
@@ -74,7 +74,7 @@ def get_match_data_url(
     return match_data_dict
 
 def get_match_data_scraped(
-    driver: webdriver,
+    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int
@@ -146,7 +146,7 @@ def get_match_data_scraped(
     return {}
 
 def get_match_data(
-    driver: webdriver,
+    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int 
@@ -158,7 +158,7 @@ def get_match_data(
     )
     # get match data from webscrape
     match_data_dict_scraped = get_match_data_scraped(
-        driver=driver,
+        # driver=driver,
         match_url=match_url,
         retries=retries,
         delay=delay
