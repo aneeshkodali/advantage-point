@@ -94,9 +94,13 @@ def main():
                 executor.submit(get_match_point_data, match_url_dict['match_url'], retries=3, delay=3): idx
                 for idx, match_url_dict in enumerate(match_url_chunk_list, start=chunk_size_start)
             }
+            logging.info(f"future_to_url: {future_to_url}")
 
             # Process results as they complete
             for future in as_completed(future_to_url):
+                logging.info(f"future: {future}")
+                logging.info(f"url_index: {url_index}")
+                logging.info(f"match_url_dict: {match_url_dict}")
                 url_index = future_to_url[future]  # Get the original index of the URL
                 match_url_dict = match_url_chunk_list[url_index - chunk_size_start]
                 try:
