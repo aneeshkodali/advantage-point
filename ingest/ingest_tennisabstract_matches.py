@@ -88,21 +88,21 @@ def main():
             match_data_list.append(match_data_dict)
             logging.info(f"Fetched data for: {match_url}")
         
-        # # create dataframe
-        # match_data_df = pd.DataFrame(match_data_list)
+        # create dataframe
+        match_data_df = pd.DataFrame(match_data_list)
 
-        # # ingest dataframe to sql
-        # ingest_df_to_sql(
-        #     connection=conn,
-        #     df=match_data_df,
-        #     target_schema_name=target_schema_name,
-        #     target_table_name=target_table_name,
-        #     temp_schema_name=temp_schema_name,
-        #     temp_table_name=temp_table_name,
-        #     unique_column_list=unique_column_list,
-        #     drop_column_flag=alter_table_drop_column_flag,
-        #     delete_row_flag=merge_table_delete_row_flag
-        # )
+        # ingest dataframe to sql
+        ingest_df_to_sql(
+            connection=conn,
+            df=match_data_df,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=temp_table_name,
+            unique_column_list=unique_column_list,
+            drop_column_flag=alter_table_drop_column_flag,
+            delete_row_flag=merge_table_delete_row_flag
+        )
 
     # close connection
     conn.close()
