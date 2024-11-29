@@ -98,11 +98,8 @@ def main():
 
             # Process results as they complete
             for future in as_completed(future_to_url):
-                logging.info(f"future: {future}")
                 url_index = future_to_url[future]  # Get the original index of the URL
                 match_url_dict = match_url_chunk_list[url_index - chunk_size_start]
-                logging.info(f"url_index: {url_index}")
-                logging.info(f"match_url_dict: {match_url_dict}")
                 try:
                     result = future.result()  # Get the result of `get_match_point_data`
                     if result:
