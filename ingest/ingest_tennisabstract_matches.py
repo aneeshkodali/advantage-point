@@ -83,7 +83,8 @@ def main():
                 retries=3,
                 delay=5
             )
-            time.sleep(random.uniform(1, 5))
+            # time.sleep(random.uniform(1, 5))
+            logging.info(f"match dict: {match_data_dict}")
 
             match_data_list.append(match_data_dict)
             logging.info(f"Fetched data for: {match_url}")
