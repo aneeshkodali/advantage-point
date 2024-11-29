@@ -102,6 +102,7 @@ def get_match_data_scraped(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
+            logging.info(f"response: {response.text[:500]}")
             soup = BeautifulSoup(response.text, 'html.parser')
             logging.info(f"soup: {soup[:500]}")
 
