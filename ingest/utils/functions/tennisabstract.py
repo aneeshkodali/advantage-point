@@ -109,15 +109,15 @@ def get_match_data_scraped(
             #     lambda d: d.execute_script("return document.readyState") == "complete"
             # )
 
-            # get the match title (<h2>)
+            # get the match title (<h2>): <match info>: <player1> vs <player2>
             try:
-                match_title = soup.find('h2', string=re.compile(r".+:\s.+\svs\s.+")).text
+                match_title = soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
                 match_title = None
             match_dict["match_title"] = match_title
 
-            # get the match result (b)
+            # get the match result (b): <winner> d. <loser> score
             try:
                 match_result = soup.find('b', string=re.compile(r".+\sd\.\s.+\s.+")).text
             except Exception as e:
