@@ -2,11 +2,7 @@ from bs4 import BeautifulSoup
 from ingest.utils.functions.scrape import (
     make_request,
     scrape_javascript_var,
-    scrape_page_source_var,
 )
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from typing import (
     Dict,
     List,
@@ -16,12 +12,8 @@ import logging
 import re
 import time
 
-def get_match_url_list(
-) -> List[Dict]:
+def get_match_url_list() -> List[Dict]:
     """
-    Arguments:
-    - driver: Selenium webdriver
-
     Returns list of match urls from source (url)
     """
 

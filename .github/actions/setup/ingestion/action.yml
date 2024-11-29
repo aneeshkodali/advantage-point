@@ -1,9 +1,5 @@
 name: Setup Ingestion Environment
 description: Setup environment and dependencies for ingestion layer
-inputs:
-  chrome-version:
-    description: "Chrome version to install"
-    required: true
 runs:
   using: "composite"
   steps:

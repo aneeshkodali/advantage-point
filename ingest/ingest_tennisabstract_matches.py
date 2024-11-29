@@ -36,9 +36,7 @@ def main():
     conn = create_connection()
 
     # get list of matches
-    match_url_list_tennisabstract = get_match_url_list_tennisabstract(
-        # driver=driver
-    )
+    match_url_list_tennisabstract = get_match_url_list_tennisabstract()
     match_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,

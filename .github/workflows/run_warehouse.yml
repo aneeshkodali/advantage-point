@@ -84,20 +84,8 @@ jobs:
       - name: Setup environment
         uses: ./.github/actions/setup/ingestion
 
-      - name: Remove old Chrome if it exists
-        run: |
-          sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
-
-      - name: Install Chrome
-        id: setup-chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: ${{ vars.CHROME_VERSION }}
-          install-chromedriver: true
-
       - name: Run ingestion script
         env:
-          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
           DATABASE: ${{ vars.SUPABASE_DATABASE }}
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
