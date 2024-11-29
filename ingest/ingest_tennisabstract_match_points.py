@@ -40,10 +40,16 @@ def main():
         connection=conn,
         schema_name=target_schema_name,
         table_name=target_table_name,
-        column_name_list=unique_column_list,
+        column_name_list=['match_url',],
         where_clause_list=['audit_field_active_flag = TRUE']
     )
-    match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))[:100]
+    match_url_list = list(
+        set(
+            filter(
+                lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract
+            )
+        )
+    )[:100]
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
