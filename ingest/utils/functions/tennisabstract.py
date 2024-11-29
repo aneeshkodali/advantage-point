@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from ingest.utils.functions.scrape import (
     make_request,
+    scrape_javascript_var,
     scrape_page_source_var,
 )
 from selenium import webdriver
@@ -171,14 +172,13 @@ def get_match_data(
     return match_data_dict
 
 def get_match_point_data(
-    driver: webdriver,
+    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int
 ) -> List:
     """
     Arguments:
-    - driver: Selenium webdriver
     - match_url: match link
     - retries: Number of retry attempts
     - delay: Time (in seconds) between retries
@@ -196,17 +196,20 @@ def get_match_point_data(
         try:
 
             # navigate to the page
-            driver.get(match_url)
+            # driver.get(match_url)
+            response = make_request(url=match_url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+              
 
-            # wait for the pointlog to render
-            WebDriverWait(driver, 10).until(
-                lambda d: d.execute_script("return typeof pointlog !== 'undefined'")
-            )
-            response_page_source = driver.page_source
+            # # wait for the pointlog to render
+            # WebDriverWait(driver, 10).until(
+            #     lambda d: d.execute_script("return typeof pointlog !== 'undefined'")
+            # )
+            # response_page_source = driver.page_source
 
             # get the pointlog data
-            pointlog_raw = scrape_page_source_var(
-                page_source=response_page_source,
+            pointlog_raw = scrape_javascript_var(
+                content=soup,
                 var='pointlog'
             )
 
@@ -239,11 +242,11 @@ def get_match_point_data(
                 logging.info(f"Error getting point data for {match_url}: {e}")
                 return []
 
-        except (TimeoutException, WebDriverException) as e:
+        except Exception as e:
             attempt += 1
             logging.warning(f"Attempt {attempt} failed for {match_url}: {e}")
             if attempt < retries:
-                logging.info(f"Retrying in {delay*attempt} seconds...")
+                logging.info(f"Retrying in {delay} seconds...")
                 time.sleep(delay)  # Delay before retrying
             else:
                 logging.error(f"Max retries reached for {match_url}.")
