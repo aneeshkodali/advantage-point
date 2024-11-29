@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
@@ -45,13 +46,14 @@ def main():
         column_name_list=unique_column_list,
         where_clause_list=['audit_field_active_flag = TRUE']
     )
-    match_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_url_list_tennisabstract))[:150]
+    match_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_url_list_tennisabstract))[:25]
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
     # initialize chunk logic
     i = 0
-    chunk_size = 100
+    chunk_size = 10
+    max_workers = 5
     for i in range(0, len(match_url_list), chunk_size):
 
         match_url_chunk_list = match_url_list[i:i + chunk_size]
@@ -63,23 +65,43 @@ def main():
         # initialize data list
         match_data_list = []
 
-        # loop through chunk urls
-        for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
+        # # loop through chunk urls
+        # for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
 
-            match_url = match_url_dict['match_url']
+        #     match_url = match_url_dict['match_url']
 
-            logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
-            logging.info(f"match url: {match_url}")
+        #     logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
+        #     logging.info(f"match url: {match_url}")
 
-            match_data_dict = get_match_data(
-                match_url=match_url,
-                retries=3,
-                delay=3
-            )
-            time.sleep(random.uniform(0.5, 1.2))
+        #     match_data_dict = get_match_data(
+        #         match_url=match_url,
+        #         retries=3,
+        #         delay=3
+        #     )
+        #     time.sleep(random.uniform(0.5, 1.2))
 
-            match_data_list.append(match_data_dict)
-            logging.info(f"Fetched data for: {match_url}")
+        #     match_data_list.append(match_data_dict)
+        #     logging.info(f"Fetched data for: {match_url}")
+
+        # Use ThreadPoolExecutor to scrape match data in parallel
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit tasks directly to executor
+            future_to_url = {
+                executor.submit(get_match_data, match_url_dict['match_url'], retries=3, delay=3): match_url_dict
+                for match_url_dict in match_url_chunk_list
+            }
+
+            # Process results as they complete
+            for future in as_completed(future_to_url):
+                match_url_dict = future_to_url[future]
+                try:
+                    result = future.result()  # Get the result of `get_match_data`
+                    if result:
+                        match_data_list.append(result)
+                        logging.info(f"Successfully fetched data for: {match_url_dict['match_url']}")
+                except Exception as e:
+                    logging.error(f"Failed to fetch data for: {match_url_dict['match_url']} - Error: {e}")
+
         
         # create dataframe
         match_data_df = pd.DataFrame(match_data_list)
