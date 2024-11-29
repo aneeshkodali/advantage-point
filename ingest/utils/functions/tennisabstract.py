@@ -11,6 +11,7 @@ from typing import (
     List,
 )
 import logging
+import re
 import time
 
 def get_match_url_list(
@@ -110,7 +111,7 @@ def get_match_data_scraped(
 
             # get the match title (<h2>)
             try:
-                match_title = soup.find('table').find('h2').text
+                match_title = soup.find('h2', string=re.compile(r".+:\s.+\svs\s.+")).text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
                 match_title = None
@@ -118,7 +119,7 @@ def get_match_data_scraped(
 
             # get the match result (b)
             try:
-                match_result = soup.find('table').find('b').text
+                match_result = soup.find('b', string=re.compile(r".+\sd\.\s.+\s.+")).text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_result: {e}")
                 match_result = None
