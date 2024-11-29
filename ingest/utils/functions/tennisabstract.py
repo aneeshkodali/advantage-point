@@ -212,6 +212,7 @@ def get_match_point_data(
                 content=soup,
                 var='pointlog'
             )
+            logging.info(f"point log raw: {pointlog_raw[:500]}")
 
             try:
                 # extract the data (after 1st tr - headers)
