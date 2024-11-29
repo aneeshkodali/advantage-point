@@ -275,12 +275,12 @@ def get_player_url_list() -> List[Dict]:
     response = make_request(player_list_url)
     
     # retrieve list-like string
-    val = scrape_javascript_var(
+    player_list_val = scrape_javascript_var(
                 content=response.text,
                 var='playerlist'
     )
     # convert to list
-    player_list = ast.literal_eval(player_list)
+    player_list = ast.literal_eval(player_list_val)
 
     # loop through each element and create url
     player_url_list = []
