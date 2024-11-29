@@ -15,7 +15,6 @@ import re
 import time
 
 def get_match_url_list(
-    # driver: webdriver
 ) -> List[Dict]:
     """
     Arguments:
@@ -26,13 +25,11 @@ def get_match_url_list(
 
     # retrieve url page source
     match_list_url = 'https://www.tennisabstract.com/charting/'
-    # driver.get(match_list_url)
-    # response_page_source = driver.page_source
     response = make_request(url=match_list_url)
 
     # parse page source
-    # soup = BeautifulSoup(response_page_source, 'html.parser')
     soup = BeautifulSoup(response.text, 'html.parser')
+    
     # links are hrefs in last <p>
     p_tag_match = soup.find_all('p')[-1]
     match_href_list = [f"https://www.tennisabstract.com/charting/{a['href']}" for a in p_tag_match.find_all('a', href=True)]
@@ -75,14 +72,12 @@ def get_match_data_url(
     return match_data_dict
 
 def get_match_data_scraped(
-    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int
 ) -> Dict:
     """
     Arguments:
-    - driver: Selenium webdriver
     - match_url: match link
     - retries: Number of retry attempts
     - delay: Time (in seconds) between retries
@@ -100,24 +95,11 @@ def get_match_data_scraped(
         try:
 
             # navigate to the page
-            # driver.get(match_url)
             response = make_request(url=match_url)
-            # logging.info(f"response: {response.text[:500]}")
             soup = BeautifulSoup(response.text, 'html.parser')
-            # logging.info(f"soup: {soup[:500]}")
-            # logging.info(f"title tag: {soup.find('title').text}")
-            # logging.info(f"match title: {soup.find('h2').text}")
-            # logging.info(f"match title regex: {soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text}")
                 
-
-            # wait for the page to fully render
-            # WebDriverWait(driver, 10).until(
-            #     lambda d: d.execute_script("return document.readyState") == "complete"
-            # )
-
-            # get the match title (<h2>): <match info>: <player1> vs <player2>
+            # get the match title (<title>): <match info>: <player1> vs <player2> Detailed Stats | Tennis Abstract
             try:
-                # match_title = soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text
                 match_title = soup.find('title').text.split(' Detailed Stats | Tennis Abstract')[0]
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
@@ -154,11 +136,19 @@ def get_match_data_scraped(
     return {}
 
 def get_match_data(
-    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int 
 ) -> Dict:
+    """
+    Arguments:
+    - match_url: match link
+    - retries: Number of retry attempts
+    - delay: Time (in seconds) between retries
+
+    Returns dictionary of match information from url
+    """
+
 
     # get match data from url
     match_data_dict_url = get_match_data_url(

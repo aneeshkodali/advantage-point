@@ -44,9 +44,9 @@ def main():
         schema_name=target_schema_name,
         table_name=target_table_name,
         column_name_list=unique_column_list,
-        where_clause_list=['audit_field_active_flag = TRUE', 'match_title IS NOT NULL',]
+        where_clause_list=['audit_field_active_flag = TRUE',]
     )
-    match_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_url_list_tennisabstract))[:20]
+    match_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_url_list_tennisabstract))
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
@@ -64,24 +64,6 @@ def main():
 
         # initialize data list
         match_data_list = []
-
-        # # loop through chunk urls
-        # for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
-
-        #     match_url = match_url_dict['match_url']
-
-        #     logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
-        #     logging.info(f"match url: {match_url}")
-
-        #     match_data_dict = get_match_data(
-        #         match_url=match_url,
-        #         retries=3,
-        #         delay=3
-        #     )
-        #     time.sleep(random.uniform(0.5, 1.2))
-
-        #     match_data_list.append(match_data_dict)
-        #     logging.info(f"Fetched data for: {match_url}")
 
         # Use ThreadPoolExecutor to scrape match data in parallel
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
