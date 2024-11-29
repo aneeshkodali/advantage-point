@@ -199,7 +199,7 @@ def get_match_point_data(
             # driver.get(match_url)
             response = make_request(url=match_url)
             # soup = BeautifulSoup(response.text, 'html.parser')
-            logging.info(f"response: {response.text[:500]}")
+            # logging.info(f"response: {response.text[:500]}")
               
 
             # # wait for the pointlog to render
@@ -227,7 +227,7 @@ def get_match_point_data(
 
                 # loop through tr list
                 for index, tr in enumerate(pointlog_tr_list):
-                    logging.info(f"Point {index+1} out of {len(pointlog_tr_list)}")
+                    # logging.info(f"Point {index+1} out of {len(pointlog_tr_list)}")
                     tr_td_list = tr.find_all('td')
                     point_data = {
                         'match_url': match_url,
