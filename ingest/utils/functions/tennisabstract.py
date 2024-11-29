@@ -133,7 +133,7 @@ def get_match_data_scraped(
             # return dictionary if data successfully extracted
             return match_dict
 
-        except (TimeoutException, WebDriverException) as e:
+        except Exception as e:
             attempt += 1
             logging.warning(f"Attempt {attempt} failed for {match_url}: {e}")
             if attempt < retries:
