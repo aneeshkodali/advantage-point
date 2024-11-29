@@ -1,4 +1,3 @@
-# from ingest.utils.functions.selenium_fn import create_chromedriver
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from ingest.utils.functions.sql import (
     create_connection,
@@ -35,14 +34,8 @@ def main():
     # create connection
     conn = create_connection()
 
-    # # initialize driver
-    # webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-    # driver = create_chromedriver(webdriver_path=webdriver_path)
-
     # get list of matches
-    match_url_list_tennisabstract = get_match_url_list_tennisabstract(
-        # driver=driver
-    )
+    match_url_list_tennisabstract = get_match_url_list_tennisabstract()
     match_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
@@ -69,24 +62,6 @@ def main():
         # initialize data list
         match_point_data_list_master = []
 
-        # # loop through chunk urls
-        # for idx, match_url_dict in enumerate(match_url_chunk_list, start=i):
-
-        #     match_url = match_url_dict['match_url']
-
-        #     logging.info(f"Starting {idx+1} of {len(match_url_list)}.")
-        #     logging.info(f"match url: {match_url}")
-
-        #     match_point_data_list = get_match_point_data(
-        #         driver=driver,
-        #         match_url=match_url,
-        #         retries=3,
-        #         delay=5
-        #     )
-
-        #     match_point_data_list_master.extend(match_point_data_list)
-        #     logging.info(f"Fetched data for: {match_url}")
-
         # Use ThreadPoolExecutor to scrape match data in parallel
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Submit tasks directly to executor
@@ -94,7 +69,6 @@ def main():
                 executor.submit(get_match_point_data, match_url_dict['match_url'], retries=3, delay=3): idx
                 for idx, match_url_dict in enumerate(match_url_chunk_list, start=chunk_size_start)
             }
-            logging.info(f"future_to_url: {future_to_url}")
 
             # Process results as they complete
             for future in as_completed(future_to_url):
@@ -111,7 +85,6 @@ def main():
                     logging.info(
                         f"Failed to fetch data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']} - Error: {e}"
                     )
-
         
         # create dataframe
         match_point_data_df = pd.DataFrame(match_point_data_list_master)

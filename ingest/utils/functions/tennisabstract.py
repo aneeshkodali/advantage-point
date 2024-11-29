@@ -172,7 +172,6 @@ def get_match_data(
     return match_data_dict
 
 def get_match_point_data(
-    # driver: webdriver,
     match_url: str,
     retries: int,
     delay: int
@@ -196,18 +195,8 @@ def get_match_point_data(
         try:
 
             # navigate to the page
-            # driver.get(match_url)
             response = make_request(url=match_url)
-            # soup = BeautifulSoup(response.text, 'html.parser')
-            # logging.info(f"response: {response.text[:500]}")
-              
-
-            # # wait for the pointlog to render
-            # WebDriverWait(driver, 10).until(
-            #     lambda d: d.execute_script("return typeof pointlog !== 'undefined'")
-            # )
-            # response_page_source = driver.page_source
-
+           
             # get the pointlog data
             pointlog_raw = scrape_javascript_var(
                 content=response.text,
@@ -227,7 +216,6 @@ def get_match_point_data(
 
                 # loop through tr list
                 for index, tr in enumerate(pointlog_tr_list):
-                    # logging.info(f"Point {index+1} out of {len(pointlog_tr_list)}")
                     tr_td_list = tr.find_all('td')
                     point_data = {
                         'match_url': match_url,
