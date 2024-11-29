@@ -293,7 +293,7 @@ def get_player_url_list() -> List[Dict]:
         name = regex_match.group('name')
 
         # create url
-        player_url = create_player_tennisabstract_url(
+        player_url = create_player_url(
             player_gender=gender,
             player_name=name
         )

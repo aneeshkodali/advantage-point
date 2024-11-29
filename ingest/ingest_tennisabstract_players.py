@@ -46,7 +46,8 @@ def main():
         column_name_list=unique_column_list,
         where_clause_list=['audit_field_active_flag = TRUE',]
     )
-    player_url_list = list(filter(lambda url_dict: url_dict not in player_url_list_db, player_url_list_tennisabstract))[:20]
+    # player_url_list = list(filter(lambda url_dict: url_dict not in player_url_list_db, player_url_list_tennisabstract))[:20]
+    player_url_list = player_url_list_tennisabstract[:20]
     logging.info(f"Found {len(player_url_list)} players.")
 
     # loop through players
