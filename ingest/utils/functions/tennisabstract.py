@@ -102,8 +102,8 @@ def get_match_data_scraped(
             # driver.get(match_url)
             response = make_request(url=match_url)
             soup = BeautifulSoup(response.text, 'html.parser')
+            logging.info(f"soup: {soup[:500]}")
             tbody = soup.find('tbody')
-            logging.info(f"tbody: {tbody[:500]}")
 
             # wait for the page to fully render
             # WebDriverWait(driver, 10).until(
@@ -138,7 +138,7 @@ def get_match_data_scraped(
             attempt += 1
             logging.warning(f"Attempt {attempt} failed for {match_url}: {e}")
             if attempt < retries:
-                logging.info(f"Retrying in {delay*attempt} seconds...")
+                logging.info(f"Retrying in {delay} seconds...")
                 time.sleep(delay)  # Delay before retrying
             else:
                 logging.error(f"Max retries reached for {match_url}.")
