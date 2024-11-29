@@ -84,30 +84,30 @@ def main():
         #     logging.info(f"Fetched data for: {match_url}")
 
         # Use ThreadPoolExecutor to scrape match data in parallel
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit tasks directly to executor
-        future_to_url = {
-            executor.submit(get_match_data, match_url_dict['match_url'], retries=3, delay=3): idx
-            for idx, match_url_dict in enumerate(match_url_chunk_list, start=chunk_size_start)
-        }
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # Submit tasks directly to executor
+            future_to_url = {
+                executor.submit(get_match_data, match_url_dict['match_url'], retries=3, delay=3): idx
+                for idx, match_url_dict in enumerate(match_url_chunk_list, start=chunk_size_start)
+            }
 
-        # Process results as they complete
-        for future in as_completed(future_to_url):
-            url_index = future_to_url[future]  # Get the original index of the URL
-            match_url_dict = match_url_chunk_list[url_index - chunk_size_start]
-            try:
-                result = future.result()  # Get the result of `get_match_data`
-                if result:
-                    match_data_list.append(result)
+            # Process results as they complete
+            for future in as_completed(future_to_url):
+                url_index = future_to_url[future]  # Get the original index of the URL
+                match_url_dict = match_url_chunk_list[url_index - chunk_size_start]
+                try:
+                    result = future.result()  # Get the result of `get_match_data`
+                    if result:
+                        match_data_list.append(result)
+                        logging.info(
+                            f"Successfully fetched data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']}"
+                        )
+                except Exception as e:
                     logging.info(
-                        f"Successfully fetched data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']}"
+                        f"Failed to fetch data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']} - Error: {e}"
                     )
-            except Exception as e:
-                logging.info(
-                    f"Failed to fetch data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']} - Error: {e}"
-                )
 
-        
+            
         # create dataframe
         match_data_df = pd.DataFrame(match_data_list)
 
