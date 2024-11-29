@@ -74,9 +74,9 @@ def main():
             match_data_dict = get_match_data(
                 match_url=match_url,
                 retries=3,
-                delay=5
+                delay=3
             )
-            time.sleep(random.uniform(1, 5))
+            time.sleep(random.uniform(0.5, 1.2))
 
             match_data_list.append(match_data_dict)
             logging.info(f"Fetched data for: {match_url}")
