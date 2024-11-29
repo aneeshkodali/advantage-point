@@ -198,7 +198,8 @@ def get_match_point_data(
             # navigate to the page
             # driver.get(match_url)
             response = make_request(url=match_url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            # soup = BeautifulSoup(response.text, 'html.parser')
+            logging.info(f"response: {response.text[:500]}")
               
 
             # # wait for the pointlog to render
@@ -209,10 +210,9 @@ def get_match_point_data(
 
             # get the pointlog data
             pointlog_raw = scrape_javascript_var(
-                content=soup,
+                content=response.text,
                 var='pointlog'
             )
-            logging.info(f"point log raw: {pointlog_raw[:500]}")
 
             try:
                 # extract the data (after 1st tr - headers)
