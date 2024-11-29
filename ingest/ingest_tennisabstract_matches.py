@@ -1,7 +1,6 @@
-# from ingest.utils.functions.selenium_fn import create_chromedriver
 from ingest.utils.functions.sql import (
     create_connection,
-    # get_table_column_list,
+    get_table_column_list,
     ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract import (
@@ -35,23 +34,18 @@ def main():
     # create connection
     conn = create_connection()
 
-    # initialize driver
-    # webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-    # driver = create_chromedriver(webdriver_path=webdriver_path)
-
     # get list of matches
     match_url_list_tennisabstract = get_match_url_list_tennisabstract(
         # driver=driver
     )
-    # match_tennisabstract_url_list_db = get_table_column_list(
-    #     connection=conn,
-    #     schema_name=target_schema_name,
-    #     table_name=target_table_name,
-    #     column_name_list=unique_column_list,
-    #     where_clause_list=['audit_field_active_flag = TRUE']
-    # )
-    # match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))
-    match_url_list = match_url_list_tennisabstract[:1]
+    match_tennisabstract_url_list_db = get_table_column_list(
+        connection=conn,
+        schema_name=target_schema_name,
+        table_name=target_table_name,
+        column_name_list=unique_column_list,
+        where_clause_list=['audit_field_active_flag = TRUE']
+    )
+    match_tennisabstract_url_list = list(filter(lambda url_dict: url_dict not in match_tennisabstract_url_list_db, match_tennisabstract_url_list_source))[:30]
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through matches
@@ -78,7 +72,6 @@ def main():
             logging.info(f"match url: {match_url}")
 
             match_data_dict = get_match_data(
-                # driver=driver,
                 match_url=match_url,
                 retries=3,
                 delay=5
