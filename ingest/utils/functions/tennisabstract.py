@@ -103,6 +103,7 @@ def get_match_data_scraped(
             # driver.get(match_url)
             response = make_request(url=match_url)
             soup = BeautifulSoup(response.text, 'html.parser')
+            logging.info(f"soup: {soup[:500]}")
 
             # wait for the page to fully render
             # WebDriverWait(driver, 10).until(
@@ -111,6 +112,8 @@ def get_match_data_scraped(
 
             # get the match title (<h2>): <match info>: <player1> vs <player2>
             try:
+                logging.info(f"match title: {soup.find('h2').text}")
+                logging.info(f"match title regex: {soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text}")
                 match_title = soup.find('h2', string=re.compile(r".+:\s*.+\s+vs\s+.+")).text
             except Exception as e:
                 logging.info(f"Error encountered when getting data for variable match_title: {e}")
