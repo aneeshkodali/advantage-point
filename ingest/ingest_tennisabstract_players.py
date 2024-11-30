@@ -1,4 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from ingest.utils.functions.scrape import (
+    create_chromedriver,
+)
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
@@ -23,6 +26,11 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
+    # create driver
+    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    driver = create_chromedriver(webdriver_path=webdriver_path)
+
+
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
@@ -37,13 +45,13 @@ def main():
 
     # get list of players
     player_url_list_tennisabstract = get_player_url_list_tennisabstract()
-    player_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=target_table_name,
-        column_name_list=unique_column_list,
-        where_clause_list=['audit_field_active_flag = TRUE',]
-    )
+    # player_url_list_db = get_table_column_list(
+    #     connection=conn,
+    #     schema_name=target_schema_name,
+    #     table_name=target_table_name,
+    #     column_name_list=unique_column_list,
+    #     where_clause_list=['audit_field_active_flag = TRUE',]
+    # )
     # player_url_list = list(filter(lambda url_dict: url_dict not in player_url_list_db, player_url_list_tennisabstract))[:20]
     player_url_list = player_url_list_tennisabstract[:20]
     logging.info(f"Found {len(player_url_list)} players.")
@@ -68,7 +76,7 @@ def main():
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Submit tasks directly to executor
             future_to_url = {
-                executor.submit(get_player_data, player_url_dict['player_url'], retries=3, delay=3): idx
+                executor.submit(get_player_data, driver, player_url_dict['player_url'], retries=3, delay=3): idx
                 for idx, player_url_dict in enumerate(player_url_chunk_list, start=chunk_size_start)
             }
 

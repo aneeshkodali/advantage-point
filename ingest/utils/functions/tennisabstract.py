@@ -3,6 +3,10 @@ from ingest.utils.functions.scrape import (
     make_request,
     scrape_javascript_var,
 )
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 from typing import (
     Dict,
     List,
@@ -313,12 +317,14 @@ def get_player_data_url(
     return player_data_dict
 
 def get_player_data_scraped(
+    driver: webdriver,
     player_url: str,
     retries: int,
     delay: int
 ) -> Dict:
     """
     Arguments:
+    - driver: Selenium webdriver
     - player_url: player link
     - retries: Number of retry attempts
     - delay: Time (in seconds) between retries
@@ -338,14 +344,21 @@ def get_player_data_scraped(
         try:
 
             # navigate to the page
-            response = make_request(url=player_url)
-            logging.info(f"response: {response.text[:500]}")
-            script_tag = BeautifulSoup(response.text, 'html.parser').find('script', attrs={'language': 'JavaScript'})
-            logging.info(f"script: {script_tag}")
+            driver.get(player_url)
+
+            # wait for the page to fully render (ensure JavaScript is executed)
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//script[@language='JavaScript']"))
+            )
+            # locate script tag
+            script_tag = driver.find_element(By.XPATH, "//script[@language='JavaScript']")
+            script_content = script_tag.get_attribute("innerHTML")
+            logging.info(f"script content: {script_content[:500]}")
+
             for var in response_var_list:
                 try:
                     val = scrape_javascript_var(
-                        content=response.text,
+                        content=script_content,
                         var=var
                     )
                     player_dict[var] = val
