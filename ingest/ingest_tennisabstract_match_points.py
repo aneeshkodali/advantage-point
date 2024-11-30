@@ -11,8 +11,6 @@ from ingest.utils.functions.tennisabstract import (
 import logging
 import os
 import pandas as pd
-import random
-import time
 
 def main():
 
