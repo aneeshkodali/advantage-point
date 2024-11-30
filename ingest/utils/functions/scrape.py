@@ -35,6 +35,7 @@ def make_request(
     # create request header
     headers = {
         "User-Agent": random.choice(user_agent_list),
+        "Referer": "https://www.google.com",
     }
 
     # make request
