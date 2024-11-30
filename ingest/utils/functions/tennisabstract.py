@@ -387,6 +387,7 @@ def get_player_data_scraped(
     return {}
 
 def get_player_data(
+    driver: webdriver,
     player_url: str,
     retries: int,
     delay: int 
@@ -407,6 +408,7 @@ def get_player_data(
     )
     # get player data from webscrape
     player_data_dict_scraped = get_player_data_scraped(
+        driver=driver,
         player_url=player_url,
         retries=retries,
         delay=delay

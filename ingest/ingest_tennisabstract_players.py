@@ -76,7 +76,13 @@ def main():
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Submit tasks directly to executor
             future_to_url = {
-                executor.submit(get_player_data, driver, player_url_dict['player_url'], retries=3, delay=3): idx
+                executor.submit(
+                    get_player_data,
+                    driver=driver,
+                    player_url=player_url_dict['player_url'],
+                    retries=3,
+                    delay=3
+                ): idx
                 for idx, player_url_dict in enumerate(player_url_chunk_list, start=chunk_size_start)
             }
 
