@@ -340,7 +340,8 @@ def get_player_data_scraped(
             # navigate to the page
             response = make_request(url=player_url)
             logging.info(f"response: {response.text[:500]}")
-                
+            script_tag = BeautifulSoup(response.text, 'html.parser').find('script', attrs={'language': 'JavaScript'})
+            logging.info(f"script: {script_tag}")
             for var in response_var_list:
                 try:
                     val = scrape_javascript_var(
@@ -357,7 +358,7 @@ def get_player_data_scraped(
                 return {}
 
             # return dictionary if data successfully extracted
-            return match_dict
+            return player_dict
 
         except Exception as e:
             attempt += 1
