@@ -105,9 +105,9 @@ def main():
         # loop through chunk urls
         for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
             player_url = player_url_dict['player_url']
-            logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
+            logging.info(f"Starting {idx+1} of {len(player_url_list)}.")
             logging.info(f"player url: {player_url}")
-            player_data_dict = get_player_tennisabstract_data(
+            player_data_dict = get_player_data(
                 driver=driver,
                 player_url=player_url,
                 retries=3,
