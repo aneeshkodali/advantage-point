@@ -339,6 +339,7 @@ def get_player_data_scraped(
 
             # navigate to the page
             response = make_request(url=player_url)
+            logging.info(f"response: {response.text[:500]}")
                 
             for var in response_var_list:
                 try:
