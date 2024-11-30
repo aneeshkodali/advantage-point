@@ -72,37 +72,51 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # Use ThreadPoolExecutor to scrape player data in parallel
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            # Submit tasks directly to executor
-            future_to_url = {
-                executor.submit(
-                    get_player_data,
-                    driver=driver,
-                    player_url=player_url_dict['player_url'],
-                    retries=3,
-                    delay=3
-                ): idx
-                for idx, player_url_dict in enumerate(player_url_chunk_list, start=chunk_size_start)
-            }
+        # # Use ThreadPoolExecutor to scrape player data in parallel
+        # with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        #     # Submit tasks directly to executor
+        #     future_to_url = {
+        #         executor.submit(
+        #             get_player_data,
+        #             driver=driver,
+        #             player_url=player_url_dict['player_url'],
+        #             retries=3,
+        #             delay=3
+        #         ): idx
+        #         for idx, player_url_dict in enumerate(player_url_chunk_list, start=chunk_size_start)
+        #     }
 
-            # Process results as they complete
-            for future in as_completed(future_to_url):
-                url_index = future_to_url[future]  # Get the original index of the URL
-                player_url_dict = player_url_chunk_list[url_index - chunk_size_start]
-                try:
-                    result = future.result()  # Get the result of `get_player_data`
-                    if result:
-                        player_data_list.append(result)
-                        logging.info(
-                            f"Successfully fetched data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']}"
-                        )
-                except Exception as e:
-                    logging.info(
-                        f"Failed to fetch data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']} - Error: {e}"
-                    )
+        #     # Process results as they complete
+        #     for future in as_completed(future_to_url):
+        #         url_index = future_to_url[future]  # Get the original index of the URL
+        #         player_url_dict = player_url_chunk_list[url_index - chunk_size_start]
+        #         try:
+        #             result = future.result()  # Get the result of `get_player_data`
+        #             if result:
+        #                 player_data_list.append(result)
+        #                 logging.info(
+        #                     f"Successfully fetched data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']}"
+        #                 )
+        #         except Exception as e:
+        #             logging.info(
+        #                 f"Failed to fetch data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']} - Error: {e}"
+        #             )
 
-            
+        # loop through chunk urls
+        for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
+            player_url = player_url_dict['player_url']
+            logging.info(f"Starting {idx+1} of {len(player_tennisabstract_url_list)}.")
+            logging.info(f"player url: {player_url}")
+            player_data_dict = get_player_tennisabstract_data(
+                driver=driver,
+                player_url=player_url,
+                retries=3,
+                delay=3
+            )
+            player_data_list.append(player_data_dict)
+            logging.info(f"Fetched data for: {player_url}")
+            time.sleep(random.uniform(1, 3))
+
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
 
