@@ -1,0 +1,12 @@
+advantage_point:
+  outputs:
+    dev:
+      dbname: "{{ env_var('DATABASE') }}"
+      host: "{{ env_var('HOST') }}"
+      pass: "{{ env_var('PASSWORD') }}"
+      port: "{{ env_var('PORT') }}"
+      schema: dbt
+      threads: 8
+      type: postgres
+      user: "{{ env_var('USER') }}"
+  target: dev
