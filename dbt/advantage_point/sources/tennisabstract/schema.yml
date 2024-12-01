@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: tennisabstract
+    description: Data obtained from tennisabstract.com
+    schema: ods_dev
+    tables:
+      - name: tennisabstract_match_points
+        description: Contains points for a given match.
+        data_tests:
+          - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - match_url
+              - point_number
+              - audit_field_active_flag
+              - audit_field_start_datetime_utc
+      - name: tennisabstract_matches
+        description: Contains match information.
+        - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - match_url
+              - audit_field_active_flag
+              - audit_field_start_datetime_utc
+      - name: tennisabstract_players
+        description: Contains player information.
+        - dbt_utils.unique_combination_of_columns:
+            combination_of_columns:
+              - player_url
+              - audit_field_active_flag
+              - audit_field_start_datetime_utc
