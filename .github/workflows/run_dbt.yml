@@ -2,6 +2,15 @@ name: Run dbt
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
 
 jobs:
   run_dbt:
