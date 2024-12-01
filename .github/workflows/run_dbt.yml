@@ -36,7 +36,7 @@ jobs:
           DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
           DBT_THREADS: ${{ vars.DBT_THREADS }}
           type: postgres
-          DBT_USER: ${{ vars.DBT_USER }}
+          DBT_USER: ${{ vars.SUPABASE_USER }}
         run:
           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
