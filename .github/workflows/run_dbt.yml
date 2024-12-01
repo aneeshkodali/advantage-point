@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
       - name: Setup python
         uses: actions/setup-python@v4
