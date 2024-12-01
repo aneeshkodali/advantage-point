@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dbt dependencies
         run:
-=          dbt deps --project-dir dbt/advantage_point
+=         dbt deps --project-dir dbt/advantage_point
 
       - name: dbt build
         env:
@@ -36,7 +36,6 @@ jobs:
           type: postgres
           DBT_USER: ${{ vars.DBT_USER }}
         run:
-          cd dbt/advantage_point
           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
