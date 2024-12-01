@@ -2,15 +2,6 @@ name: Run dbt
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Select the environment to run the script'
-        required: true
-        default: dev
-        type: choice
-        options:
-          - dev
-          - prod
 
 jobs:
   run_dbt:
@@ -21,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+          ref: ${{ github.ref_name }}
 
       - name: Setup python
         uses: actions/setup-python@v4
