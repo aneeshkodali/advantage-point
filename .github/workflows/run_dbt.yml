@@ -1,0 +1,41 @@
+name: Run dbt
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run_dbt:
+    name: Run dbt commands
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install requirements
+        run:
+          pip install -r dbt/requirements.txt
+
+      - name: Install dbt dependencies
+        run:
+          dbt deps
+
+      - name: dbt build
+        env:
+          DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          DBT_HOST: ${{ vars.SUPABASE_HOST }}
+          DBT_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          DBT_PORT: ${{ vars.SUPABASE_PORT }}
+          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
+          DBT_THREADS: ${{ vars.DBT_THREADS }}
+          type: postgres
+          DBT_USER: ${{ vars.DBT_USER }}
+        run:
+          dbt build --profiles-dir ./dbt
+
+
