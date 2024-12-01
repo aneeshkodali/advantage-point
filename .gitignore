@@ -1,2 +1,7 @@
 __pycache__/
-venv/
+venv*/
+
+# dbt
+dbt/logs/
+target/
+dbt_packages/
