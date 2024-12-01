@@ -8,6 +8,10 @@ jobs:
     name: Run dbt commands
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: dbt # set working directory
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,7 +23,7 @@ jobs:
 
       - name: Install requirements
         run:
-          pip install -r dbt/requirements.txt
+          pip install -r requirements.txt
 
       - name: Install dbt dependencies
         run:
@@ -36,6 +40,6 @@ jobs:
           type: postgres
           DBT_USER: ${{ vars.DBT_USER }}
         run:
-          dbt build --profiles-dir ./dbt
+          dbt build --profiles-dir ./
 
 
