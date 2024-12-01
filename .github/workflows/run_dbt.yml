@@ -8,10 +8,6 @@ jobs:
     name: Run dbt commands
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: dbt # set working directory
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,10 +19,11 @@ jobs:
 
       - name: Install requirements
         run:
-          pip install -r requirements.txt
+          pip install -r dbt/requirements.txt
 
       - name: Install dbt dependencies
         run:
+          cd dbt/advantage_point
           dbt deps
 
       - name: dbt build
@@ -40,6 +37,7 @@ jobs:
           type: postgres
           DBT_USER: ${{ vars.DBT_USER }}
         run:
+          cd dbt/advantage_point
           dbt build --profiles-dir ./
 
 
