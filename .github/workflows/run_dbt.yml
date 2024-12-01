@@ -30,21 +30,21 @@ jobs:
         run:
           pip install -r dbt/requirements.txt
 
-      - name: Install dbt dependencies
-        run:
-=         dbt deps --project-dir dbt/advantage_point
+#       - name: Install dbt dependencies
+#         run:
+# =         dbt deps --project-dir dbt/advantage_point
 
-      - name: dbt build
-        env:
-          DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
-          DBT_HOST: ${{ vars.SUPABASE_HOST }}
-          DBT_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
-          DBT_PORT: ${{ vars.SUPABASE_PORT }}
-          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
-          DBT_THREADS: ${{ vars.DBT_THREADS }}
-          type: postgres
-          DBT_USER: ${{ vars.DBT_USER }}
-        run:
-          dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
+#       - name: dbt build
+#         env:
+#           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
+#           DBT_HOST: ${{ vars.SUPABASE_HOST }}
+#           DBT_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+#           DBT_PORT: ${{ vars.SUPABASE_PORT }}
+#           DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
+#           DBT_THREADS: ${{ vars.DBT_THREADS }}
+#           type: postgres
+#           DBT_USER: ${{ vars.DBT_USER }}
+#         run:
+#           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
