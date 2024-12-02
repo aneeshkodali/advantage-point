@@ -54,20 +54,8 @@ models:
         description: Game number within the current set.
         data_tests:
           - not_null
-      - name: game_in_match
-        description: Game number within the entire match.
-        data_tests:
-          - not_null
       - name: point_in_match
         description: Point number within the match.
-        data_tests:
-          - not_null
-      - name: point_in_game
-        description: Point number within the current game.
-        data_tests:
-          - not_null
-      - name: point_in_set
-        description: Point number within the current set.
         data_tests:
           - not_null
       - name: point_score
