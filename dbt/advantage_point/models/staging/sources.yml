@@ -44,7 +44,8 @@ sources:
             description: Semicolon separated list-like string of describe shots in that point rally.
             data_tests:
               - not_null
-          - <<: *audit_fields
+        # columns:
+        #   - <<: *audit_fields
       - name: matches
         identifier: tennisabstract_matches
         description: Contains match information.
