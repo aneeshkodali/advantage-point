@@ -24,6 +24,8 @@ jobs:
           pip install -r dbt/requirements.txt
 
       - name: Install dbt dependencies
+        env:
+          DBT_SCHEMA_STAGING: ${{ vars.DBT_SCHEMA_STAGING }}_dev
         run:
           dbt deps --project-dir dbt/advantage_point
 
