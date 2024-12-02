@@ -5,8 +5,8 @@ sources:
     description: Data obtained from tennisabstract.com
     schema: "{{ env_var('DBT_SCHEMA_INGESTION') }}"
     tables:
-      - name: tennisabstract_match_points
-        identifier: match_points
+      - name: match_points
+        identifier: tennisabstract_match_points
         description: Contains points for a given match.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
@@ -45,8 +45,8 @@ sources:
             data_tests:
               - not_null
           *audit_fields
-      - name: tennisabstract_matches
-        identifier: matches
+      - name: matches
+        identifier: tennisabstract_matches
         description: Contains match information.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
@@ -66,8 +66,8 @@ sources:
           - name: match_gender
             description: 
           *audit_fields
-      - name: tennisabstract_players
-        identifier: players
+      - name: players
+        identifier: tennisabstract_players
         description: Contains player information.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
