@@ -65,7 +65,7 @@ sources:
             data_tests:
               - not_null
           - name: match_gender
-            description: 
+            # description: 
           # <<: *audit_fields
       - name: players
         identifier: tennisabstract_players
