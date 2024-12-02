@@ -79,32 +79,32 @@ sources:
         # columns:
         #   <<: *audit_fields
   
-  audit_fields: &audit_fields
-    - name: audit_field_active_flag
-      description: Boolean field to determine if record is the most recent/currently active version
-      data_tests:
-        - not_null
-        - accepted_values:
-          values: [true, false]
-          quote: false
-    - name: audit_field_record_type
-      description: Denotes the type of record operation.
-      data_tests:
-        - not_null
-        - accepted_values:
-          values: ['delete', 'insert', 'update']
-          quote: true
-    - name: audit_field_start_datetime_utc
-      description: Timestamp (in UTC) to denote time when record entered the database and became active.
-      data_tests:
-        - not_null
-    - name: audit_field_end_datetime_utc
-      description: Timestamp (in UTC) to denote time when record became irrelevant/deactivated.
-    - name: audit_field_insert_datetime_utc
-      description: Timestamp (in UTC) to denote time when record was inserted into the database.
-      data_tests:
-        - not_null
-    - name: audit_field_update_datetime_utc
-      description: Timestamp (in UTC) to denote time when record was updated from source in the database.
-    - name: audit_field_delete_datetime_utc
-      description: Timestamp (in UTC) to denote time when record was deleted from source in the database.
+audit_fields: &audit_fields
+  - name: audit_field_active_flag
+    description: Boolean field to determine if record is the most recent/currently active version
+    data_tests:
+      - not_null
+      - accepted_values:
+        values: [true, false]
+        quote: false
+  - name: audit_field_record_type
+    description: Denotes the type of record operation.
+    data_tests:
+      - not_null
+      - accepted_values:
+        values: ['delete', 'insert', 'update']
+        quote: true
+  - name: audit_field_start_datetime_utc
+    description: Timestamp (in UTC) to denote time when record entered the database and became active.
+    data_tests:
+      - not_null
+  - name: audit_field_end_datetime_utc
+    description: Timestamp (in UTC) to denote time when record became irrelevant/deactivated.
+  - name: audit_field_insert_datetime_utc
+    description: Timestamp (in UTC) to denote time when record was inserted into the database.
+    data_tests:
+      - not_null
+  - name: audit_field_update_datetime_utc
+    description: Timestamp (in UTC) to denote time when record was updated from source in the database.
+  - name: audit_field_delete_datetime_utc
+    description: Timestamp (in UTC) to denote time when record was deleted from source in the database.
