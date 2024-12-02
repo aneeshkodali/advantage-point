@@ -6,6 +6,7 @@ sources:
     schema: ods_dev
     tables:
       - name: tennisabstract_match_points
+        identifier: match_points
         description: Contains points for a given match.
         tests:
           - dbt_utils.unique_combination_of_columns:
@@ -45,6 +46,7 @@ sources:
               - not_null
           *audit_fields
       - name: tennisabstract_matches
+        identifier: matches
         description: Contains match information.
         tests:
           - dbt_utils.unique_combination_of_columns:
@@ -65,6 +67,7 @@ sources:
             description: 
           *audit_fields
       - name: tennisabstract_players
+        identifier: players
         description: Contains player information.
         tests:
           - dbt_utils.unique_combination_of_columns:
