@@ -36,7 +36,7 @@ sources:
             description: Game score in that set (from server point of view).
             data_tests:
               - not_null
-          - name: point
+          - name: points
             description: Point score in that game (from server point of view).
             data_tests:
               - not_null
