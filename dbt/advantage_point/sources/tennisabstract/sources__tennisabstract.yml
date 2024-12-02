@@ -8,7 +8,7 @@ sources:
       - name: tennisabstract_match_points
         identifier: match_points
         description: Contains points for a given match.
-        tests:
+        data_tests:
           - dbt_utils.unique_combination_of_columns:
             combination_of_columns:
               - match_url
@@ -18,37 +18,37 @@ sources:
         columns:
           - name: match_url
             description: Link to the match data.
-            tests:
+            data_tests:
               - not_null
           - name: point_number
             description: Point number in the match.
-            tests:
+            data_tests:
               - not_null
           - name: server
             description: Player who is serving that point.
-            tests:
+            data_tests:
               - not_null
           - name: sets
             description: Set score in that match (from server point of view).
-            tests:
+            data_tests:
               - not_null
           - name: games
             description: Game score in that set (from server point of view).
-            tests:
+            data_tests:
               - not_null
           - name: point
             description: Point score in that game (from server point of view).
-            tests:
+            data_tests:
               - not_null
           - name: point_description
             description: Semicolon separated list-like string of describe shots in that point rally.
-            tests:
+            data_tests:
               - not_null
           *audit_fields
       - name: tennisabstract_matches
         identifier: matches
         description: Contains match information.
-        tests:
+        data_tests:
           - dbt_utils.unique_combination_of_columns:
             combination_of_columns:
               - match_url
@@ -57,11 +57,11 @@ sources:
         columns:
           - name: match_url
             description: Link to the match data.
-            tests:
+            data_tests:
               - not_null
           - name: match_date
             description: Date when match occurred
-            tests:
+            data_tests:
               - not_null
           - name: match_gender
             description: 
@@ -69,7 +69,7 @@ sources:
       - name: tennisabstract_players
         identifier: players
         description: Contains player information.
-        tests:
+        data_tests:
           - dbt_utils.unique_combination_of_columns:
             combination_of_columns:
               - player_url
@@ -80,27 +80,27 @@ sources:
   - &audit_fields
     - name: audit_field_active_flag
       description: Boolean field to determine if record is the most recent/currently active version
-      tests:
+      data_tests:
         - not_null
         - accepted_values:
           values: [true, false]
           quote: false
     - name: audit_field_record_type
       description: Denotes the type of record operation.
-      tests:
+      data_tests:
         - not_null
         - accepted_values:
           values: ['delete', 'insert', 'update']
           quote: true
     - name: audit_field_start_datetime_utc
       description: Timestamp (in UTC) to denote time when record entered the database and became active.
-      tests:
+      data_tests:
         - not_null
     - name: audit_field_end_datetime_utc
       description: Timestamp (in UTC) to denote time when record became irrelevant/deactivated.
     - name: audit_field_insert_datetime_utc
       description: Timestamp (in UTC) to denote time when record was inserted into the database.
-      tests:
+      data_tests:
         - not_null
     - name: audit_field_update_datetime_utc
       description: Timestamp (in UTC) to denote time when record was updated from source in the database.
