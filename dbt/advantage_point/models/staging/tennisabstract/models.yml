@@ -1,0 +1,100 @@
+version: 2
+
+models:
+  - name: stg_tennisabstract__match_points
+    description: >
+      Staging model for tennisabstract match point data. Model splits scores into individual components
+      and calculates derived `point-in-time` columns.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+        combination_of_columns:
+          - match_url
+          - point_in_match
+          - active
+          - loaded_at
+    columns:
+      - name: match_url
+        description: Link to the match data.
+        tests:
+          - not_null
+          - unique
+      - name: point_server
+        description: Player who is serving for the point.
+        tests:
+          - not_null
+      - name: set_score
+        description: Original set score (from server's perspective).
+        tests:
+          - not_null
+      - name: set_score_server
+        description: Number of sets won by the server.
+        tests:
+          - not_null
+      - name: set_score_receiver
+        description: Number of sets won by the receiver.
+        tests:
+          - not_null
+      - name: set_in_match
+        description: Set number within the match.
+        tests:
+          - not_null
+      - name: game_score
+        description: Original game score (from server's perspective).
+        tests:
+          - not_null
+      - name: game_score_server
+        description: Number of games won by the server in the current set.
+        tests:
+          - not_null
+      - name: game_score_receiver
+        description: Number of games won by the receiver in the current set.
+        tests:
+          - not_null
+      - name: game_in_set
+        description: Game number within the current set.
+        tests:
+          - not_null
+      - name: game_in_match
+        description: Game number within the entire match.
+        tests:
+          - not_null
+      - name: point_in_match
+        description: Point number within the match.
+        tests:
+          - not_null
+      - name: point_in_game
+        description: Point number within the current game.
+        tests:
+          - not_null
+      - name: point_in_set
+        description: Point number within the current set.
+        tests:
+          - not_null
+      - name: point_score
+        description: Original point score (from server's perspective).
+        tests:
+          - not_null
+      - name: point_score_server
+        description: Score for the server in the current point.
+        tests:
+          - not_null
+      - name: point_score_receiver
+        description: Score for the receiver in the current point.
+        tests:
+          - not_null
+      - name: point_description
+        description: Semicolon-separated list of shots in the rally.
+        tests:
+          - not_null
+      - name: active
+        description: Boolean field indicating if the record is active.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+              quote: false
+      - name: loaded_at
+        description: Timestamp indicating when the record was loaded.
+        tests:
+          - not_null
+    
