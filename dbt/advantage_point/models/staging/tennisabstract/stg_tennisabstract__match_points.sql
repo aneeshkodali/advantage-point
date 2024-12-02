@@ -20,7 +20,7 @@ renamed as (
         cast(split_part(game_score, '-', 1) as int) as game_score_server,
         cast(split_part(game_score, '-', 2) as int) as game_score_receiver,
         game_score_server + game_score_receiver + 1 as game_in_set,
-        row_number() over (partition by match_url order by set_in_match, game_in_set) as game_in_match
+        row_number() over (partition by match_url order by set_in_match, game_in_set) as game_in_match,
 
         -- points
         cast(point_number as int) as point_in_match,
