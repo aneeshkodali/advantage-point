@@ -33,5 +33,5 @@ models:
   advantage_point:
     # Config indicated by + and applies to all files under models/example/
     staging:
-      +schema: "{{ env_var('SCHEMA_STAGING') }}"
+      +schema: "{{ env_var('DBT_SCHEMA_STAGING') }}"
       +materialized: view

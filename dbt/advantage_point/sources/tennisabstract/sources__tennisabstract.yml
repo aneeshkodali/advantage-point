@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: tennisabstract
     description: Data obtained from tennisabstract.com
-    schema: "{{ env_var('SCHEMA_INGESTION') }}"
+    schema: "{{ env_var('DBT_SCHEMA_INGESTION') }}"
     tables:
       - name: tennisabstract_match_points
         identifier: match_points
