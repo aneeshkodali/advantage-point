@@ -7,11 +7,11 @@ models:
       and calculates derived `point-in-time` columns.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
-        combination_of_columns:
-          - match_url
-          - point_in_match
-          - active
-          - loaded_at
+          combination_of_columns:
+            - match_url
+            - point_in_match
+            - active
+            - loaded_at
     columns:
       - name: match_url
         description: Link to the match data.

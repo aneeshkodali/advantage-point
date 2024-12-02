@@ -10,11 +10,11 @@ sources:
         description: Contains points for a given match.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - match_url
-              - point_number
-              - audit_field_active_flag
-              - audit_field_start_datetime_utc
+              combination_of_columns:
+                - match_url
+                - point_number
+                - audit_field_active_flag
+                - audit_field_start_datetime_utc
         columns:
           - name: match_url
             description: Link to the match data.
@@ -50,10 +50,10 @@ sources:
         description: Contains match information.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - match_url
-              - audit_field_active_flag
-              - audit_field_start_datetime_utc
+              combination_of_columns:
+                - match_url
+                - audit_field_active_flag
+                - audit_field_start_datetime_utc
         columns:
           - name: match_url
             description: Link to the match data.
@@ -71,10 +71,10 @@ sources:
         description: Contains player information.
         data_tests:
           - dbt_utils.unique_combination_of_columns:
-            combination_of_columns:
-              - player_url
-              - audit_field_active_flag
-              - audit_field_start_datetime_utc
+              combination_of_columns:
+                - player_url
+                - audit_field_active_flag
+                - audit_field_start_datetime_utc
         columns:
           *audit_fields
   - &audit_fields
