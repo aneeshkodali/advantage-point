@@ -31,7 +31,7 @@ jobs:
           dbt deps --project-dir dbt/advantage_point
 
     - name: Generate sources.yml
-      run:
+      run: |
         python -m dbt.advantage_point.models.sources.generate_sources_yml
 
       - name: dbt build
