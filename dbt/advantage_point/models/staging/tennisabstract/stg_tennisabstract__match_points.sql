@@ -20,14 +20,6 @@ renamed as (
         audit_field_active_flag as active,
         audit_field_start_datetime_utc as loaded_at
     from source
-),
-
-processed as (
-    select
-        *,
-        set_score_server + set_score_receiver + 1 as set_in_match,
-        game_score_server + game_score_receiver + 1 as game_in_set
-    from renamed
 )
 
-select * from processed
+select * from renamed

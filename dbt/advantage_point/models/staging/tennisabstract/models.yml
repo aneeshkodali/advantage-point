@@ -25,16 +25,8 @@ models:
         description: Original set score (from server's perspective).
         data_tests:
           - not_null
-      - name: set_in_match
-        description: Set number within the match.
-        data_tests:
-          - not_null
       - name: game_score
         description: Original game score (from server's perspective).
-        data_tests:
-          - not_null
-      - name: game_in_set
-        description: Game number within the current set.
         data_tests:
           - not_null
       - name: point_in_match
