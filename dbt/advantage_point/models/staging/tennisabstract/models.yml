@@ -25,28 +25,12 @@ models:
         description: Original set score (from server's perspective).
         data_tests:
           - not_null
-      - name: set_score_server
-        description: Number of sets won by the server.
-        data_tests:
-          - not_null
-      - name: set_score_receiver
-        description: Number of sets won by the receiver.
-        data_tests:
-          - not_null
       - name: set_in_match
         description: Set number within the match.
         data_tests:
           - not_null
       - name: game_score
         description: Original game score (from server's perspective).
-        data_tests:
-          - not_null
-      - name: game_score_server
-        description: Number of games won by the server in the current set.
-        data_tests:
-          - not_null
-      - name: game_score_receiver
-        description: Number of games won by the receiver in the current set.
         data_tests:
           - not_null
       - name: game_in_set
@@ -60,15 +44,7 @@ models:
       - name: point_score
         description: Original point score (from server's perspective).
         data_tests:
-          - not_null
-      - name: point_score_server
-        description: Score for the server in the current point.
-        data_tests:
-          - not_null
-      - name: point_score_receiver
-        description: Score for the receiver in the current point.
-        data_tests:
-          - not_null
+          - not_null     
       - name: point_description
         description: Semicolon-separated list of shots in the rally.
         data_tests:
