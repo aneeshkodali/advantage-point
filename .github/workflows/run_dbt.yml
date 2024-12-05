@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate sources.yml
         run: |
-          python -m dbt.advantage_point.models.sources.generate_sources_yml
+          python -m dbt.advantage_point.scripts.generate_sources_yml
 
       - name: dbt build
         env:
