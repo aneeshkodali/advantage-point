@@ -7,7 +7,7 @@ audit_fields = [
         "description": "Boolean field to determine if record is the most recent/currently active version",
         "data_tests": [
             {
-                "not_null": None,
+                "not_null": {},
             },
             {
                 "accepted_values": {
@@ -22,7 +22,7 @@ audit_fields = [
         "description": "Denotes the type of record operation.",
         "data_tests": [
             {
-                "not_null": None,
+                "not_null": {},
             },
             {
                 "accepted_values": {
@@ -41,7 +41,7 @@ audit_fields = [
         "description": "Timestamp (in UTC) to denote time when record entered the database and became active.",
         "data_tests": [
             {
-                "not_null": None,
+                "not_null": {},
             },
         ],
     },
@@ -54,7 +54,7 @@ audit_fields = [
         "description": "Timestamp (in UTC) to denote time when record was inserted into the database.",
         "data_tests": [
             {
-                "not_null": None,
+                "not_null": {},
             },
         ],
     },
@@ -92,7 +92,7 @@ tables = [
                 "description": "Link to the match data.",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -101,7 +101,7 @@ tables = [
                 "description": "Point number in the match.",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -110,7 +110,7 @@ tables = [
                 "description": "Player who is serving that point.",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -119,7 +119,7 @@ tables = [
                 "description": "Set score in that match (from server point of view).",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -128,7 +128,7 @@ tables = [
                 "description": "Game score in that set (from server point of view).",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -137,7 +137,7 @@ tables = [
                 "description": "Point score in that game (from server point of view).",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -146,7 +146,7 @@ tables = [
                 "description": "Semicolon separated list-like string of describe shots in that point rally.",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -173,7 +173,7 @@ tables = [
                 "description": "Link to the match data.",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
@@ -182,7 +182,7 @@ tables = [
                 "description": "Date when match occurred",
                 "data_tests": [
                     {
-                        "not_null": None,
+                        "not_null": {},
                     },
                 ],
             },
