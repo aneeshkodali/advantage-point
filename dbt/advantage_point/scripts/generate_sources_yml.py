@@ -226,7 +226,7 @@ sources = {
 }
 
 # Write the YAML to a file
-with open("sources.yml", "w") as f:
+with open("dbt/advantage_point/models/sources/sources.yml", "w") as f:
     yaml.dump(
         sources,
         f,
