@@ -30,10 +30,6 @@ jobs:
         run:
           dbt deps --project-dir dbt/advantage_point
 
-      - name: Generate sources.yml
-        run: |
-          python -m dbt.advantage_point.scripts.generate_sources_yml
-
       - name: dbt build
         env:
           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
