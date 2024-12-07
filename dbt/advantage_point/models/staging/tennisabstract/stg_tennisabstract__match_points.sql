@@ -11,7 +11,7 @@ note:
 renamed as (
     select
         match_url,
-        cast(point_number as int) as point_in_match,
+        cast(point_number as int) as point_number_in_match,
         "server" as point_server,
         "sets" as set_score_in_match,
         games as game_score_in_set,

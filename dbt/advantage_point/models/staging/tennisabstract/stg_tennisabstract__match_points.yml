@@ -7,8 +7,8 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - match_url
-            - point_in_match
-            - active
+            - point_number_in_match
+            - is_record_active
             - loaded_at
     columns:
       - name: match_url
@@ -16,7 +16,7 @@ models:
         data_tests:
           - not_null
 
-      - name: point_in_match
+      - name: point_number_in_match
         description: Point number in match.
         data_tests:
           - not_null
