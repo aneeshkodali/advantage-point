@@ -10,7 +10,7 @@ renamed as (
         player_gender,
         replace(photog_credit, '''', '') as photograph_credit,
         {{ convert_rank_to_integer('current_dubs') }} as current_doubles_rank,
-        replace(atp_id, "'", "") as tour_id,
+        replace(atp_id, '''', '') as tour_id,
         case player_gender
             when 'M' then 'atp_id'
             when 'W' then 'wta_id'
