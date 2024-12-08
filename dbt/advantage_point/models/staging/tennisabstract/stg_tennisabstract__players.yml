@@ -36,7 +36,8 @@ models:
         description: Type of player's tour ID, based on gender.
         data_tests:
           - accepted_values:
-            values: ['atp_id', 'wta_id', null]
+              values: ['atp_id', 'wta_id', null]
+              quote: true
 
       - name: photograph_link
         description: ""
@@ -60,8 +61,8 @@ models:
         description: Denotes if player is active.
         data_tests:
           - accepted_values:
-            values: [true, false, null]
-            quote: false
+              values: [true, false, null]
+              quote: false
 
       - name: full_name_parameter
         description: ""  
@@ -85,8 +86,8 @@ models:
         description: Denotes if player is right or left handed.
         data_tests:
           - accepted_values:
-            values: ['L', 'R', null]
-            quote: true
+              values: ['L', 'R', null]
+              quote: true
 
       - name: current_singles_rank
         description: Current singles ranking.
@@ -98,8 +99,8 @@ models:
         description: Denotes if player uses one-handed or two-handed backhand.
         data_tests:
           - accepted_values
-            values: ['1', '2', null]
-            quote: true
+              values: ['1', '2', null]
+              quote: true
 
       - name: last_peak_singles_rank_on
         description: Date when player last achieved highest singles ranking.
@@ -114,8 +115,8 @@ models:
             - dc: Davis Cup (male)
         data_tests:
           - accepted_values:
-            values: ['bjkc_id', 'dc_ic', null]
-            quote: true
+              values: ['bjkc_id', 'dc_ic', null]
+              quote: true
 
       - name: last_name
         description: Player's last name.
