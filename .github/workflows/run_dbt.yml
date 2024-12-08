@@ -30,7 +30,7 @@ jobs:
         run:
           dbt deps --project-dir dbt/advantage_point
 
-      - name: dbt build
+       - name: Run dbt commands
         env:
           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
           DBT_HOST: ${{ vars.SUPABASE_HOST }}
@@ -42,7 +42,9 @@ jobs:
           DBT_THREADS: ${{ vars.DBT_THREADS }}
           type: postgres
           DBT_USER: ${{ vars.SUPABASE_USER }}
-        run:
+        run: |
+          dbt deps --project-dir dbt/advantage_point &&
+          dbt seed --profiles-dir ./dbt --project-dir dbt/advantage_point &&
           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
