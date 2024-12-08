@@ -18,6 +18,6 @@ renamed as (
         audit_field_active_flag as is_record_active,
         audit_field_start_datetime_utc as loaded_at
     from source
-),
+)
 
 select * from renamed
