@@ -30,7 +30,7 @@ jobs:
         run:
           dbt deps --project-dir dbt/advantage_point
 
-       - name: Run dbt commands
+      - name: Run dbt commands
         env:
           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
           DBT_HOST: ${{ vars.SUPABASE_HOST }}
