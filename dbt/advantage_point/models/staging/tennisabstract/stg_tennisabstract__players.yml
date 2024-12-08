@@ -98,7 +98,7 @@ models:
       - name: backhand_type
         description: Denotes if player uses one-handed or two-handed backhand.
         data_tests:
-          - accepted_values
+          - accepted_values:
               values: ['1', '2', null]
               quote: true
 
