@@ -54,7 +54,7 @@ models:
       - name: first_peak_singles_rank_on
         description: Date when player first achieved highest singles ranking.
 
-      - name: chart_agg,
+      - name: chart_agg
         description: ""
 
       - name: is_player_active
