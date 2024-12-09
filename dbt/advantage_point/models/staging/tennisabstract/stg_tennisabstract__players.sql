@@ -46,7 +46,7 @@ renamed as (
         end as team_cup_id_type,
         replace(lastname, '''', '') as last_name,
         to_date(dob, 'YYYYMMDD') as date_of_birth,
-        cast(ht as int) as height_in_centimeters
+        cast(ht as int) as height_in_centimeters,
         {{ convert_rank_to_integer('peakrank') }} as peak_singles_rank,
         replace(itf_id, '''', '') as itf_id,
         replace(wiki_id, '''', '') as wikipedia_id,
