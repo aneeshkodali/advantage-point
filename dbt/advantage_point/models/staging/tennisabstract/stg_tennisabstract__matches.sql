@@ -11,7 +11,7 @@ seed_valid_match_dates as (
 renamed as (
     select
         source.match_url,
-        to_date(coalesce(cast(seed_valid_match_dates.valid_match_date) as text, source.match_date), 'YYYYMMDD') as match_date,
+        to_date(coalesce(cast(seed_valid_match_dates.valid_match_date as text), source.match_date), 'YYYYMMDD') as match_date,
         source.match_gender,
         replace(source.match_tournament, '_', ' ') as match_tournament,
         source.match_round,
