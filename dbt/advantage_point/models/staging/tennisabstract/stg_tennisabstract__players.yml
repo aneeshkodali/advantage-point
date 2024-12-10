@@ -111,7 +111,7 @@ models:
             - dc: Davis Cup (male)
         data_tests:
           - accepted_values:
-              values: ['bjkc_id', 'dc_ic', null]
+              values: ['bjkc_id', 'dc_id', null]
               quote: true
 
       - name: last_name
