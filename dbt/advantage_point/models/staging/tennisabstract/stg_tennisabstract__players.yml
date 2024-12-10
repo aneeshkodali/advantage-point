@@ -59,10 +59,6 @@ models:
 
       - name: is_player_active
         description: Denotes if player is active.
-        data_tests:
-          - accepted_values:
-              values: [true, false, null]
-              quote: false
 
       - name: full_name_parameter
         description: ""  
@@ -140,9 +136,6 @@ models:
         description: Boolean field indicating if the record is active.
         data_tests:
           - not_null
-          - accepted_values:
-              values: [true, false]
-              quote: false
 
       - name: loaded_at
         description: Timestamp indicating when the record was loaded.

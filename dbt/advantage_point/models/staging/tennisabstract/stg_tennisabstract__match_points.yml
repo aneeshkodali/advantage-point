@@ -45,9 +45,6 @@ models:
         description: Boolean field indicating if the record is active.
         data_tests:
           - not_null
-          - accepted_values:
-              values: [true, false]
-              quote: false
 
       - name: loaded_at
         description: Timestamp indicating when the record was loaded.
