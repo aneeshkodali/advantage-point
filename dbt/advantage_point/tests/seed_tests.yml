@@ -1,0 +1,9 @@
+version: 2
+
+seeds:
+  - name: valid_match_dates
+    columns:
+      - name: match_url
+        data_tests:
+          - unique
+          - not_null

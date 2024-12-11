@@ -5,6 +5,14 @@
 name: 'advantage_point'
 version: '1.0.0'
 
+seeds:
+  advantage_point:
+    +schema: "{{ env_var('DBT_SCHEMA_SEED') }}"
+    valid_match_dates:
+      column_types:
+        match_url: varchar
+        valid_match_date: varchar
+
 # This setting configures which "profile" dbt uses for this project.
 profile: 'advantage_point'
 
