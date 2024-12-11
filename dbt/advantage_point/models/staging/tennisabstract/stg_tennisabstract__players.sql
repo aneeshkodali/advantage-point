@@ -32,7 +32,7 @@ renamed as (
         shortlist as short_list,
         careerjs as career_js,
         {{ convert_rank_to_integer('peak_dubs') }} as peak_doubles_rank,
-        to_date(replace(peakfirst_dubs, '""', ''), 'YYYYMMDD') as first_peak_doubles_rank_on, -- FIX THIS - contains "'\"
+        to_date(replace(peakfirst_dubs, '''""''', ''), 'YYYYMMDD') as first_peak_doubles_rank_on, -- FIX THIS - contains "'\"
         replace(hand, '''', '') as handedness,
         {{ convert_rank_to_integer('currentrank') }} as current_singles_rank,
         replace(country, '''', '') as country_abbreviation,
