@@ -8,7 +8,7 @@ renamed as (
     select
         player_url,
         player_gender,
-        case photog_credit
+        case replace(photog_credit, '''', '')
             when '' then null
             else replace(photog_credit, '''', '')
         end as photograph_credit,
