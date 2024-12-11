@@ -1,0 +1,19 @@
+version: 2
+
+seeds:
+  - name: valid_match_dates
+    description: Contains valid match dates for match urls.
+    config:
+      column_types:
+        valid_match_date: varchar
+    columns:
+      - name: match_url
+        description: Match url
+        data_tests:
+          - unique
+          - not_null
+
+      - name: valid_match_date
+        description: Correct date for match url.
+        data_tests:
+          - not_null
