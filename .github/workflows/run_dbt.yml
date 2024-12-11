@@ -23,13 +23,6 @@ jobs:
         run:
           pip install -r dbt/requirements.txt
 
-      - name: Install dbt dependencies
-        env:
-          DBT_SCHEMA_INGESTION: ${{ vars.DBT_SCHEMA_INGESTION }}_dev
-          DBT_SCHEMA_STAGING: ${{ vars.DBT_SCHEMA_STAGING }}_dev
-        run:
-          dbt deps --project-dir dbt/advantage_point
-
       - name: Run dbt commands
         env:
           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
