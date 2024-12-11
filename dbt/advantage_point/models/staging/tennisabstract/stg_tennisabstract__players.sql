@@ -8,7 +8,10 @@ renamed as (
     select
         player_url,
         player_gender,
-        replace(photog_credit, '''', '') as photograph_credit, -- fix this - look at distinct values
+        case photog_credit
+            when '' then null
+            else replace(photog_credit, '''', '')
+        end as photograph_credit,
         {{ convert_rank_to_integer('current_dubs') }} as current_doubles_rank,
         replace(atp_id, '''', '') as tour_id,
         case player_gender
