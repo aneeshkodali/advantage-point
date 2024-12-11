@@ -36,8 +36,10 @@ jobs:
           DBT_HOST: ${{ vars.SUPABASE_HOST }}
           DBT_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           DBT_PORT: ${{ vars.SUPABASE_PORT }}
-          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
+          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}_dev
+          DBT_SCHEMA_DATA_VAULT: ${{ vars.SCHEMA_DATA_VAULT }}_dev
           DBT_SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}_dev
+          DBT_SCHEMA_SEED: ${{ vars.SCHEMA_SEED }}_dev
           DBT_SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}_dev
           DBT_THREADS: ${{ vars.DBT_THREADS }}
           type: postgres
