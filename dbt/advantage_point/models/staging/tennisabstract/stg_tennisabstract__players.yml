@@ -48,7 +48,7 @@ models:
       - name: twitter_handle
         description: Player Twitter handle.
 
-      - name: photograph_credit_abbreviation
+      - name: photograph
         description: ""
 
       - name: first_peak_singles_rank_on
