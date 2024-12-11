@@ -9,7 +9,7 @@ renamed as (
         player_url,
         player_gender,
         case photog_credit
-            when '' then null
+            when '""' then null
             else replace(photog_credit, '''', '')
         end as photograph_credit,
         {{ convert_rank_to_integer('current_dubs') }} as current_doubles_rank,
