@@ -9,11 +9,11 @@ seeds:
     columns:
       - name: match_url
         description: Match url
-        data_tests:
+        tests:
           - unique
           - not_null
 
       - name: valid_match_date
         description: Correct date for match url.
-        data_tests:
+        tests:
           - not_null
