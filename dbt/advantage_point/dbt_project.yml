@@ -37,3 +37,6 @@ models:
     staging:
       +schema: "{{ env_var('DBT_SCHEMA_STAGING') }}"
       +materialized: view
+    intermediate:
+      +schema: "{{ env_var('DBT_SCHEMA_INTERMEDIATE') }}"
+      +materialized: ephemeral

@@ -34,6 +34,7 @@ jobs:
           DBT_SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}_dev
           DBT_SCHEMA_SEED: ${{ vars.SCHEMA_SEED }}_dev
           DBT_SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}_dev
+          DBT_SCHEMA_INTERMEDIATE: ${{ vars.SCHEMA_INTERMEDIATE }}_dev
           DBT_THREADS: ${{ vars.DBT_THREADS }}
           type: postgres
           DBT_USER: ${{ vars.SUPABASE_USER }}
