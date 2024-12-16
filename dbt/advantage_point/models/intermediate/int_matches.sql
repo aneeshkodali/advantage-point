@@ -2,6 +2,7 @@ with
 
 tennisabstract_matches as (
     select * from {{ ref('stg_tennisabstract__matches') }}
+    where is_record_active = true
 ),
 
 matches as (
