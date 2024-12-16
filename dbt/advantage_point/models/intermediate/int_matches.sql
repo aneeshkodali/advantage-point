@@ -13,6 +13,7 @@ matches as (
         match_date,
         match_round,
         match_title,
+        -- creating match_title for use in coalesce (may be better to use this directly?)
         concat(
             year(match_date) || ' ',
             match_tournament || ' ',
@@ -21,7 +22,7 @@ matches as (
             ' vs ',
             match_player_two
         ) as match_title_concat
-    from tennis_abstract_matches
+    from tennisabstract_matches
 ),
 
 final as (
