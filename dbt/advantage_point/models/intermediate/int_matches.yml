@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: int_matches
+    description: Intermediate model for match-level data.
+    columns:
+      - name: match_url
+        description: Link to the match data.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: match_gender
+        description: Gender of the match.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['M', 'W']
+              quote: true
+
+      - name: match_tournament
+        description: Tournament where match took place.
+        data_tests:
+          - not_null
+
+      - name: match_round
+        description: Round within tournament when match took place.
+        data_tests:
+          - not_null
+
+      - name: match_date
+        description: Date when match took place.
+        data_tests:
+          - not_null
