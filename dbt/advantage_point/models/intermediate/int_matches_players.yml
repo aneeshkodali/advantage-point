@@ -12,6 +12,9 @@ models:
         description: Link to the match data.
         data_tests:
           - not_null
+          - relationships:
+              to: ref('int_matches')
+              field: match_url
 
       - name: player_name
         description: Player name.
