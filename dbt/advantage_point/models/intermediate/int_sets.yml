@@ -13,6 +13,9 @@ models:
         description: Link to the match data.
         data_tests:
           - not_null
+          - relationships:
+              to: ref('int_matches')
+              field: match_url
 
       - name: set_number_in_match
         description: Set number in match.
