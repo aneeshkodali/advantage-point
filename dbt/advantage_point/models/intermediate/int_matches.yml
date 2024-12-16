@@ -32,3 +32,8 @@ models:
         description: Date when match took place.
         data_tests:
           - not_null
+
+      - name: match_title
+        description: Name of the match.
+        data_tests:
+          - not_null
