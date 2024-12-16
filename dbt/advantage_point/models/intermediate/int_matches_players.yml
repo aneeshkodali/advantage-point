@@ -4,9 +4,9 @@ models:
   - name: int_matches_players
     description: Intermediate model for match-player level data.
     - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - match_url
-            - player_name
+        combination_of_columns:
+          - match_url
+          - player_name
     columns:
       - name: match_url
         description: Link to the match data.
