@@ -8,10 +8,8 @@ tennisabstract_matches as (
 matches as (
     select
         match_url,
-        match_player_one,
-        match_player_two,
-        -- match_result is of format: {winner} d. {loser} {score}
-        regexp_matches(match_result, '^(.+?) d\. (.+?) (.+)$') AS match_result_parsed
+        match_winner,
+        match_loser
     from tennisabstract_matches
 ),
 
