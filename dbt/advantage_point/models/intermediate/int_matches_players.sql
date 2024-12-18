@@ -32,7 +32,7 @@ matches_union as (
             0 as is_match_winner
         from matches
     )
-)
+),
 
 final as (
     select
