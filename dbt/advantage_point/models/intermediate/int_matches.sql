@@ -3,7 +3,8 @@ with
 tennisabstract_matches as (
     select
         *,
-        extract(year from match_date):: int as match_year
+        extract(year from match_date):: int as match_year,
+        '{{ ref('stg_tennisabstract__matches') }}' as source
     from {{ ref('stg_tennisabstract__matches') }}
     where is_record_active = true
 ),
@@ -37,7 +38,12 @@ final as (
         match_date,
         match_year,
         match_round,
-        coalesce(match_title, match_title_concat) as match_title
+        case
+            when match_title is null then match_title_concat
+            when match_title = '404 Not Found' then match_title_concat
+            else match_title
+        end as match_title,
+        source
     from matches
 )
 
