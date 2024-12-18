@@ -20,16 +20,16 @@ matches_union as (
     (
         select
             match_url,
-            match_player_one as player_name,
-            match_result_parsed
+            match_winner as player_name,
+            1 as is_match_winner
         from matches
     )
     union all
     (
         select
             match_url,
-            match_player_two as player_name,
-            match_result_parsed
+            match_loser as player_name,
+            0 as is_match_winner
         from matches
     )
 )
@@ -38,12 +38,7 @@ final as (
     select
         match_url,
         player_name,
-        -- compare player to winner
-        case
-            when player_name = match_result_parsed[1] then true
-            when player_name != match_result_parsed[1] then false
-            else null
-        end as is_match_winner
+        is_match_winner
     from matches_union
 )
 
