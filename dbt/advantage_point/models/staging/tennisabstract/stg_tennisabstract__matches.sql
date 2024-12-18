@@ -22,8 +22,9 @@ renamed as (
         replace(source.match_player_two, '_', ' ') as match_player_two,
         source.match_title,
         source.match_result,
+        source.match_winner
 
-        -- {winner} d. {loser} {set score}
+        -- result: {winner} d. {loser} {set score}
         case
             when source.match_winner = source.match_player_one then match_player_two
             when source.match_winner = source.match_player_two then match_player_one
