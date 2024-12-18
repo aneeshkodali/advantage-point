@@ -1,7 +1,10 @@
 with
 
 tennisabstract_matches as (
-    select * from {{ ref('stg_tennisabstract__matches') }}
+    select
+        *,
+        extract(year from match_date):: int as match_year
+    from {{ ref('stg_tennisabstract__matches') }}
     where is_record_active = true
 ),
 
@@ -11,11 +14,12 @@ matches as (
         match_gender,
         match_tournament,
         match_date,
+        match_year,
         match_round,
         match_title,
         -- creating match_title for use in coalesce (may be better to use this directly?)
         concat(
-            year(match_date) || ' ',
+            match_year || ' ',
             match_tournament || ' ',
             match_round || ': ',
             match_player_one,
