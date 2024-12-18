@@ -53,6 +53,15 @@ models:
 
       - name: match_result
         description: Outcome of the match. Includes winner, loser, and score.
+
+      - name: match_winner
+        description: Winner of the match.
+
+      - name: match_loser
+        description: Loser of the match.
+
+      - name: match_score
+        description: Match score.
          
       - name: is_record_active
         description: Boolean field indicating if the record is active.
