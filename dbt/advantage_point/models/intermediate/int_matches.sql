@@ -32,7 +32,7 @@ matches as (
             when match_winner = match_player_one then match_player_two
             when match_winner = match_player_two then match_player_one
             else null
-        end as match_loser,
+        end as match_loser
     from tennisabstract_matches
 ),
 
