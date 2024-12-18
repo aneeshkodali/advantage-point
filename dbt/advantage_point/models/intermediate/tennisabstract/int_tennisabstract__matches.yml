@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_matches
+  - name: int_tennisabstract__matches
     description: Intermediate model for match-level data.
     columns:
       - name: match_url

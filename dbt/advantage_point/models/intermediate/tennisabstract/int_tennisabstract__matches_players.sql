@@ -1,7 +1,7 @@
 with
 
 matches as (
-    select * from {{ ref('int_matches') }}
+    select * from {{ ref('int_tennisabstract__matches') }}
 ),
 
 -- get players into own rows
