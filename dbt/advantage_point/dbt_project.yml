@@ -39,4 +39,4 @@ models:
       +materialized: view
     intermediate:
       +schema: "{{ env_var('DBT_SCHEMA_INTERMEDIATE') }}"
-      +materialized: ephemeral
+      +materialized: view
