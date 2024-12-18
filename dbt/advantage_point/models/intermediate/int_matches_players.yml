@@ -8,6 +8,11 @@ models:
           combination_of_columns:
             - match_url
             - player_name
+      - valid_match_unit_outcomes:
+          group_by_columns:
+            - match_url
+            - player_name
+          boolean_column: is_match_winner
     columns:
       - name: match_url
         description: Link to the match data.
