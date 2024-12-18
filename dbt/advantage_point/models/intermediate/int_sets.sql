@@ -4,8 +4,8 @@ with
 tennisabstract_match_points as (
     select
         *,
-        cast(split_part("sets", '‑', 1) as int) as set_score_server,
-        cast(split_part("sets", '‑', 2) as int) as set_score_receiver
+        cast(split_part(set_score_in_match, '‑', 1) as int) as set_score_server,
+        cast(split_part(set_score_in_match, '‑', 2) as int) as set_score_receiver
     from {{ ref('stg_tennisabstract__match_points') }}
     where is_record_active = true
 ),
