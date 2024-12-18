@@ -8,7 +8,7 @@ source as (
 ),
 
 seed_valid_match_dates as (
-    select * from {{ ref('valid_match_dates') }}
+    select * from {{ ref('valid_tennisabstract_match_dates') }}
 ),
 
 renamed as (
