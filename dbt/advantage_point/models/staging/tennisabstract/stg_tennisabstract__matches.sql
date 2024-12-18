@@ -3,7 +3,7 @@ with
 source as (
     select
         *,
-        split_part(source.match_result, ' d. ', 1) as match_winner
+        split_part(match_result, ' d. ', 1) as match_winner
     from {{ source('tennisabstract', 'matches') }}
 ),
 
@@ -29,7 +29,7 @@ renamed as (
             when source.match_winner = source.match_player_two then match_player_one
             else null
         end as match_loser,
-        
+
         source.audit_field_active_flag as is_record_active,
         source.audit_field_start_datetime_utc as loaded_at
     from source
