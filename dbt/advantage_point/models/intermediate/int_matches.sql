@@ -27,6 +27,7 @@ matches as (
             ' vs ',
             match_player_two
         ) as match_title_concat,
+        match_winner,
         -- result: {winner} d. {loser} {set score}
         case
             when match_winner = match_player_one then match_player_two
