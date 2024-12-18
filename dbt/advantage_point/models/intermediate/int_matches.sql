@@ -35,6 +35,7 @@ final as (
         match_gender,
         match_tournament,
         match_date,
+        match_year,
         match_round,
         coalesce(match_title, match_title_concat) as match_title
     from matches
