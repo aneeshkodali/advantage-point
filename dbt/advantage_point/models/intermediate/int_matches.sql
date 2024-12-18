@@ -27,6 +27,7 @@ matches as (
             ' vs ',
             match_player_two
         ) as match_title_concat,
+        match_result,
         match_winner,
         -- result: {winner} d. {loser} {set score}
         case
@@ -50,6 +51,7 @@ final as (
             when match_title = '404 Not Found' then match_title_concat
             else match_title
         end as match_title,
+        match_result,
         match_winner,
         match_loser,
         split_part(match_result, match_loser || ' ', 2) as match_score
