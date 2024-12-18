@@ -22,7 +22,7 @@ renamed as (
         replace(source.match_player_two, '_', ' ') as match_player_two,
         source.match_title,
         source.match_result,
-        source.match_winner
+        source.match_winner,
 
         -- result: {winner} d. {loser} {set score}
         case
