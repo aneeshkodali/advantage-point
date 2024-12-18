@@ -4,7 +4,7 @@ tennisabstract_matches as (
     select
         *,
         extract(year from match_date):: int as match_year,
-        '{{ ref('stg_tennisabstract__matches') }}' as source
+        split_part(match_result, ' d. ', 1) as match_winner
     from {{ ref('stg_tennisabstract__matches') }}
     where is_record_active = true
 ),
@@ -26,7 +26,13 @@ matches as (
             match_player_one,
             ' vs ',
             match_player_two
-        ) as match_title_concat
+        ) as match_title_concat,
+        -- result: {winner} d. {loser} {set score}
+        case
+            when match_winner = match_player_one then match_player_two
+            when match_winner = match_player_two then match_player_one
+            else null
+        end as match_loser,
     from tennisabstract_matches
 ),
 
@@ -43,7 +49,9 @@ final as (
             when match_title = '404 Not Found' then match_title_concat
             else match_title
         end as match_title,
-        source
+        match_winner,
+        match_loser,
+        split_part(match_result, match_loser || ' ', 2) as match_score
     from matches
 )
 

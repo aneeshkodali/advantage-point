@@ -42,3 +42,13 @@ models:
         description: Name of the match.
         data_tests:
           - not_null
+
+      - name: match_winner
+        description: Winner of the match.
+
+      - name: match_loser
+        description: Loser of the match.
+
+      - name: match_score
+        description: Match score.
+         
