@@ -23,8 +23,8 @@ renamed as (
         -- {winner} d. {loser} {set score}
         split_part(source.match_result, ' d. ', 1) as match_winner,
         case
-            when match_winner = match_player_one then match_player_two
-            when match_winner = match_player_two then match_player_one
+            when source.match_winner = source.match_player_one then match_player_two
+            when source.match_winner = source.match_player_two then match_player_one
             else null
         end as match_loser,
         source.audit_field_active_flag as is_record_active,
