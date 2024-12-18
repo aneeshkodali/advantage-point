@@ -1,7 +1,10 @@
 with
 
 source as (
-    select * from {{ source('tennisabstract', 'matches') }}
+    select
+        *,
+        split_part(source.match_result, ' d. ', 1) as match_winner
+    from {{ source('tennisabstract', 'matches') }}
 ),
 
 seed_valid_match_dates as (
@@ -21,12 +24,12 @@ renamed as (
         source.match_result,
 
         -- {winner} d. {loser} {set score}
-        split_part(source.match_result, ' d. ', 1) as match_winner,
         case
             when source.match_winner = source.match_player_one then match_player_two
             when source.match_winner = source.match_player_two then match_player_one
             else null
         end as match_loser,
+        
         source.audit_field_active_flag as is_record_active,
         source.audit_field_start_datetime_utc as loaded_at
     from source
