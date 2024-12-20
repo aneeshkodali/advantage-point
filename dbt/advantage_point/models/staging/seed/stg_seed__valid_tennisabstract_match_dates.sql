@@ -7,7 +7,7 @@ source as (
 renamed as (
     select
         match_url,
-        to_date(valid_match_date, 'YYYYMMDD') as match_date
+        to_date(cast(valid_match_date as text), 'YYYYMMDD') as match_date
     from source
 )
 
