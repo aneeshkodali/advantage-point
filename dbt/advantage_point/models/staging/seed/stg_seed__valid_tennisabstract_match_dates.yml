@@ -1,11 +1,8 @@
 version: 2
 
-seeds:
-  - name: valid_tennisabstract_match_dates
+models:
+  - name: stg_seed__valid_tennisabstract_match_dates
     description: Contains valid match dates for match urls.
-    config:
-      column_types:
-        valid_match_date: varchar
     columns:
       - name: match_url
         description: Match url
