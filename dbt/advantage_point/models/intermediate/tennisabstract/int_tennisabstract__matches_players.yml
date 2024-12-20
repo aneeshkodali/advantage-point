@@ -8,6 +8,7 @@ models:
           combination_of_columns:
             - match_url
             - player_name
+            - is_match_winner
       - valid_match_unit_outcomes:
           group_by_columns:
             - match_url
