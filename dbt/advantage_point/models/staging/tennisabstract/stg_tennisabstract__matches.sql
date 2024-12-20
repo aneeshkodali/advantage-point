@@ -10,7 +10,6 @@ renamed as (
     select
         match_url,
         match_date, -- remains string, will be cast in intermediate layer
-        -- to_date(coalesce(cast(seed_valid_match_dates.valid_match_date as text), match_date), 'YYYYMMDD') as match_date,
         match_gender,
         replace(match_tournament, '_', ' ') as match_tournament,
         match_round,
