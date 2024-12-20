@@ -2,6 +2,7 @@ with
 
 matches as (
     select * from {{ ref('int_tennisabstract__matches') }}
+    where is_record_active = true
 ),
 
 -- get players into own rows
