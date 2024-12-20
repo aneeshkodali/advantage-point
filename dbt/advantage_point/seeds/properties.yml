@@ -1,7 +1,7 @@
 version: 2
 
 seeds:
-  - name: valid_match_dates
+  - name: valid_tennisabstract_match_dates
     description: Contains valid match dates for match urls.
     config:
       column_types:
