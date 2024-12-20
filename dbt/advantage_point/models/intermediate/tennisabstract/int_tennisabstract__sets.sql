@@ -17,7 +17,7 @@ match_sets as (
         set_score_server,
         set_score_receiver,
         set_score_server + set_score_receiver + 1 as set_number_in_match,
-        row_number() over (partition by match_url order by set_score_server + set_score_receiver + 1) as set_number_in_match_window
+        row_number() over (partition by match_url order by point_number_in_match) as set_number_in_match_window
     from tennisabstract_match_points
 ),
 
