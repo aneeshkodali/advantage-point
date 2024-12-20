@@ -10,7 +10,7 @@ matches_union as (
         select
             match_url,
             match_winner as player_name,
-            1 as is_match_winner
+            true as is_match_winner
         from matches
     )
     union all
@@ -18,7 +18,7 @@ matches_union as (
         select
             match_url,
             match_loser as player_name,
-            0 as is_match_winner
+            false as is_match_winner
         from matches
     )
 ),
