@@ -46,12 +46,15 @@ matches_match_title as (
     select
         *,
         concat(
-            matches.match_year || ' ',
-            matches.match_tournament || ' ',
-            matches.match_round || ': ',
-            matches.match_player_one,
+            match_year,
+            ' ',
+            match_tournament,
+            ' ',
+            match_round,
+            ': ',
+            match_player_one,
             ' vs ',
-            matches.match_player_two
+            match_player_two
         ) as match_title_concat
     from matches_match_year
 ),
