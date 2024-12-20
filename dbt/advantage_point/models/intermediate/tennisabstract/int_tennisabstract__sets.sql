@@ -1,7 +1,7 @@
 with
 
 -- note '‑' is a special character
-tennisabstract_match_points as (
+match_points as (
     select
         *,
         cast(split_part(set_score_in_match, '‑', 1) as int) as set_score_server,
@@ -13,19 +13,8 @@ tennisabstract_match_points as (
 match_sets as (
     select distinct
         match_url,
-        set_score_in_match,
-        set_score_server,
-        set_score_receiver,
-        set_score_server + set_score_receiver + 1 as set_number_in_match,
-        row_number() over (partition by match_url order by point_number_in_match) as set_number_in_match_window
-    from tennisabstract_match_points
-),
-
-final as (
-    select
-        match_url,
-        coalesce(set_number_in_match, set_number_in_match_window) as set_number_in_match
-    from match_sets
+        set_score_server + set_score_receiver + 1 as set_number_in_match
+    from match_points
 )
 
-select * from final
+select * from match_sets
