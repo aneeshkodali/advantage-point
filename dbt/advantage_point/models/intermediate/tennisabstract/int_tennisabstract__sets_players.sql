@@ -2,7 +2,7 @@ with
 
 matches as (
     select * from {{ ref('int_tennisabstract__matches') }}
-    where is_record_active = true
+    where match_result is not null
 ),
 
 -- split sets into own line
