@@ -10,6 +10,10 @@ models:
             - set_number_in_match
             - player_name
             - is_set_winner
+      - dbt_expectations.expect_multicolumn_sum_to_equal:
+          column_list: ['is_set_winner']
+          sum_total: 1
+          group_by: [match_url, set_number_in_match, player_name]
     columns:
       - name: match_url
         description: Link to the match data.

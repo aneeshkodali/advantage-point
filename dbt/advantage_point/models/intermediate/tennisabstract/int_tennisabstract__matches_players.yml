@@ -9,11 +9,10 @@ models:
             - match_url
             - player_name
             - is_match_winner
-      - valid_match_unit_outcomes:
-          group_by_columns:
-            - match_url
-            - player_name
-          boolean_column: is_match_winner
+      - dbt_expectations.expect_multicolumn_sum_to_equal:
+          column_list: ['is_match_winner']
+          sum_total: 1
+          group_by: [match_url, player_name]
     columns:
       - name: match_url
         description: Link to the match data.
