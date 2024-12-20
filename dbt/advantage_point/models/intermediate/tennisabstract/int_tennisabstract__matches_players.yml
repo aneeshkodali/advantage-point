@@ -25,4 +25,8 @@ models:
           - not_null
         
       - name: is_match_winner
-        description: Boolean denoting if player won match.
+        description: 1/0 (true/false) denoting if player won match.
+        data_tests:
+          - accepted_values:
+              values: [0, 1]
+              quote: false

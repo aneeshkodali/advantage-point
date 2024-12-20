@@ -105,7 +105,7 @@ match_set_score_union as (
             set_number_in_match,
             set_winner as player_name,
             set_winner_score as set_score,
-            true as is_set_winner
+            1 as is_set_winner
         from match_set_scores_set_outcomes
     )
     union all
@@ -115,7 +115,7 @@ match_set_score_union as (
             set_number_in_match,
             set_loser as player_name,
             set_loser_score as set_score,
-            false as is_set_winner
+            0 as is_set_winner
         from match_set_scores_set_outcomes
     )
 ),

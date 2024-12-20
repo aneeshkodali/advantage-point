@@ -31,6 +31,8 @@ models:
           - not_null
 
       - name: is_set_winner
-        description: Boolean indicating if player won the set.
+        description: 1/0 (true/false) denoting if player won set.
         data_tests:
-          - not_null
+          - accepted_values:
+              values: [0, 1]
+              quote: false
