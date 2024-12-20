@@ -18,3 +18,21 @@ models:
         description: Set number in match.
         data_tests:
           - not_null
+
+      - name: set_score
+        description: Set score (from set winner's perspective).
+
+      - name: set_tiebreaker_score
+        description: Tiebreaker score for the set.
+      
+      - name: set_winner
+        description: Player who won the set.
+
+      - name: set_winner_score
+        description: Set score for player who won the set. In other words, the number of games won by the set winner in that set.
+
+      - name: set_loser
+        description: Player who lost the set.
+
+      - name: set_loser_score
+        description: Set score for player who lost the set. In other words, the number of games won by the set loser in that set.
