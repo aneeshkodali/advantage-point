@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_tennisabstract__sets_players
+    description: Intermediate model for set outcomes.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - match_url
+            - set_number_in_match
+            - player_name
+            - is_set_winner
+    columns:
+      - name: match_url
+        description: Link to the match data.
+        data_tests:
+          - not_null
+
+      - name: set_number_in_match
+        description: Set number in match.
+        data_tests:
+          - not_null
+      
+      - name: player_name
+        description: Player in the set.
+        data_tests:
+          - not_null
+
+      - name: is_set_winner
+        description: Boolean indicating if player won the set.
+        data_tests:
+          - not_null
