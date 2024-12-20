@@ -9,33 +9,38 @@ tennisabstract_matches as (
     where is_record_active = true
 ),
 
+valid_match_dates as (
+    select * from {{ ref('stg_seed__valid_tennisabstract_match_dates')}}
+),
+
 matches as (
     select
-        match_url,
-        match_gender,
-        match_tournament,
-        match_date,
-        match_year,
-        match_round,
-        match_title,
+        matches.match_url,
+        matches.match_gender,
+        matches.match_tournament,
+        coalesce(valid_match_dates.match_date, to_date(matches.match_date, 'YYYYMMDD')) as match_date,
+        matches.match_year,
+        matches.match_round,
+        matches.match_title,
         -- creating match_title for use in coalesce (may be better to use this directly?)
         concat(
-            match_year || ' ',
-            match_tournament || ' ',
-            match_round || ': ',
-            match_player_one,
+            matches.match_year || ' ',
+            matches.match_tournament || ' ',
+            matches.match_round || ': ',
+            matches.match_player_one,
             ' vs ',
-            match_player_two
+            matches.match_player_two
         ) as match_title_concat,
-        match_result,
-        match_winner,
+        matches.match_result,
+        matches.match_winner,
         -- result: {winner} d. {loser} {set score}
         case
-            when match_winner = match_player_one then match_player_two
-            when match_winner = match_player_two then match_player_one
+            when matches.match_winner = matches.match_player_one then matches.match_player_two
+            when matches.match_winner = matches.match_player_two then matches.match_player_one
             else null
         end as match_loser
-    from tennisabstract_matches
+    from tennisabstract_matches as matches
+    left join valid_match_dates on matches.match_url = valid_match_dates.match_url
 ),
 
 final as (

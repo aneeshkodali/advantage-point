@@ -10,7 +10,7 @@ models:
           - unique
           - not_null
 
-      - name: valid_match_date
+      - name: match_date
         description: Correct date for match url.
         data_tests:
           - not_null
