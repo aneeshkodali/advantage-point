@@ -15,14 +15,8 @@ valid_match_dates as (
 -- join to seed data
 matches_joined as (
     select
-        matches.match_url,
-        matches.match_gender,
-        matches.match_tournament,
-        coalesce(valid_match_dates.match_date, to_date(matches.match_date, 'YYYYMMDD')) as match_date,
-        matches.match_round,
-        matches.match_title,
-        matches.match_result,
-        matches.match_winner,
+        *
+        coalesce(valid_match_dates.match_date, to_date(matches.match_date, 'YYYYMMDD')) as match_date_valid,
         -- result: {winner} d. {loser} {set score}
         case
             when matches.match_winner = matches.match_player_one then matches.match_player_two
@@ -65,7 +59,7 @@ final as (
         match_url,
         match_gender,
         match_tournament,
-        match_date,
+        match_date_valid as match_date,
         match_year,
         match_round,
         case
