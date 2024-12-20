@@ -15,7 +15,7 @@ valid_match_dates as (
 -- join to seed data
 matches_joined as (
     select
-        *,
+        matches.*,
         coalesce(valid_match_dates.match_date, to_date(matches.match_date, 'YYYYMMDD')) as match_date_valid,
         -- result: {winner} d. {loser} {set score}
         case
@@ -31,7 +31,7 @@ matches_joined as (
 matches_match_year as (
     select
         *,
-        extract(year from match_date):: int as match_year
+        extract(year from match_date_valid):: int as match_year
     from matches_joined
 ),
 
