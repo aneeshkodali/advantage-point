@@ -4,10 +4,6 @@ source as (
     select * from {{ source('tennisabstract', 'match_points') }}
 ),
 
-/*
-note:
-'‑' is a non-breaking hyphen
-*/
 renamed as (
     select
         match_url,
