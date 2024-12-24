@@ -9,8 +9,8 @@ matches as (
 match_sets_unnest as (
     select
         *,
-        UNNEST(STRING_TO_ARRAY(match_score, ' ')) AS set_score,
-        generate_subscripts(STRING_TO_ARRAY(match_score, ' '), 1) AS set_number_in_match
+        unnest(string_to_array(match_score, ' ')) AS set_score,
+        generate_subscripts(string_to_array(match_score, ' '), 1) AS set_number_in_match
     FROM matches
 ),
 

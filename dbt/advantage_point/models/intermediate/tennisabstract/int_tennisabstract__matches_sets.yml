@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_tennisabstract__sets
+  - name: int_tennisabstract__matches_sets
     description: Intermediate model for set-level data.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
