@@ -28,6 +28,16 @@ models:
         data_tests:
           - not_null
 
+      - name: match_player_one
+        description: Player in match.
+        data_tests:
+          - not_null
+      
+      - name: match_player_two
+        description: Player in match.
+        data_tests:
+          - not_null
+
       - name: match_date
         description: Date when match took place.
         data_tests:

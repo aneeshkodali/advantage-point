@@ -62,6 +62,8 @@ final as (
         match_date_valid as match_date,
         match_year,
         match_round,
+        match_player_one,
+        match_player_two,
         case
             when match_title is null then match_title_concat
             when match_title = '404 Not Found' then match_title_concat
