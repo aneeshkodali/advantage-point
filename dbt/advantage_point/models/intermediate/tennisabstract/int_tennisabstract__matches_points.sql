@@ -39,6 +39,8 @@ match_points_scores_split as (
         when mp.point_description in ('Point penalty.', 'Unknown.') then null
         -- if rally resulted in a 'challenge'
         when mp.point_description ilike '%challenge was incorrect%' then null
+        -- if rally does not contain an 'outcome' string
+        when not (mp.point_description ilike any (array['%ace%', '%double fault%', '%forced error%', '%unforced error%', '%service winner%', '%winner%']))
         else mp.point_description
     end as point_description_new,
     mp.point_description
