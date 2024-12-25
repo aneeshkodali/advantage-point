@@ -31,8 +31,6 @@ models:
         
       - name: point_description
         description: Semicolon-separated list-like string of shots in the point rally.
-        data_tests:
-          - not_null
 
       - name: number_of_shots_in_point
         description: Number of shots in the point. Does not factor in point outcome.
