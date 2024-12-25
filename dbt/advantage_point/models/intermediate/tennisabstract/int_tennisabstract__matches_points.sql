@@ -152,6 +152,33 @@ match_points_winner as (
   from match_points_outcome
 ),
 
+-- get rally length
+match_points_rally_length as (
+  select
+    *,
+    -- calculate rally length
+    case
+      -- exclude 'errors'
+      when point_outcome in ('double fault', 'forced error', 'unforced error') then number_of_shots_in_point - 1
+      -- include 'winners'
+      when point_outcome in ('ace', 'service winner', 'winner') then number_of_shots_in_point
+      else null
+    end as rally_length
+  from match_points_winner
+),
+
+-- get point loser
+match_points_loser as (
+  select
+    *,
+    case
+      when point_winner = point_server then point_receiver
+      when point_winner != point_server then point_server
+      else null
+    end as point_loser
+  from match_points_rally_length
+),
+
 final as (
   select
     match_url,
@@ -160,24 +187,13 @@ final as (
     point_server,
     point_receiver,
     point_description,
+    
     number_of_shots_in_point,
-
-    -- calculate rally length
-    case
-      -- exclude 'errors'
-      when point_outcome in ('double fault', 'forced error', 'unforced error') then number_of_shots_in_point - 1
-      -- include 'winners'
-      when point_outcome in ('ace', 'service winner', 'winner') then number_of_shots_in_point
-      else null
-    end as rally_length,
+    rally_length,
 
     point_outcome,
     point_winner,
-    case
-      when point_winner = point_server then point_receiver
-      when point_winner != point_server then point_server
-      else null
-    end as point_loser,
+    point_loser,
 
     point_score_in_game,
     point_score_server,
@@ -196,7 +212,7 @@ final as (
     game_number_in_match,
     game_number_in_set
     
-  from match_points_winner
+  from match_points_loser
 )
 
 select * from final
