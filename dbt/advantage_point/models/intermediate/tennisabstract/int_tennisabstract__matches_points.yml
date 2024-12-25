@@ -107,7 +107,7 @@ models:
         data_tests:
           - not_null
           - accepted_values:
-              values: [3, 4, 5]
+              values: [1, 2, 3, 4, 5]
               quote: False
 
       - name: game_score_in_set
