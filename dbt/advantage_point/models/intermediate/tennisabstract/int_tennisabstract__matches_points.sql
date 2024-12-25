@@ -16,7 +16,7 @@ match_points_scores_split as (
       mp.match_url,
       mp.point_number_in_match,
       mp.point_server,
-      
+
       -- get receiver
       case
         when mp.point_server = m.match_player_one then m.match_player_two
@@ -60,10 +60,14 @@ match_points_running_numbers as (
 match_points_rally_shot_count as (
   select
     *,
-    array_length(
-      regexp_split_to_array(point_description, ';'),
-      1
-    ) as number_of_shots_in_point
+    case
+        when point_description = 'Unknown.' then null
+        else
+            array_length(
+                regexp_split_to_array(point_description, ';'),
+                1
+            ) 
+    end as number_of_shots_in_point
   from match_points_running_numbers
 ),
 

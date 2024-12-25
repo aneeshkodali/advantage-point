@@ -36,14 +36,10 @@ models:
 
       - name: number_of_shots_in_point
         description: Number of shots in the point. Does not factor in point outcome.
-        data_tests:
-          - not_null
 
       - name: rally_length
         description: Number of shots in the point. Factors in point outcome.
-        data_tests:
-          - not_null
-
+      
       - name: point_outcome
         description: Result of the point.
         data_tests:
