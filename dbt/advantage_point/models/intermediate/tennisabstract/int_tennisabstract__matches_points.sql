@@ -35,7 +35,10 @@ match_points_scores_split as (
 
       -- nullify point_description if not valid
       case
+        -- if no rally occurred/recorded
         when mp.point_description in ('Point penalty.', 'Unknown.') then null
+        -- if rally resulted in a 'challenge'
+        when mp.point_description ilike '%challenge was incorrect%' then null
         else mp.point_description
     end as point_description
     from match_points as mp
