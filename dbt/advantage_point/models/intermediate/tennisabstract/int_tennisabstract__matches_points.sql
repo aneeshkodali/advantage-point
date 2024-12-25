@@ -61,7 +61,8 @@ match_points_rally_shot_count as (
   select
     *,
     case
-        when point_description = 'Unknown.' then null
+        -- when no rally exists
+        when point_description in ('Point penalty.', 'Unknown.') then null
         else
             array_length(
                 regexp_split_to_array(point_description, ';'),
