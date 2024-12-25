@@ -40,7 +40,8 @@ match_points_scores_split as (
         -- if rally resulted in a 'challenge'
         when mp.point_description ilike '%challenge was incorrect%' then null
         else mp.point_description
-    end as point_description
+    end as point_description,
+    mp.point_description as point_description_raw
     from match_points as mp
     left join matches as m on mp.match_url = m.match_url
 ),
@@ -161,6 +162,7 @@ final as (
         when point_outcome is null then null
         else point_description
     end as point_description,
+    point_description_raw,
     number_of_shots_in_point,
 
     -- calculate rally length

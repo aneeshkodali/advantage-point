@@ -30,7 +30,10 @@ models:
           - not_null
         
       - name: point_description
-        description: Semicolon-separated list-like string of shots in the point rally.
+        description: Semicolon-separated list-like string of shots in the point rally, with NULL logic applied.
+
+      - name: point_description_raw
+        description: Original semicolon-separated list-like string of shots in the point rally.
 
       - name: number_of_shots_in_point
         description: Number of shots in the point. Does not factor in point outcome.
