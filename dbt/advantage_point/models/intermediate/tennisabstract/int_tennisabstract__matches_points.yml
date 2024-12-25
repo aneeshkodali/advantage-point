@@ -1,0 +1,136 @@
+version: 2
+
+models:
+  - name: int_tennisabstract__matches_points
+    description: Intermediate model for point-level data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - match_url
+            - point_number_in_match
+    columns:
+      - name: match_url
+        description: Link to the match data.
+        data_tests:
+          - not_null
+
+      - name: point_number_in_match
+        description: Point number in match.
+        data_tests:
+          - not_null
+
+      - name: point_server
+        description: Player who is serving in the point.
+        data_tests:
+          - not_null
+
+      - name: point_receiver
+        description: Player who is returning in the point.
+        data_tests:
+          - not_null
+        
+      - name: point_description
+        description: Semicolon-separated list-like string of shots in the point rally.
+        data_tests:
+          - not_null
+
+      - name: number_of_shots_in_point
+        description: Number of shots in the point. Does not factor in point outcome.
+        data_tests:
+          - not_null
+
+      - name: rally_length
+        description: Number of shots in the point. Factors in point outcome.
+        data_tests:
+          - not_null
+
+      - name: point_outcome
+        description: Result of the point.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['ace', 'double fault', 'forced error', 'unforced error', 'service winner', 'winner']
+              quoted: True
+
+      - name: point_winner
+        description: Winner of the point.
+        data_tests:
+          - not_null
+
+      - name: point_loser
+        description: Loser of the point.
+        data_tests:
+          - not_null
+
+      - name: point_score_in_game
+        description: Point score in current game (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: point_score_server
+        description: Point score in current game for server.
+        data_tests:
+          - not_null
+
+      - name: point_score_receiver
+        description: Point score in current game for receiver.
+        data_tests:
+          - not_null
+
+      - name: point_number_in_set
+        description: Point number in current set.
+        data_tests:
+          - not_null
+
+      - name: point_number_in_game
+        description: Point number in current game.
+        data_tests:
+          - not_null
+
+      - name: set_score_in_match
+        description: Head-to-head sets won in current match (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: set_score_server
+        description: Number of sets won by server.
+        data_tests:
+          - not_null
+
+      - name: set_score_receiver
+        description: Number of sets won by receiver.
+        data_tests:
+          - not_null
+
+      - name: set_number_in_match
+        description: Set number in current match.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [3, 4, 5]
+              quoted: True
+
+      - name: game_score_in_set
+        description: Head-to-head games won in current set (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: game_score_server
+        description: Number of games won in current set by server.
+        data_tests:
+          - not_null
+
+      - name: game_score_receiver
+        description: Number of games won in current set by receiver.
+        data_tests:
+          - not_null
+
+      - name: game_number_in_match
+        description: Game number in current match.
+        data_tests:
+          - not_null
+      
+      - name: game_number_in_set
+        description: Game number in current set.
+        data_tests:
+          - not_null
