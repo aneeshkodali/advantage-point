@@ -16,7 +16,7 @@ match_points_scores_split as (
       mp.match_url,
       mp.point_number_in_match,
       mp.point_server,
-
+      
       -- get receiver
       case
         when mp.point_server = m.match_player_one then m.match_player_two
@@ -32,7 +32,12 @@ match_points_scores_split as (
       mp.point_score_in_game,
       split_part(mp.point_score_in_game, '-', 1) as point_score_server,
       split_part(mp.point_score_in_game, '-', 2) as point_score_receiver,
-      mp.point_description
+
+      -- nullify point_description if not valid
+      case
+        when mp.point_description in ('Point penalty.', 'Unknown.') then null
+        else mp.point_description
+    end as point_description
     from match_points as mp
     left join matches as m on mp.match_url = m.match_url
 ),
@@ -61,8 +66,8 @@ match_points_rally_shot_count as (
   select
     *,
     array_length(
-        regexp_split_to_array(point_description, ';'),
-        1
+      regexp_split_to_array(point_description, ';'),
+      1
     ) as number_of_shots_in_point
   from match_points_running_numbers
 ),
