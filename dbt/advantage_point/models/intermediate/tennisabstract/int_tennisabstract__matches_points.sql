@@ -99,20 +99,26 @@ match_points_last_shot_count as (
 
 -- get last shot outcome
 -- last element in ',' separated string
--- get rid of any extra strings (ex. '.' and '(...)')
+-- get rid of any extra strings:
+    -- replace '.'
+    -- split string by '(' and get anything before '(...)'
+    -- if resulting string is '', make null
 match_points_outcome as (
   select
     *,
-    trim(
-      split_part(
-        replace(
-          cast(split_part(last_shot_in_point, ',', number_of_elements_in_last_shot) as text),
-          '.',
-          ''
+    nullif(
+        trim(
+            split_part(
+                replace(
+                cast(split_part(last_shot_in_point, ',', number_of_elements_in_last_shot) as text),
+                '.',
+                ''
+                ),
+                '(',
+                1
+            )
         ),
-        '(',
-        1
-      )
+        ''
     )
     as point_outcome
   from match_points_last_shot_count
@@ -150,7 +156,11 @@ final as (
 
     point_server,
     point_receiver,
-    point_description,
+    -- nullify point_description if no point_outcome
+    case
+        when point_outcome is null then null
+        else point_description
+    end as point_description,
     number_of_shots_in_point,
 
     -- calculate rally length

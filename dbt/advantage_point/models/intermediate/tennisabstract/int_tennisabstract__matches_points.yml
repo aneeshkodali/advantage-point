@@ -42,7 +42,7 @@ models:
         description: Result of the point.
         data_tests:
           - accepted_values:
-              values: ['ace', 'double fault', 'forced error', 'unforced error', 'service winner', 'winner']
+              values: ['ace', 'double fault', 'forced error', 'unforced error', 'service winner', 'winner', null]
               quote: True
 
       - name: point_winner
