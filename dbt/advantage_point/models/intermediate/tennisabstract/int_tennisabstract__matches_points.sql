@@ -60,15 +60,10 @@ match_points_running_numbers as (
 match_points_rally_shot_count as (
   select
     *,
-    case
-        -- when no rally exists
-        when point_description in ('Point penalty.', 'Unknown.') then null
-        else
-            array_length(
-                regexp_split_to_array(point_description, ';'),
-                1
-            ) 
-    end as number_of_shots_in_point
+    array_length(
+        regexp_split_to_array(point_description, ';'),
+        1
+    ) as number_of_shots_in_point
   from match_points_running_numbers
 ),
 
