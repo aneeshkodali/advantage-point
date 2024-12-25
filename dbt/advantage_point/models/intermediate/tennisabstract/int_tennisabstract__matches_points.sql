@@ -40,8 +40,8 @@ match_points_scores_split as (
         -- if rally resulted in a 'challenge'
         when mp.point_description ilike '%challenge was incorrect%' then null
         else mp.point_description
-    end as point_description,
-    mp.point_description as point_description_raw
+    end as point_description_new,
+    mp.point_description
     from match_points as mp
     left join matches as m on mp.match_url = m.match_url
 ),
@@ -70,7 +70,7 @@ match_points_rally_shot_count as (
   select
     *,
     array_length(
-      regexp_split_to_array(point_description, ';'),
+      regexp_split_to_array(point_description_new, ';'),
       1
     ) as number_of_shots_in_point
   from match_points_running_numbers
@@ -81,7 +81,7 @@ match_points_last_shot as (
   select
     *,
     trim(
-      split_part(point_description, ';', number_of_shots_in_point)
+      split_part(point_description_new, ';', number_of_shots_in_point)
     ) as last_shot_in_point
   from match_points_rally_shot_count
 ),
@@ -157,12 +157,7 @@ final as (
 
     point_server,
     point_receiver,
-    -- nullify point_description if no point_outcome
-    case
-        when point_outcome is null then null
-        else point_description
-    end as point_description,
-    point_description_raw,
+    point_description,
     number_of_shots_in_point,
 
     -- calculate rally length
