@@ -123,7 +123,7 @@ match_points_outcome as (
         ),
         ''
     )
-    as point_outcome
+    as point_result
   from match_points_last_shot_count
 ),
 
@@ -135,15 +135,15 @@ match_points_winner as (
       -- if odd length (server hit last shot)
       when number_of_shots_in_point % 2 != 0 then
         case
-          when point_outcome in ('ace', 'service winner', 'winner') then point_server
-          when point_outcome in ('double fault', 'forced error', 'unforced error') then point_receiver
+          when point_result in ('ace', 'service winner', 'winner') then point_server
+          when point_result in ('double fault', 'forced error', 'unforced error') then point_receiver
           else null
         end
       -- if even length (receiver hit last shot)
       when number_of_shots_in_point % 2 = 0 then
         case
-          when point_outcome in ('winner') then point_receiver
-          when point_outcome in ('forced error', 'unforced error') then point_server
+          when point_result in ('winner') then point_receiver
+          when point_result in ('forced error', 'unforced error') then point_server
           else null
         end
       else null
@@ -159,9 +159,9 @@ match_points_rally_length as (
     -- calculate rally length
     case
       -- exclude 'errors'
-      when point_outcome in ('double fault', 'forced error', 'unforced error') then number_of_shots_in_point - 1
+      when point_result in ('double fault', 'forced error', 'unforced error') then number_of_shots_in_point - 1
       -- include 'winners'
-      when point_outcome in ('ace', 'service winner', 'winner') then number_of_shots_in_point
+      when point_result in ('ace', 'service winner', 'winner') then number_of_shots_in_point
       else null
     end as rally_length
   from match_points_winner
@@ -191,7 +191,7 @@ final as (
     number_of_shots_in_point,
     rally_length,
 
-    point_outcome,
+    point_result,
     point_winner,
     point_loser,
 

@@ -40,7 +40,7 @@ models:
       - name: rally_length
         description: Number of shots in the point. Factors in point outcome.
       
-      - name: point_outcome
+      - name: point_result
         description: Result of the point.
         data_tests:
           - accepted_values:
