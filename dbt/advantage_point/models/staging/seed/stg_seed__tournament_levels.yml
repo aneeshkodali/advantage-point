@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_seed__tournament_levels
+    description: Contains lookup values for tournament levels.
+    columns:
+      - name: tournament_level
+        description: Tournament level abbreviation.
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: tournament_level_name
+        description: Full name for match round.
+        data_tests:
+          - not_null
