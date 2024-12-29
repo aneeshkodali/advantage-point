@@ -1,0 +1,13 @@
+match_round,match_round_name,match_round_sort
+Q1,Qualifying Round 1,1
+Q2,Qualifying Round 2,2
+Q3,Qualifying Round 3,3
+Q4,Qualifying Round 4,4
+R128,Round of 128,5
+R64,Round of 64,6
+R32,Round of 32,7
+RR,Round Robin,8
+R16,Round of 16,9
+QF,Quarterfinals,10
+SF,Semifinals,11
+F,Finals,12

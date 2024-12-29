@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: stg_seed__match_rounds
+    description: Contains lookup values for match rounds.
+    columns:
+      - name: match_round
+        description: Match round abbreviation.
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: match_round_name
+        description: Full name for match round.
+        data_tests:
+          - not_null
+
+      - name: match_round_sort
+        description: Used to sort rounds to determine advancement in draw or pool play.
+        data_tests:
+          - unique
