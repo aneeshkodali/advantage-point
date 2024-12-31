@@ -9,7 +9,7 @@ tennisabstract_matches as (
 ),
 
 valid_match_dates as (
-    select * from {{ ref('stg_seed__valid_tennisabstract_match_dates')}}
+    select * from {{ ref('stg_seed__tennisabstract_valid_match_dates')}}
 ),
 
 -- join to seed data
