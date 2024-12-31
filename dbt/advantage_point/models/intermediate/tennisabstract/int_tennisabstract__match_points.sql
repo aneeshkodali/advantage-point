@@ -219,16 +219,16 @@ match_points_winner_next_point as (
     *,
     
     case
-      -- check if point is last point in match
-      when point_number_in_match = max(point_number_in_match) over (partition by match_url) then
-        -- compare server score and receiver score
-        case
-          -- when server score higher --> server
-          when point_score_server_int > point_score_receiver_int then point_server
-          -- when receiver score higher --> receiver
-          when point_score_server_int < point_score_receiver_int then point_receiver
-          else null
-        end
+      -- -- check if point is last point in match
+      -- when point_number_in_match = max(point_number_in_match) over (partition by match_url) then
+      --   -- compare server score and receiver score
+      --   case
+      --     -- when server score higher --> server
+      --     when point_score_server_int > point_score_receiver_int then point_server
+      --     -- when receiver score higher --> receiver
+      --     when point_score_server_int < point_score_receiver_int then point_receiver
+      --     else null
+      --   end
 
       -- compare current point game to next point game
       -- next point is in same game as current point --> compare 'point level' data
