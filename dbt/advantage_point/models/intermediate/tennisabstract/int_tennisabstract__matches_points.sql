@@ -214,7 +214,7 @@ match_points_lead as (
 ),
 
 -- determine point winner based on next point
-match_points_point_winner_next_point as (
+match_points_winner_next_point as (
   select
     *,
     
@@ -328,7 +328,7 @@ match_points_point_winner_next_point as (
 ),
 
 -- determine point loser based on next point
-match_points_point_next_loser_point as (
+match_points_loser_next_point as (
   select
     *,
     case
@@ -336,7 +336,7 @@ match_points_point_next_loser_point as (
       when point_winner_next_point != point_server then point_server
       else null
     end as point_loser_next_point
-  from match_points_point_next_winner_point
+  from match_points_winner_next_point
 ),
 
 -------------------------------------------------------
@@ -377,7 +377,7 @@ final as (
     set_score_receiver,
     set_number_in_match
     
-  from match_points_point_next_loser_point
+  from match_points_loser_next_point
 )
 
 select * from final
