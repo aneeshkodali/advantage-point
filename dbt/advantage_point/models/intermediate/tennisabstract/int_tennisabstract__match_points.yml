@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_tennisabstract__matches_points
+  - name: int_tennisabstract__match_points
     description: Intermediate model for point-level data.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
