@@ -14,6 +14,8 @@ match_points as (
         point_server,
         point_receiver,
         point_description,
+        number_of_shots_in_point,
+        rally_length,
         point_result,
         coalesce(point_winner_next_point, 'null') as point_winner_next_point,
         coalesce(point_winner_rally, 'null') as point_winner_rally
