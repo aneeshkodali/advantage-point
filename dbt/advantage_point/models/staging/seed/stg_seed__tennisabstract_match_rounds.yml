@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_seed__match_rounds
+  - name: stg_seed__tennisabstract_match_rounds
     description: Contains lookup values for match rounds.
     columns:
       - name: match_round

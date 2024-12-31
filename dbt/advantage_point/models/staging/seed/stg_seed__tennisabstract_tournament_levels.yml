@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_seed__tournament_levels
+  - name: stg_seed__tennisabstract_tournament_levels
     description: Contains lookup values for tournament levels.
     columns:
       - name: tournament_level
