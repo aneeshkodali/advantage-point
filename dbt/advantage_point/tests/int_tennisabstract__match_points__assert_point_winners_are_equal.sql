@@ -11,6 +11,8 @@ match_points as (
         set_score_in_match,
         game_score_in_set,
         point_score_in_game,
+        point_server,
+        point_receiver,
         point_description,
         point_result,
         coalesce(point_winner_next_point, 'null') as point_winner_next_point,
