@@ -1,0 +1,26 @@
+/*
+Compares the different 'point winner' columns and returns records where columns don't match
+*/
+
+with
+
+match_points as (
+    select
+        match_url,
+        point_number_in_match,
+        set_score_in_match,
+        game_score_in_set,
+        point_score_in_game,
+        point_description,
+        point_result,
+        coalesce(point_winner_next_point, 'null') as point_winner_next_point,
+        coalesce(point_winner_rally, 'null') as point_winner_rally
+    from {{ ref('int_tennisabstract__match_points') }}
+    where point_winner_rally is not null
+)
+
+select
+    *
+from match_points
+where 1=1
+    and point_winner_next_point != point_winner_rally
