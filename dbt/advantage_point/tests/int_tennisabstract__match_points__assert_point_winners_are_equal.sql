@@ -20,7 +20,9 @@ match_points as (
         coalesce(point_winner_next_point, 'null') as point_winner_next_point,
         coalesce(point_winner_rally, 'null') as point_winner_rally
     from {{ ref('int_tennisabstract__match_points') }}
-    where point_winner_rally is not null -- filter out results where point winner based on rally not found
+    where 1=1
+        and point_winner_rally is not null -- filter out results where point winner based on rally not found
+        and point_winner_next_point is not null -- filter out results where next point not found (incomplete data)
 )
 
 select
