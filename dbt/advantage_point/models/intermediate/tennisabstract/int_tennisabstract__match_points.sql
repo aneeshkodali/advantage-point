@@ -9,8 +9,13 @@ match_points as (
   where is_record_active = true
 ),
 
+valid_match_point_descriptions as (
+  select * from {{ ref('stg_seed__tennisabstract_valid_match_point_descriptions') }}
+),
+
 -- split scores
 -- join players
+-- join valid point descriptions
 match_points_scores_split as (
     select
       mp.match_url,
@@ -33,19 +38,38 @@ match_points_scores_split as (
       split_part(mp.point_score_in_game, '-', 1) as point_score_server,
       split_part(mp.point_score_in_game, '-', 2) as point_score_receiver,
 
-      -- nullify point_description if not valid
-      case
-        -- if no rally occurred/recorded
-        when mp.point_description in ('Point penalty.', 'Unknown.') then null
-        -- if rally resulted in a 'challenge'
-        when mp.point_description ilike '%challenge was incorrect%' then null
-        -- if rally does not contain an 'outcome' string
-        when not (mp.point_description ilike any (array['%ace%', '%double fault%', '%forced error%', '%unforced error%', '%service winner%', '%winner%'])) then null
-        else mp.point_description
-    end as point_description_new,
-    mp.point_description
+      -- join in valid point descriptions
+      coalesce(valid_mp_point_desc.point_description_new, mp.point_description) as point_description
+      
     from match_points as mp
     left join matches as m on mp.match_url = m.match_url
+    left join valid_match_point_descriptions as valid_mp_point_desc on
+          mp.match_url = valid_mp_desc.match_url
+      and mp.point_number_in_match = valid_mp_desc.point_number_in_match
+      and mp.point_server = valid_mp_desc.point_server
+      and mp.set_score_in_match = valid_mp_desc.set_score_in_match
+      and mp.game_score_in_set = valid_mp_desc.game_score_in_set
+      and mp.point_score_in_game = valid_mp_desc.point_score_in_game
+      and mp.point_description = valid_mp_desc.point_description_old
+),
+
+-- nullify point descriptions
+match_points_point_descriptions as (
+  select
+    *,
+
+    -- nullify point_description if not valid
+      case
+        -- if no rally occurred/recorded
+        when point_description in ('Point penalty.', 'Unknown.') then null
+        -- if rally resulted in a 'challenge'
+        when point_description ilike '%challenge was incorrect%' then null
+        -- if rally does not contain an 'outcome' string
+        when not (point_description ilike any (array['%ace%', '%double fault%', '%forced error%', '%unforced error%', '%service winner%', '%winner%'])) then null
+        else point_description
+    end as point_description_new
+
+  from match_points_scores_split
 ),
 
 -- add scores
@@ -54,7 +78,7 @@ match_points_scores_add as (
     *,
     set_score_server + set_score_receiver + 1 as set_number_in_match,
     game_score_server + game_score_receiver + 1 as game_number_in_set
-  from match_points_scores_split
+  from match_points_point_descriptions
 ),
 
 -- get running counts
