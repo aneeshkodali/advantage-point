@@ -1,7 +1,7 @@
 with
 
 source as (
-    select * from {{ ref('valid_tennisabstract_match_dates') }}
+    select * from {{ ref('tennisabstract_valid_match_dates') }}
 ),
 
 renamed as (
