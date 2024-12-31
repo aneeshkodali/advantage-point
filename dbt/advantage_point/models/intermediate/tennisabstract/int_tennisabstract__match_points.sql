@@ -44,13 +44,13 @@ match_points_scores_split as (
     from match_points as mp
     left join matches as m on mp.match_url = m.match_url
     left join valid_match_point_descriptions as valid_mp_point_desc on
-          mp.match_url = valid_mp_desc.match_url
-      and mp.point_number_in_match = valid_mp_desc.point_number_in_match
-      and mp.point_server = valid_mp_desc.point_server
-      and mp.set_score_in_match = valid_mp_desc.set_score_in_match
-      and mp.game_score_in_set = valid_mp_desc.game_score_in_set
-      and mp.point_score_in_game = valid_mp_desc.point_score_in_game
-      and mp.point_description = valid_mp_desc.point_description_old
+          mp.match_url = valid_mp_point_desc.match_url
+      and mp.point_number_in_match = valid_mp_point_desc.point_number_in_match
+      and mp.point_server = valid_mp_point_desc.point_server
+      and mp.set_score_in_match = valid_mp_point_desc.set_score_in_match
+      and mp.game_score_in_set = valid_mp_point_desc.game_score_in_set
+      and mp.point_score_in_game = valid_mp_point_desc.point_score_in_game
+      and mp.point_description = valid_mp_point_desc.point_description_old
 ),
 
 -- nullify point descriptions
