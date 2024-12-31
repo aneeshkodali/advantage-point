@@ -143,7 +143,7 @@ match_points_rally_length as (
 ),
 
 -- get point winner from rally
-match_points_winner as (
+match_points_winner_rally as (
   select
     *,
     case
@@ -176,7 +176,7 @@ match_points_loser_rally as (
       when point_winner_rally != point_server then point_server
       else null
     end as point_loser_rally
-  from point_winner_rally
+  from match_points_winner_rally
 ),
 
 -------------------------------------------------------
