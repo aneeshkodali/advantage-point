@@ -363,14 +363,29 @@ match_points_loser_next_point as (
   from match_points_winner_next_point
 ),
 
--------------------------------------------------------
 -- end of section
+-------------------------------------------------------
+
+-- get side (of court)
+match_points_side as (
+  select
+    *,
+
+    case
+      when point_score_server_int + point_score_receiver_int % 2 = 0 then 'deuce'
+      when point_score_server_int + point_score_receiver_int % 2 != 0 then 'ad'
+      else null
+    end as point_side
+
+  from match_points_loser_next_point
+),
 
 final as (
   select
     match_url,
     point_number_in_match,
 
+    point_side,
     point_server,
     point_receiver,
     point_description,
@@ -401,7 +416,7 @@ final as (
     set_score_receiver,
     set_number_in_match
     
-  from match_points_loser_next_point
+  from match_points_side
 )
 
 select * from final
