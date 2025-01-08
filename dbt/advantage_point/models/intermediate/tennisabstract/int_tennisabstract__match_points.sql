@@ -398,6 +398,8 @@ final as (
     point_loser_next_point,
     point_winner_rally,
     point_loser_rally,
+    coalesce(point_winner_next_point, point_winner_rally) as point_winner,
+    coalesce(point_loser_next_point, point_loser_rally) as point_loser,
 
     point_score_in_game,
     point_score_server,

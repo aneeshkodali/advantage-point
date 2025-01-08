@@ -56,19 +56,25 @@ models:
 
       - name: point_winner_next_point
         description: Winner of the point based on the score of the next point.
-        data_tests:
-          - not_null
 
       - name: point_loser_next_point
         description: Loser of the point based on the score of the next point.
-        data_tests:
-          - not_null
 
       - name: point_winner_rally
         description: Winner of the point based on the rally count and result.
 
       - name: point_loser_rally
         description: Loser of the point based on the rally count and result.
+
+      - name: point_winner
+        description: Winner of the point.
+        data_tests:
+          - not_null
+
+      - name: point_loser
+        description: Loser of the point.
+        data_tests:
+          - not_null
 
       - name: point_score_in_game
         description: Point score in current game (from server's perspective).
