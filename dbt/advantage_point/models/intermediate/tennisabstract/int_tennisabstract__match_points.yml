@@ -23,8 +23,8 @@ models:
         description: Side of the court from which the point starts.
         data_tests:
           - accepted_values:
-            values: ['ad', 'deuce', null]
-            quote: True
+              values: ['ad', 'deuce', null]
+              quote: True
 
       - name: point_server
         description: Player who is serving in the point.
