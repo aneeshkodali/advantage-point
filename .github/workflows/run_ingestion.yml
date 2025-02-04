@@ -1,0 +1,40 @@
+name: Run Ingestion
+
+on:
+#   schedule:
+#     - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  create-ingestion-schemas:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup/ingestion
+
+      - name: Create schemas
+        env:
+          DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          HOST: ${{ vars.SUPABASE_HOST }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          PORT: ${{ vars.SUPABASE_PORT }}
+          SCHEMA_META: ${{ env.SCHEMA_META }}
+          USER: ${{ vars.SUPABASE_USER }}
+        run: |
+          echo "Creating schemas"
+          python -m ingest.create_ingestion_schemas
