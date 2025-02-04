@@ -3,24 +3,22 @@ version: 2
 models:
   - name: stg_tennisabstract__matches
     description: Staging model for tennisabstract match data.
-    data_tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - match_url
-            - is_record_active
-            - loaded_at
     columns:
       - name: match_url
+        data_type: string
         description: Link to the match data.
         data_tests:
+          - unique
           - not_null
 
       - name: match_date
+        data_type: date
         description: Date when match took place.
         data_tests:
           - not_null
         
       - name: match_gender
+        data_type: string
         description: Gender of the match.
         data_tests:
           - not_null
@@ -29,37 +27,35 @@ models:
               quote: true
 
       - name: match_tournament
+        data_type: string
         description: Tournament where match took place.
         data_tests:
           - not_null
 
       - name: match_round
+        data_type: string
         description: Round within tournament when match took place.
         data_tests:
           - not_null
 
       - name: match_player_one
+        data_type: string
         description: One of the players in the match.
         data_tests:
           - not_null
 
       - name: match_player_two
+        data_type: string
         description: One of the players in the match.
         data_tests:
           - not_null
 
-      - name: match_title
+      - name: 
+        data_type: string
         description: Name of the match. Includes tournament, players, and round.
+        data_tests:
+          - not_null
 
       - name: match_result
+        data_type: string
         description: Outcome of the match. Includes winner, loser, and score.
-
-      - name: is_record_active
-        description: Boolean field indicating if the record is active.
-        data_tests:
-          - not_null
-
-      - name: loaded_at
-        description: Timestamp indicating when the record was loaded.
-        data_tests:
-          - not_null
