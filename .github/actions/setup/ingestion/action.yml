@@ -1,14 +1,12 @@
 name: Setup Ingestion Environment
 description: Setup environment and dependencies for ingestion layer
-
+# inputs:
+#   chrome-version:
+#     description: "Chrome version to install"
+#     required: true
 runs:
   using: "composite"
   steps:
-    - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ env.ENVIRONMENT == 'prod' && 'master' || 'dev' }}
-
     - name: Set up python
       uses: actions/setup-python@v4
       with:
