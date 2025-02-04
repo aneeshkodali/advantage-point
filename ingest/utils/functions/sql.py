@@ -518,7 +518,7 @@ def merge_target_table(
     insert_source_column_str = ', '.join(source_column_list)
     insert_source_column_str_w_source_alias = ', '.join([f"{source_alias}.{col}" for col in source_column_list])
     insert_join_on_clause = ' AND '.join([f"{source_alias}.{col} = {target_alias}.{col}" for col in unique_column_list])
-    insert_where_clause = ' OR '.join([f"{target_alias}.{col}" for col in unique_column_list])
+    insert_where_clause = ' OR '.join([f"{target_alias}.{col} IS NULL" for col in unique_column_list])
     insert_sql = f"""
         INSERT INTO {target_schema_name}.{target_table_name} ({insert_source_column_str})
         SELECT
