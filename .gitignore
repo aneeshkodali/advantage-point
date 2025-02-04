@@ -1,6 +1,7 @@
 __pycache__/
 venv*/
 logs/
+.env
 
 # dbt
 dbt/logs/
