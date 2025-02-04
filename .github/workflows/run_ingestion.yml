@@ -31,6 +31,10 @@ jobs:
         with:
           ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
+      - name: Debug Environment
+        run: |
+          echo "Selected environment: ${{ github.event.inputs.environment }}"
+
       - name: Setup environment
         uses: ./.github/actions/setup/ingestion
  
