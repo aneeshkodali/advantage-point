@@ -4,7 +4,7 @@ advantage_point:
       dbname: "{{ env_var('DBT_DATABASE') }}"
       host: "{{ env_var('DBT_HOST') }}"
       password: "{{ env_var('DBT_PASSWORD') }}" 
-      port: "{{ env_var('DBT_PORT') }}"
+      port: "{{ env_var('DBT_PORT') | int }}"
       schema: "{{ env_var('DBT_SCHEMA') }}"
       threads: "{{ env_var('DBT_THREADS', 4) | int }}"
       type: postgres

@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: stg_utils__date_spine
+    description: Date spine
+    columns:
+      - name: date_day
+        description: Date value
+        data_tests:
+          - unique
+          - not_null

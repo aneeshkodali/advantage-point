@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: stg_seed__tennisabstract_valid_match_dates
+    description: Contains valid match dates for match urls.
+    columns:
+      - name: match_url
+        description: Match url
+        data_tests:
+          - unique
+          - not_null
+
+      - name: match_date
+        description: Correct date for match url.
+        data_tests:
+          - not_null

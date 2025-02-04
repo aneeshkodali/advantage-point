@@ -1,0 +1,143 @@
+version: 2
+
+models:
+  - name: stg_tennisabstract__players
+    description: Staging model for tennisabstract player data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - player_url
+            - is_record_active
+            - loaded_at
+    columns:
+      - name: player_url
+        description: Link to the match data.
+        data_tests:
+          - not_null
+      
+      - name: player_gender
+        description: Gender of the player.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['M', 'W']
+              quote: true
+
+      - name: photograph_credit
+        description: ""
+
+      - name: current_doubles_rank
+        description: Current doubles ranking.
+
+      - name: tour_id
+        description: Player ID for tour/organization.
+      
+      - name: tour_id_type
+        description: Type of player's tour ID, based on gender.
+        data_tests:
+          - accepted_values:
+              values: ['atp_id', 'wta_id', null]
+              quote: true
+
+      - name: photograph_link
+        description: ""
+      
+      - name: full_name
+        description: Player full name.
+
+      - name: twitter_handle
+        description: Player Twitter handle.
+
+      - name: photograph
+        description: ""
+
+      - name: first_peak_singles_rank_on
+        description: Date when player first achieved highest singles ranking.
+
+      - name: chart_agg
+        description: ""
+
+      - name: is_player_active
+        description: Denotes if player is active.
+
+      - name: full_name_parameter
+        description: ""  
+
+      - name: live_rank
+        description: ""
+
+      - name: short_list
+        description: ""
+
+      - name: career_js
+        description: ""
+
+      - name: peak_doubles_rank
+        description: Player's peak doubles ranking.
+
+      - name: first_peak_doubles_rank_on
+        description: Date when player first achieved highest doubles ranking.
+
+      - name: handedness
+        description: Denotes if player is right or left handed.
+        data_tests:
+          - accepted_values:
+              values: ['L', 'R', null]
+              quote: true
+
+      - name: current_singles_rank
+        description: Current singles ranking.
+
+      - name: country_abbreviation
+        description: Player's country (abbreviated).
+
+      - name: backhand_type
+        description: Denotes if player uses one-handed or two-handed backhand.
+        data_tests:
+          - accepted_values:
+              values: ['1', '2', null]
+              quote: true
+
+      - name: last_peak_singles_rank_on
+        description: Date when player last achieved highest singles ranking.
+ 
+      - name: team_cup_id
+        description: Player ID for team cup play.
+
+      - name: team_cup_id_type
+        description: >
+          Type of player's team cup ID, based on gender.
+            - bjkc: Billie Jean King Cup (female)
+            - dc: Davis Cup (male)
+        data_tests:
+          - accepted_values:
+              values: ['bjkc_id', 'dc_id', null]
+              quote: true
+
+      - name: last_name
+        description: Player's last name.
+
+      - name: date_of_birth
+        description: Player date of birth.
+
+      - name: height_in_centimeters
+        description: Player height (in centimeters).
+      
+      - name: peak_singles_rank
+        description: Player's highest singles ranking.
+
+      - name: itf_id
+        description: Player's ITF (International Tennis Foundation) ID
+
+      - name: wikipedia_id
+        description: Player's Wikipedia ID.
+
+      - name: is_record_active
+        description: Boolean field indicating if the record is active.
+        data_tests:
+          - not_null
+
+      - name: loaded_at
+        description: Timestamp indicating when the record was loaded.
+        data_tests:
+          - not_null

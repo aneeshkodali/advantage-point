@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: stg_seed__tennisabstract_valid_match_point_descriptions
+    description: Contains valid point descriptions for match points. Point records (point number) are identified by test failues in the intermediate model and then added here.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - match_url
+            - point_number_in_match
+    columns:
+      - name: match_url
+        description: Link to the match data.
+        data_tests:
+          - not_null
+
+      - name: point_number_in_match
+        description: Point number in match.
+        data_tests:
+          - not_null
+
+      - name: point_server
+        description: Player who is serving the point.
+        data_tests:
+          - not_null
+
+      - name: set_score_in_match
+        description: Set score within the match (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: game_score_in_set
+        description: Game score within the set (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: point_score_in_game
+        description: Point score within the game (from server's perspective).
+        data_tests:
+          - not_null
+      
+      - name: point_description_old
+        description: Original semicolon-separated list-like string of shots in the point rally.
+        data_tests:
+          - not_null
+
+      - name: point_description_new
+        description: New semicolon-separated list-like string of shots in the point rally with correction applied (manually).
+        data_tests:
+          - not_null

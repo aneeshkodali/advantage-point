@@ -17,7 +17,7 @@ deepdiff==7.0.1
 idna==3.10
 importlib-metadata==6.11.0
 isodate==0.6.1
-Jinja2==3.1.4
+Jinja2==3.1.5
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
 leather==0.4.0

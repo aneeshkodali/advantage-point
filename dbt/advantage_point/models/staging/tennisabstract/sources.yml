@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: tennisabstract
+    schema: "{{ env_var('DBT_SCHEMA_INGESTION') }}"
+    description: Data obtained from tennisabstract.com
+    tables:
+      - name: match_points
+        identifier: tennisabstract_match_points
+      - name: matches
+        identifier: tennisabstract_matches
+      - name: players
+        identifier: tennisabstract_players

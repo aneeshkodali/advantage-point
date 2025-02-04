@@ -5,12 +5,14 @@ on:
 
 jobs:
   run_dbt:
-    name: Run dbt commands
+    name: Run dbt
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref_name }}
 
       - name: Setup python
         uses: actions/setup-python@v4
@@ -21,21 +23,24 @@ jobs:
         run:
           pip install -r dbt/requirements.txt
 
-      - name: Install dbt dependencies
-        run:
-          dbt deps
-
-      - name: dbt build
+      - name: Run dbt commands
         env:
           DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
           DBT_HOST: ${{ vars.SUPABASE_HOST }}
           DBT_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           DBT_PORT: ${{ vars.SUPABASE_PORT }}
-          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}
+          DBT_SCHEMA: ${{ vars.DBT_SCHEMA }}_dev
+          DBT_SCHEMA_DATA_VAULT: ${{ vars.SCHEMA_DATA_VAULT }}_dev
+          DBT_SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}_dev
+          DBT_SCHEMA_SEED: ${{ vars.SCHEMA_SEED }}_dev
+          DBT_SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}_dev
+          DBT_SCHEMA_INTERMEDIATE: ${{ vars.SCHEMA_INTERMEDIATE }}_dev
           DBT_THREADS: ${{ vars.DBT_THREADS }}
           type: postgres
-          DBT_USER: ${{ vars.DBT_USER }}
-        run:
-          dbt build --profiles-dir ./dbt
+          DBT_USER: ${{ vars.SUPABASE_USER }}
+        run: |
+          dbt deps --project-dir dbt/advantage_point &&
+          dbt seed --full-refresh --profiles-dir ./dbt --project-dir dbt/advantage_point &&
+          dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
