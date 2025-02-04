@@ -45,6 +45,7 @@ def main():
         )
 
     # close connection
+    cursor.close()
     conn.close()
 
 if __name__ == "__main__":
