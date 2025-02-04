@@ -43,7 +43,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     outputs:
-      scripts_json: ${{ steps.get-scripts.outputs.scripts_json }}
+      # scripts_json: ${{ steps.get-scripts.outputs.scripts_json }}
+      scripts_json: ${{ env.SCRIPTS_JSON }}
     
     steps:
       - name: Checkout code
@@ -59,6 +60,10 @@ jobs:
         env:
           SCHEMA_META: ${{ vars.SCHEMA_META }}
         run: python -m ingest.fetch_ingestion_scripts
+
+      - name: Print script names
+        run: |
+          echo "Fetch scripts: $SCRIPTS_JSON"
 
   # run-ingestion-scripts:
   #   needs: create-ingestion-schemas
