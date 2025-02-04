@@ -1,0 +1,89 @@
+name: Run Ingestion
+
+on:
+#   schedule:
+#     - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
+
+jobs:
+  create-ingestion-schemas:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    outputs:
+      schema_ingestion: ${{ steps.set-schema-vars.outputs.schema_ingestion }}
+      schema_ingestion_temp: ${{ steps.set-schema-vars.outputs.schema_ingestion_temp }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup/ingestion
+ 
+      - name: Create schemas
+        env:
+          DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          HOST: ${{ vars.SUPABASE_HOST }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          PORT: ${{ vars.SUPABASE_PORT }}
+          SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
+          SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
+          USER: ${{ vars.SUPABASE_USER }}
+        run: |
+          echo "Creating schemas"
+          python -m ingest.create_ingestion_schemas
+
+
+  run-ingestion-scripts:
+    needs: create-ingestion-schemas
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    strategy:
+      matrix:
+        scripts:
+          - name: ingest_tennisabstract_match_points
+          - name: ingest_tennisabstract_matches
+          - name: ingest_tennisabstract_players
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup/ingestion
+
+      - name: Remove old Chrome if it exists
+        run: |
+          sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
+      
+      - name: Install Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: ${{ vars.CHROME_VERSION }}
+          install-chromedriver: true
+
+      - name: Run ingestion script
+        env:
+          CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
+          DATABASE: ${{ vars.SUPABASE_DATABASE }}
+          HOST: ${{ vars.SUPABASE_HOST }}
+          PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
+          PORT: ${{ vars.SUPABASE_PORT }}
+          SCHEMA_INGESTION: ${{ needs.create-ingestion-schemas.outputs.schema_ingestion }}
+          SCHEMA_INGESTION_TEMP: ${{ needs.create-ingestion-schemas.outputs.schema_ingestion_temp }}
+          USER: ${{ vars.SUPABASE_USER }}
+        run: |
+          echo "Running ingestion script: ${{ matrix.scripts.name }}"
+          python -m ingest.${{ matrix.scripts.name }}
