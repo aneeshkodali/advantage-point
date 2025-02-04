@@ -14,7 +14,7 @@ env:
   DBT_SCHEMA_STAGING: ${{ vars.SCHEMA_STAGING }}
   DBT_THREADS: ${{ vars.DBT_THREADS }}
   DBT_USER: ${{ vars.SUPABASE_USER }}
-  type: postgres
+  DBT_DATABASE_TYPE: ${{ vars.SUPABASE_DATABASE_TYPE }}
 
 jobs:
   run_dbt:
