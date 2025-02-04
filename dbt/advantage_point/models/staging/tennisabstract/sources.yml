@@ -7,3 +7,4 @@ sources:
     tables:
       - name: matches
         identifier: tennisabstract_matches
+        description: Contain matches that exist on the site.
