@@ -24,8 +24,6 @@ def main():
     # create cursor
     cursor = conn.cursor()
 
-    logging.info(f"meta schema: {schema_meta}")
-
     # get list of schemas from project_parameters table
     schema_select_sql = f"""
         SELECT
@@ -35,6 +33,7 @@ def main():
             AND parameter_value in ('SCHEMA_INGESTION', 'SCHEMA_INGESTION_TEMP')
             AND is_active = true
     """
+    logging.info(f"Running select statement: {schema_select_sql}")
     cursor.execute(schema_select_sql)
     schema_list = [row[0] for row in cursor.fetchall()]
 
