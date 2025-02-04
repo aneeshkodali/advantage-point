@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
-    load_df_to_sql,
+    ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.matches import (
     get_match_url_list as get_match_url_list_tennisabstract,
