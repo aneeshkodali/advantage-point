@@ -500,7 +500,7 @@ def merge_target_table(
     non_unique_column_list = list(filter(lambda col: col not in unique_column_list, source_column_list))
 
     # handle updates
-    update_set_clause = ', '.join([f"{target_alias}.{col} = {source_alias}.{col}" for col in non_unique_column_list])
+    update_set_clause = ', '.join([f"{col} = {source_alias}.{col}" for col in non_unique_column_list])
     update_where_clause_unique = ' AND '.join([f"{target_alias}.{col} = {source_alias}.{col}" for col in unique_column_list])
     update_where_clause_non_unique = ' OR '.join([f"({target_alias}.{col} != {source_alias}.{col})" for col in non_unique_column_list])
     update_sql = f"""
