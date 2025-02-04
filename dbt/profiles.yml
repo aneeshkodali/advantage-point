@@ -7,6 +7,6 @@ advantage_point:
       port: "{{ env_var('DBT_PORT') | int }}"
       schema: "{{ env_var('DBT_SCHEMA') }}"
       threads: "{{ env_var('DBT_THREADS', 4) | int }}"
-      type: postgres
+      type: "{{ env_var('DBT_DATABASE_TYPE') }}"
       user: "{{ env_var('DBT_USER') }}"
   target: dev
