@@ -20,7 +20,7 @@ def main():
     conn = create_connection()
 
     # create cursor
-    cursor = conn.cursor
+    cursor = conn.cursor()
 
     # get script names from table
     script_select_sql = f"""
