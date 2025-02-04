@@ -38,3 +38,61 @@ jobs:
         run: |
           echo "Creating schemas"
           python -m ingest.create_ingestion_schemas
+
+  fetch-ingestion-scripts:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    outputs:
+      scripts_json: ${{ steps.get-scripts.outputs.scripts_json }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup/ingestion
+
+      - name: Fetch script names from database
+        id: get-scripts
+        env:
+          SCHEMA_META: ${{ vars.SCHEMA_META }}
+        run: python -m ingest.fetch_ingestion_scripts
+
+  # run-ingestion-scripts:
+  #   needs: create-ingestion-schemas
+  #   runs-on: ubuntu-latest
+  #   environment: ${{ github.event.inputs.environment }}
+  #   strategy:
+  #     matrix:
+  #       scripts:
+  #         - name: ingest_tennisabstract_match_points
+  #         - name: ingest_tennisabstract_matches
+  #         - name: ingest_tennisabstract_players
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  #       with:
+  #         ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
+
+  #     - name: Setup environment
+  #       uses: ./.github/actions/setup/ingestion
+
+  #     - name: Remove old Chrome if it exists
+  #       run: |
+  #         sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
+      
+  #     - name: Install Chrome
+  #       id: setup-chrome
+  #       uses: browser-actions/setup-chrome@v1
+  #       with:
+  #         chrome-version: ${{ vars.CHROME_VERSION }}
+  #         install-chromedriver: true
+
+  #     - name: Run ingestion script
+  #       env:
+  #         CHROMEDRIVER_PATH: ${{ steps.setup-chrome.outputs.chromedriver-path }}
+  #       run: |
+  #         echo "Running ingestion script: ${{ matrix.scripts.name }}"
+  #         python -m ingest.${{ matrix.scripts.name }}
