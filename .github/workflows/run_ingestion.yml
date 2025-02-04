@@ -18,9 +18,6 @@ jobs:
   create-ingestion-schemas:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
-    outputs:
-      schema_ingestion: ${{ steps.set-schema-vars.outputs.schema_ingestion }}
-      schema_ingestion_temp: ${{ steps.set-schema-vars.outputs.schema_ingestion_temp }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -36,8 +33,8 @@ jobs:
           HOST: ${{ vars.SUPABASE_HOST }}
           PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
           PORT: ${{ vars.SUPABASE_PORT }}
-          SCHEMA_INGESTION: ${{ env.SCHEMA_INGESTION }}
-          SCHEMA_INGESTION_TEMP: ${{ env.SCHEMA_INGESTION_TEMP }}
+          SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
+          SCHEMA_INGESTION_TEMP: ${{ vars.SCHEMA_INGESTION_TEMP }}
           USER: ${{ vars.SUPABASE_USER }}
         run: |
           echo "Creating schemas"
