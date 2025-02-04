@@ -41,9 +41,9 @@ def main():
 
     # store json output in GitHub workflow format
     scripts_json = json.dumps(script_list)
-    github_output = os.getenv('GITHUB_ENV')
-    with open(github_output, 'a') as env_file:
-        env_file.write(f"SCRIPTS_JSON={scripts_json}\n")
+    github_output = os.getenv('GITHUB_OUTPUT')
+    with open(github_output, 'a') as output_file:
+        output_file.write(f"scripts_json={scripts_json}\n")
 
 if __name__ == "__main__":
     main()
