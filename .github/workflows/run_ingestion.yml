@@ -26,13 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
-
       - name: Setup environment
         uses: ./.github/actions/setup/ingestion
+        env:
+          ENVIRONMENT: ${{ github.event.inputs.environment }}
  
       - name: Create schemas
         run: |
