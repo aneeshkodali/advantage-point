@@ -1,6 +1,6 @@
 from ingest.utils.functions.sql import (
     create_connection,
-    create_schema
+    create_schema,
 )
 import logging
 import os
