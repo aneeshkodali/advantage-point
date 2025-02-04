@@ -18,8 +18,8 @@ env:
   HOST: ${{ vars.SUPABASE_HOST }}
   PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
   PORT: ${{ vars.SUPABASE_PORT }}
-  SCHEMA_INGESTION: ${{ secrets.SCHEMA_INGESTION }}
-  SCHEMA_INGESTION_TEMP: ${{ secrets.SCHEMA_INGESTION_TEMP }}
+  SCHEMA_INGESTION: ${{ vars.SCHEMA_INGESTION }}
+  SCHEMA_INGESTION_TEMP: ${{ vars.SCHEMA_INGESTION_TEMP }}
   USER: ${{ vars.SUPABASE_USER }}
 jobs:
   create-ingestion-schemas:
