@@ -24,6 +24,8 @@ def main():
     # create cursor
     cursor = conn.cursor()
 
+    logging.info(f"meta schema: {schema_meta}")
+
     # get list of schemas from project_parameters table
     schema_select_sql = f"""
         SELECT
