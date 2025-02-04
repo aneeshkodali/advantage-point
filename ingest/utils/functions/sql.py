@@ -722,3 +722,46 @@ def ingest_df_to_sql(
         unique_column_list=unique_column_list,
         delete_row_flag=delete_row_flag
     )
+
+def load_df_to_sql(
+    connection: psycopg2.connect,
+    df: pd.DataFrame,
+    schema_name: str,
+    table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - df: Pandas dataframe
+    - schema_name: Schema name
+    - table_name: Table name
+
+    Recreates the tables and loads data from dataframe
+    """
+
+    # get column data types
+    column_type_list = []
+    column_list = []
+    for col, dtype in df.dtypes.items():
+        sql_type = infer_sql_type(dtype)
+        column_list.append(col)
+        column_type_list.append(f"{col} {sql_type}")
+
+    # inititialize cursor
+    cursor = connection.cursor()
+
+    # create table
+    create_table_sql = f"CREATE OR REPLACE TABLE {schema_name}.{table_name} ({', '.join(column_type_list)})"
+    logging.info(f"Running statement: {create_table_sql}")
+    cursor.execute(create_table_sql)
+
+    # Insert data into table
+    insert_sql = f"INSERT INTO {schema_name}.{table_name} ({', '.join(column_list)}) VALUES ({', '.join(['%s'] * len(column_list))})"
+    logging.info(f"Running statement: {insert_sql}")
+
+    # Use execute many for bulk insert
+    cursor.executemany(insert_sql, df.values.tolist())
+    connection.commit()
+
+    # closer cursor
+    cursor.close()
