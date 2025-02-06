@@ -48,7 +48,7 @@ def main():
         table_name=target_table_name,
         column_name_list=unique_column_list,
     )
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:20]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
@@ -67,24 +67,51 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # loop through chunk urls
-        for idx, player_dict in enumerate(player_chunk_list, start=i):
-            player_url = player_dict['player_url']
-            logging.info(f"Starting {idx+1} of {len(player_list)}.")
-            logging.info(f"player url: {player_url}")
-            player_data_scraped_dict = get_player_data_scraped(
-                driver=driver,
-                player_url=player_url,
-                retries=3,
-                delay=3
-            )
-            player_data_dict = {
-                **player_dict,
-                **player_data_scraped_dict,
+        # # loop through chunk urls
+        # for idx, player_dict in enumerate(player_chunk_list, start=i):
+        #     player_url = player_dict['player_url']
+        #     logging.info(f"Starting {idx+1} of {len(player_list)}.")
+        #     logging.info(f"player url: {player_url}")
+        #     player_data_scraped_dict = get_player_data_scraped(
+        #         driver=driver,
+        #         player_url=player_url,
+        #         retries=3,
+        #         delay=3
+        #     )
+        #     player_data_dict = {
+        #         **player_dict,
+        #         **player_data_scraped_dict,
+        #     }
+        #     player_data_list.append(player_data_dict)
+        #     logging.info(f"Fetched data for: {player_url}")
+        #     time.sleep(random.uniform(1, 3))
+
+        # Use ThreadPoolExecutor to scrape player data in parallel
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # submit tasks directly to executor
+            future_to_player = {
+                executor.submit(get_player_data_scraped, player['player_url'], retries=3, delay=3): player
+                for player in player_chunk_list
             }
-            player_data_list.append(player_data_dict)
-            logging.info(f"Fetched data for: {player_url}")
-            time.sleep(random.uniform(1, 3))
+
+            # process results as they are complete
+            for future in as_completed(future_to_player):
+                player_dict = future_to_player[future]
+
+                try:
+                    result = future.result()  # Get the result of `get_player_data_scraped`
+                    if result:
+                        player_data_list.append(
+                            {
+                                **player_dict,
+                                **player_data_scraped_dict
+                            }
+                        )
+                        logging.info(
+                            f"Successfully fetched data for: {player_dict['player_url']}"
+                        )
+                except Exception as e:
+                    logging.error(f"Error scraping {player_dict['player_url']}: {e}")
 
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
