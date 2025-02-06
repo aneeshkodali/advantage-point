@@ -110,7 +110,7 @@ def main():
                         player_data_list.append(
                             {
                                 **player_dict,
-                                **player_data_scraped_dict
+                                **result
                             }
                         )
                         logging.info(
