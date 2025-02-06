@@ -41,17 +41,14 @@ def main():
     conn = create_connection()
 
     # get list of players
-    player_url_list_tennisabstract = [
-        player['player_url']
-        for player in get_player_list_tennisabstract()
-    ]
+    player_list_tennisabstract = get_player_list_tennisabstract()
     player_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
         table_name=target_table_name,
         column_name_list=unique_column_list,
     )
-    player_url_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_url_list_tennisabstract))
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))
     logging.info(f"Found {len(player_url_list)} players.")
 
     # loop through players
