@@ -73,7 +73,7 @@ def main():
     )
     conn.close()
 
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:20]
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:5]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
@@ -97,9 +97,7 @@ def main():
             futures = {executor.submit(get_player_data, player): player for player in player_chunk_list}
 
             for future in as_completed(futures):
-                player_dict, player_data = future.result()  # Get (player_dict, player_data)
-                logging.info(f"player_dict: {player_dict}")
-                logging.info(f"player_data: {player_data}")
+                logging.info(f"future: {future}")
                 # player_dict = futures[future]
                 # try:
                 #     result = future.result()  # Get the result of `get_player_data`
