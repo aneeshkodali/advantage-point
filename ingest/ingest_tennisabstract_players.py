@@ -90,7 +90,7 @@ def main():
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # submit tasks directly to executor
             future_to_player = {
-                executor.submit(get_player_data_scraped, player['player_url'], retries=3, delay=3): player
+                executor.submit(get_player_data_scraped, player_url=player['player_url'], retries=3, delay=3): player
                 for player in player_chunk_list
             }
 
