@@ -17,6 +17,33 @@ import pandas as pd
 import random
 import time
 
+def get_player_data(player_dict):
+
+    # create driver
+    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    driver = create_chromedriver(webdriver_path=webdriver_path)
+
+    player_url = player_dict['player_url']
+
+    logging.info(f"Scraping data for: {player_url}")
+
+    player_data_scraped_dict = get_player_data_scraped(
+        driver=driver,
+        player_url=player_url,
+        retries=3,
+        delay=3
+    )
+
+    player_data_dict = {
+        **player_dict,
+        **player_data_scraped_dict,
+    }
+
+    driver.quit()
+
+    return player_data_dict
+
+
 
 def main():
 
@@ -26,10 +53,6 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-    # create driver
-    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-    driver = create_chromedriver(webdriver_path=webdriver_path)
-
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
@@ -37,18 +60,20 @@ def main():
     temp_table_name = target_table_name
     unique_column_list = ['player_url',]
 
-    # create connection
-    conn = create_connection()
 
     # get list of players
     player_list_tennisabstract = get_player_list_tennisabstract()
+
+    conn = create_connection()
     player_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
         table_name=target_table_name,
         column_name_list=unique_column_list,
     )
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))
+    conn.close()
+
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:20]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
@@ -67,29 +92,25 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # loop through chunk urls
-        for idx, player_dict in enumerate(player_chunk_list, start=i):
-            player_url = player_dict['player_url']
-            logging.info(f"Starting {idx+1} of {len(player_list)}.")
-            logging.info(f"player url: {player_url}")
-            player_data_scraped_dict = get_player_data_scraped(
-                driver=driver,
-                player_url=player_url,
-                retries=3,
-                delay=3
-            )
-            player_data_dict = {
-                **player_dict,
-                **player_data_scraped_dict,
-            }
-            player_data_list.append(player_data_dict)
-            logging.info(f"Fetched data for: {player_url}")
-            time.sleep(random.uniform(1, 3))
+        # parallel scraping
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(get_player_data, player): player for player in player_chunk_list}
+
+            for future in as_completed(futures):
+                player_dict = futures[future]
+                try:
+                    result = future.result()  # Get the result of `get_player_data`
+                    if result:
+                        player_data_list.append(result)
+                        logging.info(f"Successfully fetched data for: {player_dict['player_url']}")
+                except Exception as e:
+                    logging.error(f"Error processing {player_dict['player_url']}: {e}")
 
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
 
         # ingest dataframe to sql
+        conn = create_connection()
         ingest_df_to_sql(
             connection=conn,
             df=player_data_df,
@@ -99,9 +120,7 @@ def main():
             temp_table_name=temp_table_name,
             unique_column_list=unique_column_list
         )
-
-    # close connection
-    conn.close()
+        conn.close()
 
 
 if __name__ == "__main__":
