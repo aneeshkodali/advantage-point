@@ -97,17 +97,14 @@ def main():
             futures = {executor.submit(get_player_data, player): player for player in player_chunk_list}
 
             for future in as_completed(futures):
-                logging.info(f"future: {future}")
-                logging.info(f"future.result: {future.result()}")
-                logging.info(f"futures.future: {futures[future]}")
-                # player_dict = futures[future]
-                # try:
-                #     result = future.result()  # Get the result of `get_player_data`
-                #     if result:
-                #         player_data_list.append(result)
-                #         logging.info(f"Successfully fetched data for: {player_dict['player_url']}")
-                # except Exception as e:
-                #     logging.error(f"Error processing {player_dict['player_url']}: {e}")
+                
+                player_data_dict = future.result()
+                player_url = player_data_dict['player_url']
+                try:
+                    player_data_list.append(player_data_dict)
+                    logging.info(f"Successfully fetched data for: {player_url}")
+                except Exception as e:
+                    logging.error(f"Error processing {player_url}: {e}")
 
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
