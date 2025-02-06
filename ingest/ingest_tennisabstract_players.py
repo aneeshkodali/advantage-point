@@ -49,38 +49,38 @@ def main():
         column_name_list=unique_column_list,
     )
     player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))
-    logging.info(f"Found {len(player_url_list)} players.")
+    logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
     # initialize chunk logic
     i = 0
     chunk_size = 100
     max_workers = 5
-    for i in range(0, len(player_url_list), chunk_size):
+    for i in range(0, len(player_list), chunk_size):
 
-        player_url_chunk_list = player_url_list[i:i + chunk_size]
+        player_chunk_list = player_list[i:i + chunk_size]
 
         chunk_size_start = i
-        chunk_size_end = min(i + chunk_size, len(player_url_list))
+        chunk_size_end = min(i + chunk_size, len(player_list))
         logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
 
         # initialize data list
         player_data_list = []
 
         # loop through chunk urls
-        for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
-            player_url = player_url_dict['player_url']
-            logging.info(f"Starting {idx+1} of {len(player_url_list)}.")
+        for idx, player_dict in enumerate(player_chunk_list, start=i):
+            player_url = player_dict['player_url']
+            logging.info(f"Starting {idx+1} of {len(player_list)}.")
             logging.info(f"player url: {player_url}")
-            player_data_scraped = get_player_data_scraped(
+            player_data_scraped_dict = get_player_data_scraped(
                 driver=driver,
                 player_url=player_url,
                 retries=3,
                 delay=3
             )
             player_data_dict = {
-                **player_url_dict,
-                **player_data_scraped,
+                **player_dict,
+                **player_data_scraped_dict,
             }
             player_data_list.append(player_data_dict)
             logging.info(f"Fetched data for: {player_url}")
