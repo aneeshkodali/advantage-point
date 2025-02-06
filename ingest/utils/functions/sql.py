@@ -531,57 +531,6 @@ def merge_target_table(
     logging.info(f"Running insert statement: {insert_sql}")
     cursor.execute(insert_sql)
 
-    # # generate strings for unique/nonunique columns
-    # source_column_str = ', '.join(source_column_list)
-    # source_column_str_w_source_alias = ', '.join([f"{source_alias}.{col}" for col in source_column_list])
-    # unique_column_concat_str = "CONCAT_WS('_', " + ', '.join(unique_column_list) + ")"
-    # unique_column_concat_str_w_target_alias = "CONCAT_WS('_', " + ', '.join([f"{target_alias}.{col}" for col in unique_column_list]) + ")"
-    # unique_column_concat_str_w_source_alias = "CONCAT_WS('_', " + ', '.join([f"{source_alias}.{col}" for col in unique_column_list]) + ")"
-    # non_unique_column_list = list(filter(lambda col: col not in unique_column_list, source_column_list))
-    # non_unique_column_concat_str = "CONCAT_WS('_', " + ', '.join(non_unique_column_list) + ")"
-
-    # # handle updates
-    # update_existing_sql = f"""
-    #     UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
-    #     SET
-                
-    #         FROM {comparison_schema_name}.{comparison_table_name} AS {compare_alias}
-    #         WHERE 1=1
-    #             AND {unique_column_concat_str_w_target_alias} = {compare_alias}.target_unique_id
-    #             AND {compare_alias}.row_comparison = 'update'
-    # """
-    # logging.info(f"Running update existing statement: {update_existing_sql}")
-    # cursor.execute(update_existing_sql)
-
-    # update_new_sql = f"""
-    #     INSERT INTO {target_schema_name}.{target_table_name} ({source_column_str}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
-    #     SELECT
-    #         {source_column_str_w_source_alias},
-    #         TRUE AS audit_field_active_flag,
-    #         'update' AS audit_field_record_type,
-    #         NOW() AS audit_field_start_datetime_utc,
-    #         NOW() AS audit_field_insert_datetime_utc
-    #     FROM {source_schema_name}.{source_table_name} AS {source_alias}
-    #     LEFT JOIN {comparison_schema_name}.{comparison_table_name} AS compare
-    #     ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
-    #     WHERE compare.row_comparison = 'update'
-    # """
-    # logging.info(f"Running update new statement: {update_new_sql}")
-    # cursor.execute(update_new_sql)
-
-    # # handle inserts
-    # insert_sql = f"""
-    #     INSERT INTO {target_schema_name}.{target_table_name} ({source_column_str}, audit_field_active_flag, audit_field_record_type, audit_field_start_datetime_utc, audit_field_insert_datetime_utc)
-    #     SELECT
-    #         {source_column_str_w_source_alias}
-    #     FROM {source_schema_name}.{source_table_name} AS {source_alias}
-    #     LEFT JOIN {comparison_schema_name}.{comparison_table_name} AS compare
-    #     ON {unique_column_concat_str_w_source_alias} = compare.source_unique_id
-    #     WHERE compare.row_comparison = 'insert'
-    # """
-    # logging.info(f"Running insert statement: {insert_sql}")
-    # cursor.execute(insert_sql)
-
     # commit
     connection.commit()
 
