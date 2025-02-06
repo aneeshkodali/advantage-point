@@ -27,8 +27,6 @@ def main():
     target_table_name = 'tennisabstract_matches'
     temp_table_name = target_table_name
     unique_column_list = ['match_url',]
-    # alter_table_drop_column_flag = False
-    # merge_table_delete_row_flag = False
 
     # create connection
     conn = create_connection()
@@ -40,7 +38,6 @@ def main():
         schema_name=target_schema_name,
         table_name=target_table_name,
         column_name_list=unique_column_list,
-        # where_clause_list=['audit_field_active_flag = TRUE',]
     )
     match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))
     logging.info(f"Found {len(match_url_list)} matches.")
@@ -98,8 +95,6 @@ def main():
             temp_schema_name=temp_schema_name,
             temp_table_name=temp_table_name,
             unique_column_list=unique_column_list
-            # drop_column_flag=alter_table_drop_column_flag,
-            # delete_row_flag=merge_table_delete_row_flag
         )
 
     # close connection
