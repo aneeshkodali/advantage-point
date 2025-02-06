@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from ingest.utils.functions.scrape import (
     create_chromedriver,
 )
