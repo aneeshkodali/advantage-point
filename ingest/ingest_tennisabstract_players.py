@@ -73,7 +73,7 @@ def main():
     )
     conn.close()
 
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:5]
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:100]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
