@@ -54,7 +54,7 @@ def main():
     # loop through players
     # initialize chunk logic
     i = 0
-    chunk_size = 100
+    chunk_size = 25
     max_workers = 5
     for i in range(0, len(player_list), chunk_size):
 
