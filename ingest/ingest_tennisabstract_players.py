@@ -33,9 +33,9 @@ def main():
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
-    target_table_name = 'tennisabstract_matches'
+    target_table_name = 'tennisabstract_players'
     temp_table_name = target_table_name
-    unique_column_list = ['match_url',]
+    unique_column_list = ['player_url',]
 
     # create connection
     conn = create_connection()
