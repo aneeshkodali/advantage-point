@@ -98,6 +98,8 @@ def main():
 
             for future in as_completed(futures):
                 logging.info(f"future: {future}")
+                logging.info(f"future.result: {future.result()}")
+                logging.info(f"futures.future: {futures[future]}")
                 # player_dict = futures[future]
                 # try:
                 #     result = future.result()  # Get the result of `get_player_data`
