@@ -26,9 +26,9 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-    # create driver
-    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-    driver = create_chromedriver(webdriver_path=webdriver_path)
+    # # create driver
+    # webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+    # driver = create_chromedriver(webdriver_path=webdriver_path)
 
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
@@ -48,6 +48,7 @@ def main():
         table_name=target_table_name,
         column_name_list=unique_column_list,
     )
+    conn.close()
     player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:20]
     logging.info(f"Found {len(player_list)} players.")
 
@@ -88,6 +89,8 @@ def main():
 
         # Use ThreadPoolExecutor to scrape player data in parallel
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+            driver = create_chromedriver(webdriver_path=webdriver_path)
             # submit tasks directly to executor
             future_to_player = {
                 executor.submit(
@@ -118,11 +121,12 @@ def main():
                         )
                 except Exception as e:
                     logging.error(f"Error scraping {player_dict['player_url']}: {e}")
-
+            driver.quit()
         # create dataframe
         player_data_df = pd.DataFrame(player_data_list)
 
         # ingest dataframe to sql
+        conn = create_connection()
         ingest_df_to_sql(
             connection=conn,
             df=player_data_df,
@@ -132,10 +136,13 @@ def main():
             temp_table_name=temp_table_name,
             unique_column_list=unique_column_list
         )
+        conn.close()
 
     # close connection
-    conn.close()
+    # conn.close()
 
+    # close driver
+    # driver.quit()
 
 if __name__ == "__main__":
     main()
