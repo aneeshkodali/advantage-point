@@ -7,9 +7,9 @@ from ingest.utils.functions.sql import (
     get_table_column_list,
     ingest_df_to_sql,
 )
-from ingest.utils.functions.tennisabstract import (
+from ingest.utils.functions.tennisabstract.players import (
     get_player_url_list as get_player_url_list_tennisabstract,
-    get_player_data,
+    get_player_data_scraped,
 )
 import logging
 import os
@@ -30,36 +30,34 @@ def main():
     webdriver_path = os.getenv('CHROMEDRIVER_PATH')
     driver = create_chromedriver(webdriver_path=webdriver_path)
 
-
     # set constants for use in function
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
-    target_table_name = 'tennisabstract_players'
+    target_table_name = 'tennisabstract_matches'
     temp_table_name = target_table_name
-    unique_column_list = ['player_url',]
-    alter_table_drop_column_flag = False
-    merge_table_delete_row_flag = False
+    unique_column_list = ['match_url',]
 
     # create connection
     conn = create_connection()
 
     # get list of players
-    player_url_list_tennisabstract = get_player_url_list_tennisabstract()
-    # player_url_list_db = get_table_column_list(
-    #     connection=conn,
-    #     schema_name=target_schema_name,
-    #     table_name=target_table_name,
-    #     column_name_list=unique_column_list,
-    #     where_clause_list=['audit_field_active_flag = TRUE',]
-    # )
-    # player_url_list = list(filter(lambda url_dict: url_dict not in player_url_list_db, player_url_list_tennisabstract))[:20]
-    player_url_list = player_url_list_tennisabstract[:20]
+    player_url_list_tennisabstract = [
+        player['player_url']
+        for player in get_player_url_list_tennisabstract()
+    ]
+    player_url_list_db = get_table_column_list(
+        connection=conn,
+        schema_name=target_schema_name,
+        table_name=target_table_name,
+        column_name_list=unique_column_list,
+    )
+    player_url_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_url_list_tennisabstract))
     logging.info(f"Found {len(player_url_list)} players.")
 
     # loop through players
     # initialize chunk logic
     i = 0
-    chunk_size = 10
+    chunk_size = 100
     max_workers = 5
     for i in range(0, len(player_url_list), chunk_size):
 
@@ -72,47 +70,21 @@ def main():
         # initialize data list
         player_data_list = []
 
-        # # Use ThreadPoolExecutor to scrape player data in parallel
-        # with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        #     # Submit tasks directly to executor
-        #     future_to_url = {
-        #         executor.submit(
-        #             get_player_data,
-        #             driver=driver,
-        #             player_url=player_url_dict['player_url'],
-        #             retries=3,
-        #             delay=3
-        #         ): idx
-        #         for idx, player_url_dict in enumerate(player_url_chunk_list, start=chunk_size_start)
-        #     }
-
-        #     # Process results as they complete
-        #     for future in as_completed(future_to_url):
-        #         url_index = future_to_url[future]  # Get the original index of the URL
-        #         player_url_dict = player_url_chunk_list[url_index - chunk_size_start]
-        #         try:
-        #             result = future.result()  # Get the result of `get_player_data`
-        #             if result:
-        #                 player_data_list.append(result)
-        #                 logging.info(
-        #                     f"Successfully fetched data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']}"
-        #                 )
-        #         except Exception as e:
-        #             logging.info(
-        #                 f"Failed to fetch data for URL {url_index + 1}/{len(player_url_list)}: {player_url_dict['player_url']} - Error: {e}"
-        #             )
-
         # loop through chunk urls
         for idx, player_url_dict in enumerate(player_url_chunk_list, start=i):
             player_url = player_url_dict['player_url']
             logging.info(f"Starting {idx+1} of {len(player_url_list)}.")
             logging.info(f"player url: {player_url}")
-            player_data_dict = get_player_data(
+            player_data_scraped = get_player_data_scraped(
                 driver=driver,
                 player_url=player_url,
                 retries=3,
                 delay=3
             )
+            player_data_dict = {
+                **player_url_dict,
+                **player_data_scraped,
+            }
             player_data_list.append(player_data_dict)
             logging.info(f"Fetched data for: {player_url}")
             time.sleep(random.uniform(1, 3))
@@ -128,9 +100,7 @@ def main():
             target_table_name=target_table_name,
             temp_schema_name=temp_schema_name,
             temp_table_name=temp_table_name,
-            unique_column_list=unique_column_list,
-            drop_column_flag=alter_table_drop_column_flag,
-            delete_row_flag=merge_table_delete_row_flag
+            unique_column_list=unique_column_list
         )
 
     # close connection
