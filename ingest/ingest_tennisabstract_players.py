@@ -8,7 +8,7 @@ from ingest.utils.functions.sql import (
     ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.players import (
-    get_player_url_list as get_player_url_list_tennisabstract,
+    get_player_list as get_player_list_tennisabstract,
     get_player_data_scraped,
 )
 import logging
@@ -43,7 +43,7 @@ def main():
     # get list of players
     player_url_list_tennisabstract = [
         player['player_url']
-        for player in get_player_url_list_tennisabstract()
+        for player in get_player_list_tennisabstract()
     ]
     player_url_list_db = get_table_column_list(
         connection=conn,
