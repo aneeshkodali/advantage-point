@@ -529,7 +529,7 @@ def merge_target_table(
     ]
 
     # get column names
-    source_column_list = [row[0] for row in cursor.fetchall()]
+    source_column_list = [row['column_name'] for row in source_columns_results_list]
 
     # get dictionaries for columns that are NOT unique columns
     non_unique_column_results_list = list(filter(lambda col: col['column_name'] not in unique_column_list, source_columns_results_list))
