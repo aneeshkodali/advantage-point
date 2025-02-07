@@ -539,7 +539,7 @@ def merge_target_table(
     update_where_clause_unique = ' AND '.join([f"{target_alias}.{col} = {source_alias}.{col}" for col in unique_column_list])
     update_where_clause_non_unique = ' OR '.join(
         [
-            f"(COALESCE({target_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}) != (COALESCE({source_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}))"
+            f"(COALESCE({target_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}) != COALESCE({source_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}))"
             for col in non_unique_column_results_list
         ]
     )
