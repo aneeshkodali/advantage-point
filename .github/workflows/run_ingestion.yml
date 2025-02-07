@@ -93,3 +93,4 @@ jobs:
         run: |
           echo "Running ingestion script: ${{ matrix.scripts.script_name }}"
           python -m ingest.${{ matrix.scripts.script_name }}
+        continue-on-error: true
