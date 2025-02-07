@@ -10,7 +10,8 @@ from ingest.utils.functions.sql import (
 from ingest.utils.functions.tennisabstract.players import (
     create_player_url,
     get_player_list as get_player_list_tennisabstract,
-    get_player_data_scraped,
+    # get_player_data_scraped,
+    scrape_player_data,
 )
 import logging
 import os
@@ -103,7 +104,7 @@ def main():
 
         # parallel scraping
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(get_player_data, player): player for player in player_chunk_list}
+            futures = {executor.submit(scrape_player_data, player): player for player in player_chunk_list}
 
             for future in as_completed(futures):
                 
