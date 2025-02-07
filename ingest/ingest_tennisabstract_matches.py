@@ -26,19 +26,18 @@ def main():
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
     target_table_name = 'tennisabstract_matches'
     temp_table_name = target_table_name
-    unique_column_list = ['match_url',]
-
-    # create connection
-    conn = create_connection()
+    unique_column_list = ['match_url',]    
 
     # get list of matches
     match_url_list_tennisabstract = get_match_url_list_tennisabstract()
+    conn = create_connection()
     match_url_list_db = get_table_column_list(
         connection=conn,
         schema_name=target_schema_name,
         table_name=target_table_name,
         column_name_list=unique_column_list,
     )
+    conn.close()
     match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))
     logging.info(f"Found {len(match_url_list)} matches.")
 
@@ -92,6 +91,7 @@ def main():
         match_data_df = pd.DataFrame(match_data_list)
 
         # ingest dataframe to sql
+        conn = create_connection()
         ingest_df_to_sql(
             connection=conn,
             df=match_data_df,
@@ -101,10 +101,7 @@ def main():
             temp_table_name=temp_table_name,
             unique_column_list=unique_column_list
         )
-
-    # close connection
-    conn.close()
-
+        conn.close()
 
 if __name__ == "__main__":
     main()
