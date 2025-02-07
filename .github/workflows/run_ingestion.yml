@@ -67,6 +67,7 @@ jobs:
     strategy:
       matrix:
         scripts: ${{ fromJson(needs.fetch-ingestion-scripts.outputs.scripts_json) }}
+      fail-fast: false # ensure one failure does not cancel the others
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -93,4 +94,3 @@ jobs:
         run: |
           echo "Running ingestion script: ${{ matrix.scripts.script_name }}"
           python -m ingest.${{ matrix.scripts.script_name }}
-        continue-on-error: true
