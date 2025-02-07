@@ -180,9 +180,19 @@ def scrape_player_data(
                 except Exception as e:
                     logging.info(f"Error encountered when getting data for variable {var}: {e}")
 
-            # check if all values in dict are None -> return empty dict
+            # check if all values in dict are None
             if all(value is None for value in player_dict.values()):
-                logging.info(f"All values None for {player_url} - Returning empty dictionary.")
+                logging.info(f"All values None for {player_url}")
+                
+                attempt += 1
+                
+                # retry if possible
+                if attempt < retries:
+                    logging.info(f"Retrying in {delay} seconds...Attempt {attempt} for {player_url}")
+                    time.sleep(delay)
+                    continue
+                else:
+                    logging.error(f"Max retries reached for {player_url}...Returning empty dictionary")
                 return {}
 
             # return dictionary if data successfully extracted
