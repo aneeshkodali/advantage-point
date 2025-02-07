@@ -201,6 +201,15 @@ def scrape_player_data(
         except Exception as e:
             attempt += 1
             logging.warning(f"Attempt {attempt} failed for {player_url}: {e}")
+
+            # Log possible causes
+            logging.debug(f"Page Content Length: {len(response_text)}")
+            logging.debug(f"Response Status Code: {response.status_code}")
+            
+            # Log which variables were not found
+            missing_vars = [var for var, val in player_dict.items() if val is None]
+            logging.debug(f"Missing variables: {missing_vars}")
+
             if attempt < retries:
                 logging.info(f"Retrying in {delay} seconds...")
                 time.sleep(delay)  # Delay before retrying
