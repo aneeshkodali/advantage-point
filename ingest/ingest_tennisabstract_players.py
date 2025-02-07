@@ -67,10 +67,10 @@ def main():
     player_list_tennisabstract = get_player_list_tennisabstract()
     # add player_url
     player_list_tennisabstract = [
-        dict(
-            player_dict,
-            **{'player_url':create_player_url(player_dict=player_dict)}
-        )
+        {
+            **player_dict,
+            **{'player_url':create_player_url(player_dict=player_dict)},
+        }
         for player_dict in player_list_tennisabstract
     ]
 
@@ -112,8 +112,15 @@ def main():
             ): player for player in player_chunk_list}
 
             for future in as_completed(futures):
-                
-                player_data_dict = future.result()
+                # get original dictionary
+                player_dict_original = futures[future]
+                # get the scraped data dictionary
+                player_dict_scraped = future.result()
+                # merge data dictionaries
+                player_data_dict = {
+                    **player_dict_original,
+                    **player_dict_scraped,
+                }
                 player_url = player_data_dict['player_url']
                 try:
                     player_data_list.append(player_data_dict)
