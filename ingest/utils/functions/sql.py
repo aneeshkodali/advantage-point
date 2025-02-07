@@ -459,6 +459,28 @@ def alter_target_table(
     # close cursor
     cursor.close()
 
+def get_column_coalesce_value(
+    column_name: str,
+    data_type, str
+) -> str:
+    """
+    Arguments:
+    - column_name: Column name
+    - data_type: Column data type
+
+    Returns the appropriate COALESCE default value based on column data type
+    """
+    
+    if data_type in ('integer', 'bigint', 'decimal', 'numeric', 'double precision', 'real'):
+        return '0'
+    elif data_type in ('character varying', 'text', 'char'):
+        return "'null'"
+    elif data_type in ('boolean'):
+        return 'FALSE'
+    elif data_type in ('date', 'timestamp', 'timestamp without time zone', 'timestamp with time zone'):
+        return "'1900-01-01'"
+    else:
+        return "''"  # Default fallback for unknown types
 
 def merge_target_table(
     connection: psycopg2.connect,
@@ -489,20 +511,38 @@ def merge_target_table(
     # get list of columns from source table (for use in INSERT/UPDATE statements)
     source_column_sql = f"""
         SELECT
-            COLUMN_NAME
+            COLUMN_NAME,
+            DATA_TYPE
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE
                 TABLE_SCHEMA = '{source_schema_name}'
             AND TABLE_NAME = '{source_table_name}'
     """
     cursor.execute(source_column_sql)
+
+    source_columns_results_list = [
+        {
+            'column_name': row[0],
+            'data_type': row[1],
+        }
+        for row in cursor.fetchall()
+    ]
+
+    # get column names
     source_column_list = [row[0] for row in cursor.fetchall()]
-    non_unique_column_list = list(filter(lambda col: col not in unique_column_list, source_column_list))
+
+    # get dictionaries for columns that are NOT unique columns
+    non_unique_column_results_list = list(filter(lambda col: col['column_name'] not in unique_column_list, source_columns_results_list))
 
     # handle updates
     update_set_clause = ', '.join([f"{col} = {source_alias}.{col}" for col in non_unique_column_list])
     update_where_clause_unique = ' AND '.join([f"{target_alias}.{col} = {source_alias}.{col}" for col in unique_column_list])
-    update_where_clause_non_unique = ' OR '.join([f"({target_alias}.{col} != {source_alias}.{col})" for col in non_unique_column_list])
+    update_where_clause_non_unique = ' OR '.join(
+        [
+            f"(COALESCE({target_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}) != (COALESCE({source_alias}.{col['column_name']}, {get_column_coalesce_value(col['column_name'], col['data_type'])}))"
+            for col in non_unique_column_results_list
+        ]
+    )
     update_sql = f"""
         UPDATE {target_schema_name}.{target_table_name} AS {target_alias}
         SET {update_set_clause}
