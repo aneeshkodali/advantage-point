@@ -68,7 +68,6 @@ def get_player_list() -> List[Dict]:
         player_data_dict = {}
         player_data_dict['player_name'] = name
         player_data_dict['player_gender'] = gender
-        player_data_dict['player_url'] = create_player_url(player_dict=player_data_dict)
         player_data_list.append(player_data_dict)
 
     return player_data_list

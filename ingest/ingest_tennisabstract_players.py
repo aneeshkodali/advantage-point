@@ -8,6 +8,7 @@ from ingest.utils.functions.sql import (
     ingest_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.players import (
+    create_player_url,
     get_player_list as get_player_list_tennisabstract,
     get_player_data_scraped,
 )
@@ -63,6 +64,14 @@ def main():
 
     # get list of players
     player_list_tennisabstract = get_player_list_tennisabstract()
+    # add player_url
+    player_list_tennisabstract = [
+        dict(
+            player_dict,
+            **{'player_url':create_player_url(player_dict=player_dict)}
+        )
+        for player_dict in player_list_tennisabstract
+    ]
 
     conn = create_connection()
     player_url_list_db = get_table_column_list(
@@ -73,7 +82,7 @@ def main():
     )
     conn.close()
 
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:100]
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:5]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
