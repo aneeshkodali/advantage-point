@@ -104,7 +104,12 @@ def main():
 
         # parallel scraping
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(scrape_player_data, player): player for player in player_chunk_list}
+            futures = {executor.submit(
+                scrape_player_data,
+                player_url=player['player_url'],
+                retries=3,
+                delay=3,
+            ): player for player in player_chunk_list}
 
             for future in as_completed(futures):
                 
