@@ -461,7 +461,7 @@ def alter_target_table(
 
 def get_column_coalesce_value(
     column_name: str,
-    data_type, str
+    data_type: str
 ) -> str:
     """
     Arguments:
