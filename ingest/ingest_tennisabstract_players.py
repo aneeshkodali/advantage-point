@@ -108,7 +108,7 @@ def main():
                 scrape_player_data,
                 player_url=player['player_url'],
                 retries=3,
-                delay=3,
+                delay=5,
             ): player for player in player_chunk_list}
 
             for future in as_completed(futures):
