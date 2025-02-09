@@ -1,7 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from ingest.utils.functions.scrape import (
-    create_chromedriver,
-)
+# from ingest.utils.functions.scrape import (
+#     create_chromedriver,
+# )
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
@@ -19,32 +19,31 @@ import pandas as pd
 import random
 import time
 
-def get_player_data(player_dict):
+# def get_player_data(player_dict):
 
-    # create driver
-    webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-    driver = create_chromedriver(webdriver_path=webdriver_path)
+#     # create driver
+#     webdriver_path = os.getenv('CHROMEDRIVER_PATH')
+#     driver = create_chromedriver(webdriver_path=webdriver_path)
 
-    player_url = player_dict['player_url']
+#     player_url = player_dict['player_url']
 
-    logging.info(f"Scraping data for: {player_url}")
+#     logging.info(f"Scraping data for: {player_url}")
 
-    player_data_scraped_dict = get_player_data_scraped(
-        driver=driver,
-        player_url=player_url,
-        retries=3,
-        delay=3
-    )
+#     player_data_scraped_dict = get_player_data_scraped(
+#         driver=driver,
+#         player_url=player_url,
+#         retries=3,
+#         delay=3
+#     )
 
-    player_data_dict = {
-        **player_dict,
-        **player_data_scraped_dict,
-    }
+#     player_data_dict = {
+#         **player_dict,
+#         **player_data_scraped_dict,
+#     }
 
-    driver.quit()
+#     driver.quit()
 
-    return player_data_dict
-
+#     return player_data_dict
 
 
 def main():
@@ -83,7 +82,7 @@ def main():
     )
     conn.close()
 
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:100]
+    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:500]
     logging.info(f"Found {len(player_list)} players.")
 
     # loop through players
