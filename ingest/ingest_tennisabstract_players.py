@@ -114,14 +114,22 @@ def main():
             for future in as_completed(futures):
                 # get original dictionary
                 player_dict_original = futures[future]
+                player_url = player_dict_original['player_url']
+
                 # get the scraped data dictionary
                 player_dict_scraped = future.result()
+
+                # check if scraped data exists - move on if not exists
+                if not player_dict_scraped:
+                    logging.warning(f"Skipping empty data for {player_url}")
+                    continue
+
                 # merge data dictionaries
                 player_data_dict = {
                     **player_dict_original,
                     **player_dict_scraped,
                 }
-                player_url = player_data_dict['player_url']
+
                 try:
                     player_data_list.append(player_data_dict)
                     logging.info(f"Successfully fetched data for: {player_url}")
