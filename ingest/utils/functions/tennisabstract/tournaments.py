@@ -112,7 +112,7 @@ def get_tournament_data_scraped(
                 logging.info(f"All values None for {tournament_url}")
                 
                 # Log possible causes
-                logging.debug(f"Page Content Length: {len(response_text)}")
+                logging.debug(f"Page Content Length: {len(response.text)}")
                 logging.debug(f"Response Status Code: {response.status_code}")
                 
                 # Log which variables were not found
