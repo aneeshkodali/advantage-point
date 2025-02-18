@@ -58,9 +58,8 @@ def main():
     match_url_list_tennisabstract = get_match_url_list_tennisabstract()
 
     # get match urls (depends on bulk load flag)
-
     if matches_bulk_load_flag == True:
-        match_url_list = match_url_list_tennisabstract[:5] # set to list from source
+        match_url_list = match_url_list_tennisabstract # set to list from source
     else:
         # get list of match urls from database
         conn = create_connection() # create connection
@@ -270,7 +269,6 @@ def main():
             conn.close() # close connection
 
         ## TOURNAMENT DATA END ##
-
 
 if __name__ == "__main__":
     main()
