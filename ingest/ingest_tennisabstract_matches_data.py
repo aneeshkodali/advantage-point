@@ -6,6 +6,7 @@ from ingest.utils.functions.sql import (
 from ingest.utils.functions.tennisabstract.matches import (
     get_match_data_scraped,
     get_match_data_url,
+    get_match_point_data_scraped,
     get_match_url_list as get_match_url_list_tennisabstract,
 )
 from ingest.utils.functions.tennisabstract.players import (
@@ -37,6 +38,11 @@ def main():
     matches_target_table_name = 'tennisabstract_matches'
     matches_temp_table_name = matches_target_table_name
     matches_unique_column_list = ['match_url',]
+
+    # set constants for match point data
+    match_points_target_table_name = 'tennisabstract_match_points'
+    match_points_temp_table_name = match_points_target_table_name
+    match_points_unique_column_list = ['match_url', 'point_number',]
 
     # set constants for player data
     players_target_table_name = 'tennisabstract_players'
@@ -115,6 +121,36 @@ def main():
             conn.close() # close connection
 
         ## MATCH DATA END ##
+
+        ## MATCH POINT DATA START ##
+
+        # get data from match point scraping
+        match_point_scraped_list = get_match_point_data_scraped(
+            match_url=match_url,
+            retries=3,
+            delay=3
+        )
+
+        # continue with match point data logic if data is returned from scraping
+        if match_point_scraped_list != {}:
+
+            logging.info(f"Match point data found for match url: {match_url}")
+
+            # load data to database
+            match_point_data_df = pd.DataFrame(match_point_scraped_list) # create dataframe
+            conn = create_connection() # create connection
+            ingest_df_to_sql(
+                connection=conn,
+                df=match_point_data_df,
+                target_schema_name=target_schema_name,
+                target_table_name=match_points_target_table_name,
+                temp_schema_name=temp_schema_name,
+                temp_table_name=match_points_temp_table_name,
+                unique_column_list=match_points_unique_column_list
+            )
+            conn.close() # close connection
+
+        ## MATCH POINT DATA END ##
 
         ## PLAYER DATA START ##
 

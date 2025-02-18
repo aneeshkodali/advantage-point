@@ -161,7 +161,7 @@ def get_match_data(
 
     return match_data_dict
 
-def get_match_point_data(
+def get_match_point_data_scraped(
     match_url: str,
     retries: int,
     delay: int
