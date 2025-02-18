@@ -28,6 +28,7 @@ def main():
     # set 'global' constants
     target_schema_name = os.getenv('SCHEMA_INGESTION')
     temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
+    matches_bulk_load_flag = True
 
     # set constants for match data
     matches_target_table_name = 'tennisabstract_matches'
@@ -42,18 +43,23 @@ def main():
     # get list of match urls from source
     match_url_list_tennisabstract = get_match_url_list_tennisabstract()
 
-    # get list of match urls from database
-    conn = create_connection() # create connection
-    match_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=matches_target_table_name,
-        column_name_list=matches_unique_column_list,
-    )
-    conn.close() # close connection
+    # get match urls (depends on bulk load flag)
 
-    # get match urls that are NOT in database
-    match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))[:2]
+    if matches_bulk_load_flag = True:
+        match_url_list = match_url_list_tennisabstract[:2] # set to list from source
+    else:
+        # get list of match urls from database
+        conn = create_connection() # create connection
+        match_url_list_db = get_table_column_list(
+            connection=conn,
+            schema_name=target_schema_name,
+            table_name=matches_target_table_name,
+            column_name_list=matches_unique_column_list,
+        )
+        conn.close() # close connection
+
+        # only include source urls that are NOT in database
+        match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))
     logging.info(f"Found {len(match_url_list)} matches.")
 
     # loop through match urls
