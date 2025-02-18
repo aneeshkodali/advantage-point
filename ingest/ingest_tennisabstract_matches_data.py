@@ -8,6 +8,11 @@ from ingest.utils.functions.tennisabstract.matches import (
     get_match_data_url,
     get_match_url_list as get_match_url_list_tennisabstract,
 )
+from ingest.utils.functions.tennisabstract.players import (
+    create_player_url,
+    scrape_player_data,
+
+)
 import logging
 import os
 import pandas as pd
@@ -28,6 +33,11 @@ def main():
     matches_target_table_name = 'tennisabstract_matches'
     matches_temp_table_name = matches_target_table_name
     matches_unique_column_list = ['match_url',]
+
+    # set constants for player data
+    players_target_table_name = 'tennisabstract_players'
+    players_temp_table_name = players_target_table_name
+    players_unique_column_list = ['player_url',]
 
     # get list of match urls from source
     match_url_list_tennisabstract = get_match_url_list_tennisabstract()
@@ -90,10 +100,70 @@ def main():
             )
             conn.close() # close connection
 
-
         ## MATCH DATA END ##
 
         ## PLAYER DATA START ##
+
+        # get list of player names from match data
+        player_name_list = [
+            match_url_dict['match_player_one'],
+            match_url_dict['match_player_two'],
+        ]
+
+        # initialize player data list
+        player_data_list = []
+
+        # loop through player names
+        for player_name in player_name_list:
+            
+            # create player url dict
+            player_name_clean = player_name.replace('_', ' ')
+            player_gender = match_url_dict['match_gender']
+            player_url_dict = {
+                'player_name': player_name_clean,
+                'player_gender': player_gender,
+            }
+
+            # create player url
+            player_url = create_player_url(
+                player_dict=player_url_dict
+            )
+            player_url_dict['player_url'] = player_url
+
+            # get data from player scraping
+            player_scrape_dict = scrape_player_data(
+                player_url=player_url,
+                retries=3,
+                delay=5,
+            )
+
+            # continue with player data logic if data is returned from scraping
+            if player_scrape_dict != {}:
+
+                logging.info(f"Data found for player url: {player_url}")
+
+                # combine player data
+                player_data_dict = {
+                    **player_url_dict,
+                    **player_scrape_dict,
+                }
+
+                # append to player list
+                player_data_list.append(player_data_dict)
+
+        # load data to database
+        player_data_df = pd.DataFrame(player_data_list) # create dataframe
+        conn = create_connection() # create connection
+        ingest_df_to_sql(
+            connection=conn,
+            df=player_data_df,
+            target_schema_name=target_schema_name,
+            target_table_name=players_target_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=players_temp_table_name,
+            unique_column_list=players_unique_column_list
+        )
+        conn.close() # close connection
 
         ## PLAYER DATA END ##
 
