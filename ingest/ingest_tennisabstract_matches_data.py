@@ -129,6 +129,7 @@ def main():
                 player_dict=player_url_dict
             )
             player_url_dict['player_url'] = player_url
+            logging.info(f"Getting player data for player url: {player_url}")
 
             # get data from player scraping
             player_scrape_dict = scrape_player_data(
