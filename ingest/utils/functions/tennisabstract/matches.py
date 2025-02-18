@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from ingest.utils.functions.scrape import (
     make_request,
+    scrape_javascript_var,
+
 )
 from typing import (
     Dict,
