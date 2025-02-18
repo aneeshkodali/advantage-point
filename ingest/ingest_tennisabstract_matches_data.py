@@ -201,19 +201,22 @@ def main():
                 # append to player list
                 player_data_list.append(player_data_dict)
 
-        # load data to database
-        player_data_df = pd.DataFrame(player_data_list) # create dataframe
-        conn = create_connection() # create connection
-        ingest_df_to_sql(
-            connection=conn,
-            df=player_data_df,
-            target_schema_name=target_schema_name,
-            target_table_name=players_target_table_name,
-            temp_schema_name=temp_schema_name,
-            temp_table_name=players_temp_table_name,
-            unique_column_list=players_unique_column_list
-        )
-        conn.close() # close connection
+        # load to database if not empty
+        if player_data_list != []:
+        
+            # load data to database
+            player_data_df = pd.DataFrame(player_data_list) # create dataframe
+            conn = create_connection() # create connection
+            ingest_df_to_sql(
+                connection=conn,
+                df=player_data_df,
+                target_schema_name=target_schema_name,
+                target_table_name=players_target_table_name,
+                temp_schema_name=temp_schema_name,
+                temp_table_name=players_temp_table_name,
+                unique_column_list=players_unique_column_list
+            )
+            conn.close() # close connection
 
         ## PLAYER DATA END ##
 
