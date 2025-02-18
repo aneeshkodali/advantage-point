@@ -11,7 +11,10 @@ from ingest.utils.functions.tennisabstract.matches import (
 from ingest.utils.functions.tennisabstract.players import (
     create_player_url,
     scrape_player_data,
-
+)
+from ingest.utils.functions.tennisabstract.tournaments import (
+    create_tournament_url,
+    get_tournament_data_scraped,
 )
 import logging
 import os
@@ -40,13 +43,18 @@ def main():
     players_temp_table_name = players_target_table_name
     players_unique_column_list = ['player_url',]
 
+    # set constants for tournament data
+    tournaments_target_table_name = 'tennisabstract_tournaments'
+    tournaments_temp_table_name = players_target_table_name
+    tournaments_unique_column_list = ['tournament_url',]
+
     # get list of match urls from source
     match_url_list_tennisabstract = get_match_url_list_tennisabstract()
 
     # get match urls (depends on bulk load flag)
 
     if matches_bulk_load_flag = True:
-        match_url_list = match_url_list_tennisabstract[:2] # set to list from source
+        match_url_list = match_url_list_tennisabstract[:5] # set to list from source
     else:
         # get list of match urls from database
         conn = create_connection() # create connection
@@ -175,6 +183,55 @@ def main():
         ## PLAYER DATA END ##
 
         ## TOURNAMENT DATA START ##
+        
+        # create tournament url dict
+        tournament_year = match_url_dict['match_date'][:4] # get year from date
+        tournament_name = match_url_dict['match_tournament'].replace('_', ' ')
+        tournament_gender = match_url_dict['match_gender']
+        tournament_url_dict = {
+            'tournament_year': tournament_year,
+            'tournament_name': tournament_name,
+            'tournament_gender': tournament_gender,
+        }
+
+        # create tournament url
+        tournament_url = create_tournament_url(
+            tournament_dict=tournament_url_dict
+        )
+        tournament_url_dict['tournament_url'] = tournament_url
+        logging.info(f"Getting tournament data for tournament url: {tournament_url}")
+
+        # get data from tournament scraping
+        tournament_scrape_dict = get_tournament_data_scraped(
+            tournament_url=tournament_url,
+            retries=3,
+            delay=3
+        )
+
+        # continue with tournament data logic if data is returned from scraping
+        if tournament_scrape_dict != {}:
+
+            logging.info(f"Data found for tournament url: {tournament_url}")
+
+            # combine tournament data
+            tournament_data_dict = {
+                **tournament_url_dict,
+                **tournament_scrape_dict,
+            }
+
+            # load data to database
+            tournament_data_df = pd.DataFrame([tournament_data_dict]) # create dataframe
+            conn = create_connection() # create connection
+            ingest_df_to_sql(
+                connection=conn,
+                df=tournament_data_df,
+                target_schema_name=target_schema_name,
+                target_table_name=tournaments_target_table_name,
+                temp_schema_name=temp_schema_name,
+                temp_table_name=tournaments_temp_table_name,
+                unique_column_list=tournaments_unique_column_list
+            )
+            conn.close() # close connection
 
         ## TOURNAMENT DATA END ##
 
