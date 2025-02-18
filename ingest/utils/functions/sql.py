@@ -350,9 +350,10 @@ def create_target_table(
     """
 
     # execute query for target table creation
-    logging.info(f"Executing statement: {create_target_table_sql}")
+    # logging.info(f"Executing statement: {create_target_table_sql}")
     cursor.execute(create_target_table_sql)
     connection.commit()
+    logging.info(f"Target table created: {target_schema_name}.{target_table_name}")
 
     # close cursor
     cursor.close()

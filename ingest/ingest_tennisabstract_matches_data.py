@@ -132,7 +132,7 @@ def main():
         )
 
         # continue with match point data logic if data is returned from scraping
-        if match_point_scraped_list != {}:
+        if match_point_scraped_list != []:
 
             logging.info(f"Match point data found for match url: {match_url}")
 
