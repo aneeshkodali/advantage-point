@@ -10,6 +10,7 @@ from ingest.utils.functions.tennisabstract.matches import (
 )
 import logging
 import os
+import pandas as pd
 
 def main():
 
