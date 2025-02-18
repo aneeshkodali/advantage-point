@@ -173,7 +173,7 @@ def drop_table(
 
     # drop table if exists
     drop_table_sql = f"DROP TABLE IF EXISTS {schema_name}.{table_name}"
-    logging.info(f"Running statement: {drop_table_sql}")
+    # logging.info(f"Running statement: {drop_table_sql}")
     cursor.execute(drop_table_sql)
     logging.info(f"Dropped table: {schema_name}.{table_name}")
 
@@ -210,16 +210,18 @@ def create_and_load_table(
 
     # create table
     create_table_sql = f"CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} ({', '.join(column_type_list)})"
-    logging.info(f"Running statement: {create_table_sql}")
+    # logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
+    logging.info(f"Created table: {schema_name}.{table_name}")
 
     # Insert data into table
     insert_sql = f"INSERT INTO {schema_name}.{table_name} ({', '.join(column_list)}) VALUES ({', '.join(['%s'] * len(column_list))})"
-    logging.info(f"Running statement: {insert_sql}")
+    # logging.info(f"Running statement: {insert_sql}")
 
     # Use execute many for bulk insert
     cursor.executemany(insert_sql, df.values.tolist())
     connection.commit()
+    logging.info(f"Data inserted into: {schema_name}.{table_name}")
 
     # closer cursor
     cursor.close()
@@ -257,7 +259,7 @@ def create_or_alter_target_table(
     """
 
     # execute query for target table existence
-    logging.info(f"Executing statement: {target_table_exists_sql}")
+    # logging.info(f"Executing statement: {target_table_exists_sql}")
     cursor.execute(target_table_exists_sql)
     target_table_exists_flag = cursor.fetchone()[0]
     logging.info(f"Target table {target_schema_name}.{target_table_name} exists: {target_table_exists_flag}")
@@ -335,7 +337,7 @@ def create_target_table(
     """
 
     # execute query for source table columns
-    logging.info(f"Executing statement: {source_table_columns_sql}")
+    # logging.info(f"Executing statement: {source_table_columns_sql}")
     cursor.execute(source_table_columns_sql)
     column_name_data_type_agg = cursor.fetchone()[0]
 
@@ -551,8 +553,9 @@ def merge_target_table(
             AND {update_where_clause_unique}
             AND ({update_where_clause_non_unique})
     """
-    logging.info(f"Running update statement: {update_sql}")
+    # logging.info(f"Running update statement: {update_sql}")
     cursor.execute(update_sql)
+    logging.info(f"Target table records updated: {target_schema_name}.{target_table_name}")
 
     # handle inserts
     insert_source_column_str = ', '.join(source_column_list)
@@ -568,11 +571,13 @@ def merge_target_table(
         ON {insert_join_on_clause}
         WHERE {insert_where_clause}
     """
-    logging.info(f"Running insert statement: {insert_sql}")
+    # logging.info(f"Running insert statement: {insert_sql}")
     cursor.execute(insert_sql)
 
     # commit
     connection.commit()
+    logging.info(f"Target table records inserted: {target_schema_name}.{target_table_name}")
+
 
     # close cursor
     cursor.close()
