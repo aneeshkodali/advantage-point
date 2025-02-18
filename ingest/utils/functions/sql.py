@@ -441,7 +441,8 @@ def alter_target_table(
     """
 
     # execute query for column_comparisons
-    logging.info(f"Executing statement: {columns_compare_sql}")
+    # logging.info(f"Executing statement: {columns_compare_sql}")
+    logging.info(f"Comparing columns for : {target_schema_name}.{target_table_name}")
     cursor.execute(columns_compare_sql)
     columns_compare_results = cursor.fetchall()
 
