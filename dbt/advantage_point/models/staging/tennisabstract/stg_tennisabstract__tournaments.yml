@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: stg_tennisabstract__tournaments
+    description: Staging model for tennisabstract tournament data.
+    columns:
+      - name: tournament_url
+        data_type: string
+        description: Link to the tournament data.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: tournament_year
+        data_type: integer
+        description: Year of the tournament. May not correspond to tournament start date.
+        data_tests:
+          - not_null
+
+      - name: tournament_name
+        data_type: string
+        description: Tournament name.
+        data_tests:
+          - not_null
+        
+      - name: tournament_gender
+        data_type: string
+        description: Gender of the tournament.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['M', 'W']
+              quote: true
+      
+      - name: tournament_title
+        data_type: string
+        description: Title of the tournament. Includes year and tournament name.
+      
+      - name: tournament_start_date
+        data_type: date
+        description: Start date of the tournament.
+
+      - name: tournament_surface
+        data_type: string
+        description: Surface on which tournament is played.
+
+      - name: tournament_draw_size
+        data_type: integer
+        description: Size of the tournament draw.
