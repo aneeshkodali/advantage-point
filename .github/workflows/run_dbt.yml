@@ -2,6 +2,15 @@ name: Run dbt
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment to run the script'
+        required: true
+        default: dev
+        type: choice
+        options:
+          - dev
+          - prod
 
 env:
   DBT_DATABASE: ${{ vars.SUPABASE_DATABASE }}
@@ -25,12 +34,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.inputs.environment == 'prod' && 'master' || 'dev' }}
 
       - name: Setup python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.13'
 
       - name: Install requirements
         run:
@@ -39,7 +48,7 @@ jobs:
       - name: Run dbt commands
         run: |
           dbt deps --project-dir dbt/advantage_point &&
-          dbt seed --profiles-dir ./dbt --project-dir dbt/advantage_point &&
+          dbt seed --full-refresh --profiles-dir ./dbt --project-dir dbt/advantage_point &&
           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
