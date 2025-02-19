@@ -29,13 +29,6 @@ models:
 
       - name: tour_id
         description: Player ID for tour/organization.
-      
-      - name: tour_id_type
-        description: Type of player's tour ID, based on gender.
-        data_tests:
-          - accepted_values:
-              values: ['atp_id', 'wta_id', null]
-              quote: true
 
       - name: photograph_link
         description: ""
@@ -101,16 +94,6 @@ models:
  
       - name: team_cup_id
         description: Player ID for team cup play.
-
-      - name: team_cup_id_type
-        description: >
-          Type of player's team cup ID, based on gender.
-            - bjkc: Billie Jean King Cup (female)
-            - dc: Davis Cup (male)
-        data_tests:
-          - accepted_values:
-              values: ['bjkc_id', 'dc_id', null]
-              quote: true
 
       - name: last_name
         description: Player's last name.
