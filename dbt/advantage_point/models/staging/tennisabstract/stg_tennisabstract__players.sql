@@ -7,6 +7,7 @@ source as (
 renamed as (
     select
         player_url,
+        player_name,
         player_gender,
         {{ remove_empty_string_from_source('photog_credit') }} as photograph_credit,
         {{ convert_rank_to_integer('current_dubs') }} as current_doubles_rank,

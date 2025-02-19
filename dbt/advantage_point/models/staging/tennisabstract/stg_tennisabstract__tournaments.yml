@@ -3,6 +3,12 @@ version: 2
 models:
   - name: stg_tennisabstract__tournaments
     description: Staging model for tennisabstract tournament data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tournament_year
+            - tournament_name
+            - tournament_gender
     columns:
       - name: tournament_url
         data_type: string

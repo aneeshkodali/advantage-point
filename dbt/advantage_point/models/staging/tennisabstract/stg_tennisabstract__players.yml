@@ -6,11 +6,19 @@ models:
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - player_url
+            - player_name
+            - player_gender
     columns:
       - name: player_url
         data_type: string
         description: Link to the match data.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: player_name
+        data_type: string
+        description: Player name
         data_tests:
           - not_null
       

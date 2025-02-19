@@ -3,6 +3,15 @@ version: 2
 models:
   - name: stg_tennisabstract__matches
     description: Staging model for tennisabstract match data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - match_date
+            - match_gender
+            - match_tournament
+            - match_round
+            - match_player_one
+            - match_player_two
     columns:
       - name: match_url
         data_type: string
