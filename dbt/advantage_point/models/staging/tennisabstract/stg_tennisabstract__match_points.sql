@@ -17,9 +17,7 @@ renamed as (
         replace("sets", '‑', '-') as set_score_in_match,
         replace(games, '‑', '-') as game_score_in_set,
         replace(points, '‑', '-') as point_score_in_game,
-        point_description,
-        audit_field_active_flag as is_record_active,
-        audit_field_start_datetime_utc as loaded_at
+        point_description
     from source
 )
 

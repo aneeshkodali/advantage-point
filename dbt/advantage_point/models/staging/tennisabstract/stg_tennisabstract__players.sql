@@ -52,9 +52,7 @@ renamed as (
         cast(ht as int) as height_in_centimeters,
         {{ convert_rank_to_integer('peakrank') }} as peak_singles_rank,
         {{ remove_empty_string_from_source('itf_id') }} as itf_id,
-        {{ remove_empty_string_from_source('wiki_id') }} as wikipedia_id,
-        audit_field_active_flag as is_record_active,
-        audit_field_start_datetime_utc as loaded_at
+        {{ remove_empty_string_from_source('wiki_id') }} as wikipedia_id
     from source
 )
 

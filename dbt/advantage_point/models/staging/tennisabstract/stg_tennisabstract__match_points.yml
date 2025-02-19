@@ -45,14 +45,4 @@ models:
         description: Semicolon-separated list-like string of shots in the point rally.
         data_tests:
           - not_null
-      
-      - name: is_record_active
-        description: Boolean field indicating if the record is active.
-        data_tests:
-          - not_null
-
-      - name: loaded_at
-        description: Timestamp indicating when the record was loaded.
-        data_tests:
-          - not_null
     
