@@ -7,8 +7,6 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - player_url
-            - is_record_active
-            - loaded_at
     columns:
       - name: player_url
         description: Link to the match data.

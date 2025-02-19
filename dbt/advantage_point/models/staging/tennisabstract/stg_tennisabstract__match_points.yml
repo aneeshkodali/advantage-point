@@ -8,8 +8,6 @@ models:
           combination_of_columns:
             - match_url
             - point_number_in_match
-            - is_record_active
-            - loaded_at
     columns:
       - name: match_url
         description: Link to the match data.
