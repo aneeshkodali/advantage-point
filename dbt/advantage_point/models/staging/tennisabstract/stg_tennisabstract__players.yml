@@ -9,11 +9,13 @@ models:
             - player_url
     columns:
       - name: player_url
+        data_type: string
         description: Link to the match data.
         data_tests:
           - not_null
       
       - name: player_gender
+        data_type: string
         description: Gender of the player.
         data_tests:
           - not_null
@@ -22,39 +24,50 @@ models:
               quote: true
 
       - name: photograph_credit
+        data_type: string
         description: ""
 
       - name: current_doubles_rank
+        data_type: integer
         description: Current doubles ranking.
 
       - name: tour_id
+        data_type: string
         description: Player ID for tour/organization.
 
       - name: photograph_link
+        data_type: string
         description: ""
       
       - name: full_name
+        data_type: string
         description: Player full name.
 
       - name: twitter_handle
+        data_type: string
         description: Player Twitter handle.
 
       - name: photograph
+        data_type: string
         description: ""
 
       - name: first_peak_singles_rank_on
+        data_type: date
         description: Date when player first achieved highest singles ranking.
 
       - name: chart_agg
         description: ""
 
       - name: is_player_active
+        data_type: boolean
         description: Denotes if player is active.
 
       - name: full_name_parameter
+        data_type: string
         description: ""  
 
       - name: live_rank
+        data_type: integer
         description: ""
 
       - name: short_list
@@ -64,12 +77,15 @@ models:
         description: ""
 
       - name: peak_doubles_rank
+        data_type: integer
         description: Player's peak doubles ranking.
 
       - name: first_peak_doubles_rank_on
+        data_type: date
         description: Date when player first achieved highest doubles ranking.
 
       - name: handedness
+        data_type: string
         description: Denotes if player is right or left handed.
         data_tests:
           - accepted_values:
@@ -77,12 +93,15 @@ models:
               quote: true
 
       - name: current_singles_rank
+        data_type: integer
         description: Current singles ranking.
 
       - name: country_abbreviation
+        data_type: string
         description: Player's country (abbreviated).
 
       - name: backhand_type
+        data_type: string
         description: Denotes if player uses one-handed or two-handed backhand.
         data_tests:
           - accepted_values:
@@ -90,25 +109,33 @@ models:
               quote: true
 
       - name: last_peak_singles_rank_on
+        data_type: date
         description: Date when player last achieved highest singles ranking.
  
       - name: team_cup_id
+        data_type: string
         description: Player ID for team cup play.
 
       - name: last_name
+        data_type: string
         description: Player's last name.
 
       - name: date_of_birth
+        data_type: date
         description: Player date of birth.
 
       - name: height_in_centimeters
+        data_type: integer
         description: Player height (in centimeters).
       
       - name: peak_singles_rank
+        data_type: integer
         description: Player's highest singles ranking.
 
       - name: itf_id
+        data_type: string
         description: Player's ITF (International Tennis Foundation) ID
 
       - name: wikipedia_id
+        data_type: string
         description: Player's Wikipedia ID.

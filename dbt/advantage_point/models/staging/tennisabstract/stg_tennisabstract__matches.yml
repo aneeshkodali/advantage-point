@@ -50,7 +50,7 @@ models:
         data_tests:
           - not_null
 
-      - name: 
+      - name: match_title
         data_type: string
         description: Name of the match. Includes tournament, players, and round.
         data_tests:

@@ -10,36 +10,43 @@ models:
             - point_number_in_match
     columns:
       - name: match_url
+        data_type: string
         description: Link to the match data.
         data_tests:
           - not_null
 
       - name: point_number_in_match
+        data_type: integer
         description: Point number in match.
         data_tests:
           - not_null
 
       - name: point_server
+        data_text: string
         description: Player who is serving the point.
         data_tests:
           - not_null
 
       - name: set_score_in_match
+        data_type: string
         description: Set score within the match (from server's perspective).
         data_tests:
           - not_null
 
       - name: game_score_in_set
+        data_type: string
         description: Game score within the set (from server's perspective).
         data_tests:
           - not_null
 
       - name: point_score_in_game
+        data_type: string
         description: Point score within the game (from server's perspective).
         data_tests:
           - not_null
       
       - name: point_description
+        data_type: string
         description: Semicolon-separated list-like string of shots in the point rally.
         data_tests:
           - not_null
