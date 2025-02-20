@@ -32,6 +32,7 @@ matches_players_sort as (
         greatest(match_player_one, match_player_two) as match_player_two,
         match_title,
         match_result
+    from renamed
 )
 
-select * from renamed
+select * from matches_players_sort
