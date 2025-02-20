@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_seed__tennisabstract_valid_match_point_descriptions
+  - name: stg__seed__tennisabstract_valid_match_point_descriptions
     description: Contains valid point descriptions for match points. Point records (point number) are identified by test failues in the intermediate model and then added here.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
