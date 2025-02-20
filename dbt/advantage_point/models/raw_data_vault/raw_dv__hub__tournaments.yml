@@ -1,23 +1,29 @@
 version: 2
 
 models:
-  - name: raw_dv__hub__players
-    description: Hub table for player data.
+  - name: raw_dv__hub__tournaments
+    description: Hub table for tournament data.
     columns:
-      - name: hk_player
+      - name: hk_tournament
         data_type: string
         description: Hash-based unique identifier.
         data_tests:
           - unique
           - not_null
-      
-      - name: player_name
-        data_type: string
+
+      - name: tournament_year
+        data_type: integer
         description: Makes up business key.
         data_tests:
           - not_null
 
-      - name: player_gender
+      - name: tournament_gender
+        data_type: string
+        description: Makes up business key.
+        data_tests:
+          - not_null
+      
+      - name: tournament_name
         data_type: string
         description: Makes up business key.
         data_tests:
