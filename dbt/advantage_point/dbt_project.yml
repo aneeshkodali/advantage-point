@@ -37,3 +37,7 @@ models:
     staging:
       +schema: "{{ env_var('DBT_SCHEMA_STAGING') }}"
       +materialized: view
+
+    raw_data_vault:
+      +schema: "{{ env_var('DBT_SCHEMA_RAW_DATA_VAULT') }}"
+      +materialized: incremental
