@@ -31,68 +31,68 @@ models:
               values: ['M', 'W']
               quote: true
 
-      - name: photograph_credit
+      - name: photog_credit
         data_type: string
         description: ""
 
-      - name: current_doubles_rank
+      - name: current_dubs
         data_type: integer
         description: Current doubles ranking.
 
-      - name: tour_id
+      - name: atp_id
         data_type: string
-        description: Player ID for tour/organization.
+        description: Player ID for tour/organization. Note that this columns refers to both men and women.
 
-      - name: photograph_link
+      - name: photog_link
         data_type: string
         description: ""
       
-      - name: full_name
+      - name: fullname
         data_type: string
         description: Player full name.
 
-      - name: twitter_handle
+      - name: twitter
         data_type: string
         description: Player Twitter handle.
 
-      - name: photograph
+      - name: photog
         data_type: string
         description: ""
 
-      - name: first_peak_singles_rank_on
+      - name: peakfirst
         data_type: date
         description: Date when player first achieved highest singles ranking.
 
-      - name: chart_agg
+      - name: chartagg
         description: ""
 
-      - name: is_player_active
+      - name: active
         data_type: boolean
         description: Denotes if player is active.
 
-      - name: full_name_parameter
+      - name: nameparam
         data_type: string
         description: ""  
 
-      - name: live_rank
+      - name: liverank
         data_type: integer
         description: ""
 
-      - name: short_list
+      - name: shortlist
         description: ""
 
-      - name: career_js
+      - name: careerjs
         description: ""
 
-      - name: peak_doubles_rank
+      - name: peak_dubs
         data_type: integer
         description: Player's peak doubles ranking.
 
-      - name: first_peak_doubles_rank_on
+      - name: peakfirst_dubs
         data_type: date
         description: Date when player first achieved highest doubles ranking.
 
-      - name: handedness
+      - name: hand
         data_type: string
         description: Denotes if player is right or left handed.
         data_tests:
@@ -100,15 +100,15 @@ models:
               values: ['L', 'R', null]
               quote: true
 
-      - name: current_singles_rank
+      - name: currentrank
         data_type: integer
         description: Current singles ranking.
 
-      - name: country_abbreviation
+      - name: country
         data_type: string
         description: Player's country (abbreviated).
 
-      - name: backhand_type
+      - name: backhand
         data_type: string
         description: Denotes if player uses one-handed or two-handed backhand.
         data_tests:
@@ -116,27 +116,27 @@ models:
               values: ['1', '2', null]
               quote: true
 
-      - name: last_peak_singles_rank_on
+      - name: peaklast
         data_type: date
         description: Date when player last achieved highest singles ranking.
  
-      - name: team_cup_id
+      - name: dc_id
         data_type: string
-        description: Player ID for team cup play.
+        description: Player ID for team cup play. Note that this columns refers to both men and women.
 
-      - name: last_name
+      - name: lastname
         data_type: string
         description: Player's last name.
 
-      - name: date_of_birth
+      - name: dob
         data_type: date
         description: Player date of birth.
 
-      - name: height_in_centimeters
+      - name: ht
         data_type: integer
         description: Player height (in centimeters).
       
-      - name: peak_singles_rank
+      - name: peakrank
         data_type: integer
         description: Player's highest singles ranking.
 
@@ -144,6 +144,6 @@ models:
         data_type: string
         description: Player's ITF (International Tennis Foundation) ID
 
-      - name: wikipedia_id
+      - name: wiki_id
         data_type: string
         description: Player's Wikipedia ID.
