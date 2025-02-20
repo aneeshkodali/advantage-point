@@ -97,7 +97,7 @@ models:
         description: Denotes if player is right or left handed.
         data_tests:
           - accepted_values:
-              values: ['L', 'R', null]
+              values: ['L', 'R', 'U', null]
               quote: true
 
       - name: currentrank
