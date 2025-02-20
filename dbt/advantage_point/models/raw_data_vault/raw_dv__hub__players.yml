@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: raw_dv__hub__players
+    description: Hub table for players data.
+    columns:
+      - name: hk_player
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: player_name
+        data_type: string
+        description: Makes up business key.
+        data_tests:
+          - not_null
+
+      - name: player_gender
+        data_type: string
+        description: Makes up business key.
+        data_tests:
+          - not_null
+
+      - name: load_dts
+        data_type: timestamp
+        description: Datetime when business key is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null     
