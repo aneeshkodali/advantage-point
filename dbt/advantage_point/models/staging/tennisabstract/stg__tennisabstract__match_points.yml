@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_tennisabstract__match_points
+  - name: stg__tennisabstract__match_points
     description: Staging model for tennisabstract match point data.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
