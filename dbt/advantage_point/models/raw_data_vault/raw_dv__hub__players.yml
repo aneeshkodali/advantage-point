@@ -23,7 +23,7 @@ models:
         data_tests:
           - not_null
 
-      - name: load_dts
+      - name: load_datetime
         data_type: timestamp
         description: Datetime when business key is first recorded.
         data_tests:

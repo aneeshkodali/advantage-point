@@ -14,7 +14,7 @@ tennisabstract_players as (
         ) }} as hk_player,
         player_name,
         player_gender,
-        current_timestamp as load_dts,
+        current_timestamp as load_datetime,
         'tennisabstract' as record_source
     from {{ ref('stg__tennisabstract__players') }}
 )

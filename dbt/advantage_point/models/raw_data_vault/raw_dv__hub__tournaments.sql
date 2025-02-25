@@ -16,7 +16,7 @@ tennisabstract_tournaments as (
         tournament_year,
         tournament_gender,
         tournament_name,
-        current_timestamp as load_dts,
+        current_timestamp as load_datetime,
         'tennisabstract' as record_source
     from {{ ref('stg__tennisabstract__tournaments') }}
 )
