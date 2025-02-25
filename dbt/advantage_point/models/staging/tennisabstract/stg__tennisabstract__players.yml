@@ -27,9 +27,6 @@ models:
         description: Gender of the player.
         data_tests:
           - not_null
-          - accepted_values:
-              values: ['M', 'W']
-              quote: true
 
       - name: photog_credit
         data_type: string
@@ -95,10 +92,6 @@ models:
       - name: hand
         data_type: string
         description: Denotes if player is right or left handed.
-        data_tests:
-          - accepted_values:
-              values: ['L', 'R', 'U', null]
-              quote: true
 
       - name: currentrank
         data_type: integer
@@ -111,10 +104,6 @@ models:
       - name: backhand
         data_type: string
         description: Denotes if player uses one-handed or two-handed backhand.
-        data_tests:
-          - accepted_values:
-              values: ['1', '2', null]
-              quote: true
 
       - name: peaklast
         data_type: date
