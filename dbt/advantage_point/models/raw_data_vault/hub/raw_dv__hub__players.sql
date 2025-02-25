@@ -15,6 +15,16 @@ tennisabstract_players as (
 
 -- union data
 players_union as (
+    select
+        player_name,
+        player_gender,
+        record_source,
+        {{ generate_player_surrogate_key(
+            player_name_col='player_name',
+            player_gender_col='player_gender'
+        ) }} as hk_player,
+        row_number() over (partition by hk_player order by record_source) as rn -- assing row number
+    from
     (
         select
             player_name,
@@ -26,18 +36,17 @@ players_union as (
 
 final as (
     select
-        {{ generate_player_surrogate_key(
-            player_name_col='player_name',
-            player_gender_col='player_gender'
-        ) }} as hk_player,
+        hk_player,
         player_name,
         player_gender,
         current_timestamp as load_datetime,
         record_source
     from players_union
-    {% if is_incremental() %}
-    where hk_player not in (select hk_player from {{ this }})
-    {% endif %}
+    where 1=1
+        and rn = 1 -- filter for row number
+        {% if is_incremental() %}
+        and hk_player not in (select hk_player from {{ this }}) -- filter for new pk records
+        {% endif %}
 )
 
 select * from final
