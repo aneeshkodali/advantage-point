@@ -18,33 +18,33 @@ models:
               to: ref('raw_dv__hub__players')
               field: hk_player
 
-        - name: player_full_name
-          data_type: string
-          description: Player full name.
+      - name: player_full_name
+        data_type: string
+        description: Player full name.
 
-        - name: player_last_name
-          data_type: string
-          description: Player's last name.
+      - name: player_last_name
+        data_type: string
+        description: Player's last name.
 
-        - name: player_date_of_birth
-          data_type: date
-          description: Player date of birth.
+      - name: player_date_of_birth
+        data_type: date
+        description: Player date of birth.
 
-        - name: player_country
-          data_type: string
-          description: Player's country (abbreviated).
+      - name: player_country
+        data_type: string
+        description: Player's country (abbreviated).
 
-        - name: player_hand
-          data_type: string
-          description: Denotes if player is right or left handed.
+      - name: player_hand
+        data_type: string
+        description: Denotes if player is right or left handed.
 
-        - name: player_backhand
-          data_type: string
-          description: Denotes if player uses one-handed or two-handed backhand.
+      - name: player_backhand
+        data_type: string
+        description: Denotes if player uses one-handed or two-handed backhand.
 
-        - name: player_height_in_cm
-          data_type: integer
-          description: Player height (in centimeters).
+      - name: player_height_in_cm
+        data_type: integer
+        description: Player height (in centimeters).
       
       - name: load_datetime
         data_type: timestamp
