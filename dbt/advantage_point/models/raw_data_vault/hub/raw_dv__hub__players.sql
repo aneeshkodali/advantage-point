@@ -46,8 +46,8 @@ final as (
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
         and hk_player not in (
-            select p_this.hk_player from {{ this }} as p_this
-        ) -- filter for new pk records
+            select hk_player from {{ this }}
+        ) as p_this -- filter for new pk records
         {% endif %}
 )
 

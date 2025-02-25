@@ -50,8 +50,8 @@ final as (
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
         and hk_tournament not in (
-            select t_this.hk_tournament from {{ this }} as t_this
-        ) -- filter for new pk records
+            select hk_tournament from {{ this }}
+        ) as t_this -- filter for new pk records
         {% endif %}
 )
 
