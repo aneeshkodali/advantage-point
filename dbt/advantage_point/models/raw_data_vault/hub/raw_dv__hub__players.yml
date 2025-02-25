@@ -25,7 +25,7 @@ models:
 
       - name: load_datetime
         data_type: timestamp
-        description: Datetime when business key is first recorded.
+        description: Datetime when business key(s) is first recorded.
         data_tests:
           - not_null
 

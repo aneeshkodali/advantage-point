@@ -25,9 +25,11 @@ tournaments_union as (
             tournament_gender_col='tournament_gender',
             tournament_name_col='tournament_name'
         ) }} as hk_tournament,
+
         tournament_start_date,
         tournament_surface,
         tournament_draw_size,
+
         {{ dbt_utils.generate_surrogate_key([
             'tournament_start_date',
             'tournament_surface',
@@ -39,9 +41,11 @@ tournaments_union as (
             tournament_year,
             tournament_gender,
             tournament_name,
+
             tournament_start_date,
             tournament_surface,
             tournament_draw_size,
+
             record_source
         from tennisabstract_tournaments
     ) as t_union
@@ -51,9 +55,11 @@ tournaments_union as (
 tournaments_joined as (
     select
         t.hk_tournament,
+
         t.tournament_start_date,
         t.tournament_surface,
         t.tournament_draw_size,
+
         t.hash_diff,
         t.record_source
     from tournaments_union as t
@@ -64,9 +70,11 @@ tournaments_joined as (
 tournaments_filtered as (
     select
         hk_tournament,
+
         tournament_start_date,
         tournament_surface,
         tournament_draw_size,
+        
         hash_diff,
         current_timestamp as load_datetime,
         record_source
@@ -77,7 +85,7 @@ tournaments_filtered as (
             select 1
             from {{ this }} as t_sat
             where 1=1
-                and t_sat.hk_hub = t.hk_hub
+                and t_sat.hk_tournament = t.hk_tournament
                 and t_sat.hash_diff = t.hash_diff
         )
         {% endif %} 
