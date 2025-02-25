@@ -117,11 +117,11 @@ models:
         data_type: string
         description: Player's last name.
 
-      - name: dob
+      - name: date_of_birth
         data_type: date
         description: Player date of birth.
 
-      - name: ht
+      - name: height_in_cm
         data_type: integer
         description: Player height (in centimeters).
       

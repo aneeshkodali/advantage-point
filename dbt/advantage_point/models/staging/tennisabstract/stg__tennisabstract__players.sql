@@ -35,8 +35,8 @@ renamed as (
         to_date(peaklast, 'YYYYMMDD') as peaklast,
         {{ remove_empty_string_from_source('dc_id') }} as dc_id,
         {{ remove_empty_string_from_source('lastname') }} as lastname,
-        to_date(dob, 'YYYYMMDD') as dob,
-        cast(ht as int) as ht,
+        to_date(dob, 'YYYYMMDD') as date_of_birth,
+        cast(ht as int) as height_in_cm,
         {{ convert_rank_to_integer('peakrank') }} as peakrank,
         {{ remove_empty_string_from_source('itf_id') }} as itf_id,
         {{ remove_empty_string_from_source('wiki_id') }} as wiki_id
