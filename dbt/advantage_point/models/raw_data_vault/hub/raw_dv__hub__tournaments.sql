@@ -20,11 +20,7 @@ tournaments_union as (
         tournament_gender,
         tournament_name,
         record_source,
-        {{ generate_tournament_surrogate_key(
-            tournament_year_col='tournament_year',
-            tournament_gender_col='tournament_gender',
-            tournament_name_col='tournament_name'
-        ) }} as hk_tournament,
+        hk_tournament,
         row_number() over (partition by hk_tournament order by record_source) as rn -- assing row number
     from 
     (
@@ -32,6 +28,11 @@ tournaments_union as (
             tournament_year,
             tournament_gender,
             tournament_name,
+            {{ generate_tournament_surrogate_key(
+                tournament_year_col='tournament_year',
+                tournament_gender_col='tournament_gender',
+                tournament_name_col='tournament_name'
+            ) }} as hk_tournament,
             record_source
         from tennisabstract_tournaments
     ) as t_union
