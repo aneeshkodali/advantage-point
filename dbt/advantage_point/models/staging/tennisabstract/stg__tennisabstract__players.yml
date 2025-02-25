@@ -36,9 +36,9 @@ models:
         data_type: integer
         description: Current doubles ranking.
 
-      - name: atp_id
+      - name: player_tour_id
         data_type: string
-        description: Player ID for tour/organization. Note that this columns refers to both men and women.
+        description: Player ID for tour/organization.
 
       - name: photog_link
         data_type: string
@@ -109,9 +109,9 @@ models:
         data_type: date
         description: Date when player last achieved highest singles ranking.
  
-      - name: dc_id
+      - name: player_team_cup_id
         data_type: string
-        description: Player ID for team cup play. Note that this columns refers to both men and women.
+        description: Player ID for team cup play.
 
       - name: player_last_name
         data_type: string
@@ -129,7 +129,7 @@ models:
         data_type: integer
         description: Player's highest singles ranking.
 
-      - name: itf_id
+      - name: player_itf_id
         data_type: string
         description: Player's ITF (International Tennis Foundation) ID
 
