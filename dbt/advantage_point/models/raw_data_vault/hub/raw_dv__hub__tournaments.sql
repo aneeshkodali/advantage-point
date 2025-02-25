@@ -22,8 +22,7 @@ tournaments_union as (
         record_source,
         hk_tournament,
         row_number() over (partition by hk_tournament order by record_source) as rn -- assing row number
-    from 
-    (
+    from (
         select
             tournament_year,
             tournament_gender,

@@ -21,8 +21,7 @@ players_union as (
         record_source,
         hk_player,
         row_number() over (partition by hk_player order by record_source) as rn -- assing row number
-    from
-    (
+    from (
         select
             player_name,
             player_gender,
