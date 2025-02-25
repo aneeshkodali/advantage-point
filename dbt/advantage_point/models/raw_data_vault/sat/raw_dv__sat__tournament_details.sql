@@ -34,7 +34,7 @@ tournaments_union as (
             'tournament_draw_size'
         ]) }} as hash_diff,
         record_source
-    (
+    from (
         select
             tournament_year,
             tournament_gender,
@@ -44,8 +44,7 @@ tournaments_union as (
             tournament_draw_size,
             record_source
         from tennisabstract_tournaments
-
-    )
+    ) as t_union
 ),
 
 -- join to hub
