@@ -1,6 +1,6 @@
 {{
     config(
-        unique_key=['hub_player', 'load_datetime']
+        unique_key=['hk_player', 'load_datetime']
     )
 }}
 

@@ -1,6 +1,6 @@
 {{
     config(
-        unique_key=['hub_tournament', 'load_datetime']
+        unique_key=['hk_tournament', 'load_datetime']
     )
 }}
 
