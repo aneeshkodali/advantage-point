@@ -34,7 +34,7 @@ tournaments_union as (
             tournament_name,
             record_source
         from tennisabstract_tournaments
-    )
+    ) as t_union
 ),
 
 final as (
@@ -51,7 +51,7 @@ final as (
         {% if is_incremental() %}
         and hk_tournament not in (
             select hk_tournament from {{ this }}
-        ) as t_this -- filter for new pk records
+        ) -- filter for new pk records
         {% endif %}
 )
 

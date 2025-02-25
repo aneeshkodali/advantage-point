@@ -31,7 +31,7 @@ players_union as (
             player_gender,
             record_source
         from tennisabstract_players
-    )
+    ) as p_union
 ),
 
 final as (
@@ -47,7 +47,7 @@ final as (
         {% if is_incremental() %}
         and hk_player not in (
             select hk_player from {{ this }}
-        ) as p_this -- filter for new pk records
+        ) -- filter for new pk records
         {% endif %}
 )
 
