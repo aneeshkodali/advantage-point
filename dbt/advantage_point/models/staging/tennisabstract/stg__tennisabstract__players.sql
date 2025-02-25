@@ -35,7 +35,10 @@ renamed as (
         to_date(peaklast, 'YYYYMMDD') as peaklast,
         {{ remove_empty_string_from_source('dc_id') }} as player_team_cup_id,
         {{ remove_empty_string_from_source('lastname') }} as player_last_name,
-        to_date(dob, 'YYYYMMDD') as player_date_of_birth,
+         case dob
+            when '''''' then null
+            else to_date(dob, 'YYYYMMDD')
+        end as player_date_of_birth,
         cast({{ remove_empty_string_from_source('ht') }} as int) as player_height_in_cm,
         {{ convert_rank_to_integer('peakrank') }} as peakrank,
         {{ remove_empty_string_from_source('itf_id') }} as player_itf_id,
