@@ -26,7 +26,7 @@ tournaments_union as (
 ),
 
 final as (
-    select distinct
+    select
         {{ generate_tournament_surrogate_key(
             tournament_year_col='tournament_year',
             tournament_gender_col='tournament_gender',
