@@ -35,7 +35,7 @@ renamed as (
         to_date(peaklast, 'YYYYMMDD') as peaklast,
         {{ remove_empty_string_from_source('dc_id') }} as player_team_cup_id,
         {{ remove_empty_string_from_source('lastname') }} as player_last_name,
-         case dob
+        case dob
             when '''''' then null
             else to_date(dob, 'YYYYMMDD')
         end as player_date_of_birth,
