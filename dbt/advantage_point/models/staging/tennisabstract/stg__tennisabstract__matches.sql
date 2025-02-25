@@ -18,21 +18,6 @@ renamed as (
         match_title,
         match_result
     from source
-),
-
--- sort players
-matches_players_sort as (
-    select
-        match_url,
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        least(match_player_one, match_player_two) as match_player_one,
-        greatest(match_player_one, match_player_two) as match_player_two,
-        match_title,
-        match_result
-    from renamed
 )
 
-select * from matches_players_sort
+select * from renamed
