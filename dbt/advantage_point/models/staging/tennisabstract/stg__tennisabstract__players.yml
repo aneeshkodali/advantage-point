@@ -44,7 +44,7 @@ models:
         data_type: string
         description: ""
       
-      - name: fullname
+      - name: player_full_name
         data_type: string
         description: Player full name.
 
@@ -89,7 +89,7 @@ models:
         data_type: date
         description: Date when player first achieved highest doubles ranking.
 
-      - name: hand
+      - name: player_hand
         data_type: string
         description: Denotes if player is right or left handed.
 
@@ -97,11 +97,11 @@ models:
         data_type: integer
         description: Current singles ranking.
 
-      - name: country
+      - name: player_country
         data_type: string
         description: Player's country (abbreviated).
 
-      - name: backhand
+      - name: player_backhand
         data_type: string
         description: Denotes if player uses one-handed or two-handed backhand.
 
@@ -113,15 +113,15 @@ models:
         data_type: string
         description: Player ID for team cup play. Note that this columns refers to both men and women.
 
-      - name: lastname
+      - name: player_last_name
         data_type: string
         description: Player's last name.
 
-      - name: date_of_birth
+      - name: player_date_of_birth
         data_type: date
         description: Player date of birth.
 
-      - name: height_in_cm
+      - name: player_height_in_cm
         data_type: integer
         description: Player height (in centimeters).
       
