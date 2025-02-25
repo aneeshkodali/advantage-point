@@ -25,7 +25,7 @@ players_union as (
 ),
 
 final as (
-    select
+    select distinct
         {{ generate_player_surrogate_key(
             player_name_col='player_name',
             player_gender_col='player_gender'
