@@ -665,12 +665,12 @@ def load_df_to_sql(
     # convert null values to SQL-compatible null values
     df = df.where(pd.notnull(df), None)
     
-    # drop temp table
-    drop_table(
-        connection=connection,
-        schema_name=target_schema_name,
-        table_name=target_table_name
-    )
+    # # drop temp table
+    # drop_table(
+    #     connection=connection,
+    #     schema_name=target_schema_name,
+    #     table_name=target_table_name
+    # )
     
     # create target table
     create_and_load_table(
