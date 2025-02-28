@@ -644,3 +644,38 @@ def ingest_df_to_sql(
         source_table_name=temp_table_name,
         unique_column_list=unique_column_list
     )
+
+def load_df_to_sql(
+    connection: psycopg2.connect,
+    df: pd.DataFrame,
+    target_schema_name: str,
+    target_table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - df: Pandas dataframe
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    
+    Ingests dataframe data into database:
+    - create target table using dataframe
+    """
+
+    # convert null values to SQL-compatible null values
+    df = df.where(pd.notnull(df), None)
+    
+    # drop temp table
+    drop_table(
+        connection=connection,
+        schema_name=target_schema_name,
+        table_name=target_table_name
+    )
+    
+    # create target table
+    create_and_load_table(
+        connection=connection,
+        df=df,
+        schema_name=target_schema_name,
+        table_name=target_table_name
+    )
