@@ -32,9 +32,9 @@ def main():
 
     # loop through match urls
     match_data_list = []
-    for i, match_url_dict in enumerate(match_url_list):
+    for i, match_dict in enumerate(match_url_list):
 
-        match_url = match_url_dict['match_url']
+        match_url = match_dict['match_url']
         logging.info(f"({i+1}/{len(match_url_list)}) Getting match data for match url: {match_url}")
 
         # get data from match url

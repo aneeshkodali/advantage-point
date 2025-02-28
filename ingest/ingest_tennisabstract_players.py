@@ -7,6 +7,7 @@ from ingest.utils.functions.sql import (
     load_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.matches import (
+    get_match_data_url,
     get_match_url_list as get_match_url_list_tennisabstract,
 )
 from ingest.utils.functions.tennisabstract.players import (
@@ -36,12 +37,15 @@ def main():
     player_url_list = []
 
     # loop through match urls
-    for match_url_dict in match_url_list:
+    for match_dict in match_url_list:
+
+        # get match dict from url
+        match_url_dict = get_match_data_url(match_url=match_url)
 
         # get list of player names from match data
         player_name_list = [
-            match_url_dict['match_player_one'],
-            match_url_dict['match_player_two'],
+            match_dict['match_player_one'],
+            match_dict['match_player_two'],
         ]
 
         # loop through player names

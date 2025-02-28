@@ -7,6 +7,7 @@ from ingest.utils.functions.sql import (
     load_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.matches import (
+    get_match_data_url,
     get_match_url_list as get_match_url_list_tennisabstract,
 )
 from ingest.utils.functions.tennisabstract.tournaments import (
@@ -36,8 +37,10 @@ def main():
     tournament_url_list = []
 
     # loop through match urls
-    for match_url_dict in match_url_list:
+    for match_dict in match_url_list:
 
+        # get match dict from url
+        match_url_dict = get_match_data_url(match_url=match_url)
 
         # create tournament url dict
         tournament_year = match_url_dict['match_date'][:4] # get year from date

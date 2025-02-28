@@ -54,7 +54,7 @@ def main():
                     **match_point_scraped_dict,
                     **{'load_datetime': datetime.now(timezone.utc)},
                 }
-                for match_point_scraped_list in match_point_scraped_list
+                for match_point_scraped_dict in match_point_scraped_list
             ]
 
             # load data to database
