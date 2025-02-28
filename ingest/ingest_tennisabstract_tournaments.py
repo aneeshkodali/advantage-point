@@ -75,7 +75,7 @@ def main():
         logging.info(f"Getting tournament data for tournament url: {tournament_url}")
 
         # get data from tournament scraping
-        tournament_scrape_dict = scrape_tournament_data(
+        tournament_scrape_dict = get_tournament_data_scraped(
             tournament_url=tournament_url,
             retries=3,
             delay=3,
