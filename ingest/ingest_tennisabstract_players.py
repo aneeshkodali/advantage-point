@@ -1,50 +1,21 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
-# from ingest.utils.functions.scrape import (
-#     create_chromedriver,
-# )
+from datetime import (
+    datetime,
+    timezone,
+)
 from ingest.utils.functions.sql import (
     create_connection,
-    get_table_column_list,
-    ingest_df_to_sql,
+    load_df_to_sql,
+)
+from ingest.utils.functions.tennisabstract.matches import (
+    get_match_url_list as get_match_url_list_tennisabstract,
 )
 from ingest.utils.functions.tennisabstract.players import (
     create_player_url,
-    get_player_list as get_player_list_tennisabstract,
-    # get_player_data_scraped,
     scrape_player_data,
 )
 import logging
 import os
 import pandas as pd
-import random
-import time
-
-# def get_player_data(player_dict):
-
-#     # create driver
-#     webdriver_path = os.getenv('CHROMEDRIVER_PATH')
-#     driver = create_chromedriver(webdriver_path=webdriver_path)
-
-#     player_url = player_dict['player_url']
-
-#     logging.info(f"Scraping data for: {player_url}")
-
-#     player_data_scraped_dict = get_player_data_scraped(
-#         driver=driver,
-#         player_url=player_url,
-#         retries=3,
-#         delay=3
-#     )
-
-#     player_data_dict = {
-#         **player_dict,
-#         **player_data_scraped_dict,
-#     }
-
-#     driver.quit()
-
-#     return player_data_dict
-
 
 def main():
 
@@ -54,103 +25,89 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-    # set constants for use in function
+    # set constants
     target_schema_name = os.getenv('SCHEMA_INGESTION')
-    temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
     target_table_name = 'tennisabstract_players'
-    temp_table_name = target_table_name
-    unique_column_list = ['player_url',]
 
+    # get list of match urls from source
+    match_url_list = get_match_url_list_tennisabstract()
 
-    # get list of players
-    player_list_tennisabstract = get_player_list_tennisabstract()
-    # add player_url
-    player_list_tennisabstract = [
-        {
-            **player_dict,
-            **{'player_url':create_player_url(player_dict=player_dict)},
-        }
-        for player_dict in player_list_tennisabstract
-    ]
+    # initialize player url list
+    player_url_list = []
 
-    conn = create_connection()
-    player_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=target_table_name,
-        column_name_list=unique_column_list,
-    )
-    conn.close()
+    # loop through match urls
+    for match_url_dict in match_url_list:
 
-    player_list = list(filter(lambda player_dict: player_dict['player_url'] not in player_url_list_db, player_list_tennisabstract))[:500]
-    logging.info(f"Found {len(player_list)} players.")
+        # get list of player names from match data
+        player_name_list = [
+            match_url_dict['match_player_one'],
+            match_url_dict['match_player_two'],
+        ]
 
-    # loop through players
-    # initialize chunk logic
-    i = 0
-    chunk_size = 25
-    max_workers = 5
-    for i in range(0, len(player_list), chunk_size):
+        # loop through player names
+        for player_name in player_name_list:
+            
+            # create player url dict
+            player_name_clean = player_name.replace('_', ' ')
+            player_gender = match_url_dict['match_gender']
+            player_url_dict = {
+                'player_name': player_name_clean,
+                'player_gender': player_gender,
+            }
 
-        player_chunk_list = player_list[i:i + chunk_size]
+            # append to player url dict
+            player_url_list.append(player_url_dict)
 
-        chunk_size_start = i
-        chunk_size_end = min(i + chunk_size, len(player_list))
-        logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
+    # get distinct list of player dicts
+    player_url_df = pd.DataFrame(player_url_list).drop_duplicates()
+    player_url_list = player_url_df.to_dict(orient='records')
 
-        # initialize data list
-        player_data_list = []
+    # loop through player url list
+    for i, player_url_dict in enumerate(player_url_list):
 
-        # parallel scraping
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            futures = {executor.submit(
-                scrape_player_data,
-                player_url=player['player_url'],
-                retries=3,
-                delay=5,
-            ): player for player in player_chunk_list}
+        logging.info(f"({i+1}/{len(player_url_list)}) Getting player data")
 
-            for future in as_completed(futures):
-                # get original dictionary
-                player_dict_original = futures[future]
-                player_url = player_dict_original['player_url']
+        # create player url
+        player_url = create_player_url(
+            player_dict=player_url_dict
+        )
+        player_url_dict['player_url'] = player_url
+        logging.info(f"Getting player data for player url: {player_url}")
 
-                # get the scraped data dictionary
-                player_dict_scraped = future.result()
+        # get data from player scraping
+        player_scrape_dict = scrape_player_data(
+            player_url=player_url,
+            retries=3,
+            delay=3,
+        )
 
-                # check if scraped data exists - move on if not exists
-                if not player_dict_scraped:
-                    logging.warning(f"Skipping empty data for {player_url}")
-                    continue
+        # continue with player data logic if data is returned from scraping
+        if player_scrape_dict != {}:
 
-                # merge data dictionaries
-                player_data_dict = {
-                    **player_dict_original,
-                    **player_dict_scraped,
-                }
+            logging.info(f"Data found for player url: {player_url}")
 
-                try:
-                    player_data_list.append(player_data_dict)
-                    logging.info(f"Successfully fetched data for: {player_url}")
-                except Exception as e:
-                    logging.error(f"Error processing {player_url}: {e}")
+            # combine player data
+            player_data_dict = {
+                **player_url_dict,
+                **player_scrape_dict,
+            }
 
-        # create dataframe
-        player_data_df = pd.DataFrame(player_data_list)
+            # append to player list
+            player_data_list.append(player_data_dict)
 
-        # ingest dataframe to sql
-        conn = create_connection()
-        ingest_df_to_sql(
+    # load to database if not empty
+    if player_data_list != []:
+    
+        # load data to database
+        player_data_df = pd.DataFrame(player_data_list) # create dataframe
+        conn = create_connection() # create connection
+        load_df_to_sql(
             connection=conn,
             df=player_data_df,
             target_schema_name=target_schema_name,
-            target_table_name=target_table_name,
-            temp_schema_name=temp_schema_name,
-            temp_table_name=temp_table_name,
-            unique_column_list=unique_column_list
+            target_table_name=players_target_table_name,
         )
-        conn.close()
-
+        conn.close() # close connection
 
 if __name__ == "__main__":
     main()
