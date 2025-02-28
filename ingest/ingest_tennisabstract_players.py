@@ -40,6 +40,7 @@ def main():
     for match_dict in match_url_list:
 
         # get match dict from url
+        match_url = match_dict['match_url']
         match_url_dict = get_match_data_url(match_url=match_url)
 
         # get list of player names from match data
