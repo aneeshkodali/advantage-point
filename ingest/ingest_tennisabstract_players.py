@@ -47,8 +47,8 @@ def main():
 
         # get list of player names from match data
         player_name_list = [
-            match_dict['match_player_one'],
-            match_dict['match_player_two'],
+            match_url_dict['match_player_one'],
+            match_url_dict['match_player_two'],
         ]
 
         # loop through player names
