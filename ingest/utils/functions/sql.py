@@ -209,7 +209,7 @@ def create_and_load_table(
     cursor = connection.cursor()
 
     # create table
-    create_table_sql = f"CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} ({', '.join(column_type_list)})"
+    create_table_sql = f"CREATE OR REPLACE TABLE {schema_name}.{table_name} ({', '.join(column_type_list)})"
     # logging.info(f"Running statement: {create_table_sql}")
     cursor.execute(create_table_sql)
     logging.info(f"Created table: {schema_name}.{table_name}")
