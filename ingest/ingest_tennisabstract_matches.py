@@ -83,22 +83,22 @@ def main():
 
         # drop temp table
         drop_table(
-            connection=connection,
+            connection=conn,
             schema_name=temp_schema_name,
             table_name=temp_table_name
         )
         
         # create temp table
         create_and_load_table(
-            connection=connection,
-            df=df,
+            connection=conn,
+            df=match_data_df,
             schema_name=temp_schema_name,
             table_name=temp_table_name
         )
 
         # create or alter target table
         create_or_alter_target_table(
-            connection=connection,
+            connection=conn,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
             source_schema_name=temp_schema_name,
@@ -107,7 +107,7 @@ def main():
 
         # truncate target table
         truncate_table(
-            connection=connection,
+            connection=conn,
             schema_name=target_schema_name,
             table_name=target_table_name
         )
@@ -124,7 +124,7 @@ def main():
 
         # insert into target table
         insert_into_target_table(
-            connection=connection,
+            connection=conn,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
             source_schema_name=temp_schema_name,
