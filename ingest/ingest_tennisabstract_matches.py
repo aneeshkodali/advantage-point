@@ -3,8 +3,14 @@ from datetime import (
     timezone,
 )
 from ingest.utils.functions.sql import (
+    create_and_load_table,
     create_connection,
-    load_df_to_sql,
+    create_or_alter_target_table,
+    drop_table,
+    insert_into_target_table,
+    # load_df_to_sql,
+    truncate_table,
+
 )
 from ingest.utils.functions.tennisabstract.matches import (
     get_match_data_scraped,
@@ -67,17 +73,75 @@ def main():
 
     # load data to database
     if match_data_list != []:
+
+        # create dataframe
         match_data_df = pd.DataFrame([match_data_list]) # create dataframe
-        conn = create_connection() # create connection
-        load_df_to_sql(
-            connection=conn,
-            df=match_data_df,
+        match_data_df = match_data_df.where(pd.notnull(match_data_df), None) # convert null values to SQL-compatible null values
+
+        # create connection
+        conn = create_connection()
+
+        # drop temp table
+        drop_table(
+            connection=connection,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
+        )
+        
+        # create temp table
+        create_and_load_table(
+            connection=connection,
+            df=df,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
+        )
+
+        # create or alter target table
+        create_or_alter_target_table(
+            connection=connection,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
-            temp_schema_name=temp_schema_name,
-            temp_table_name=temp_table_name
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name
         )
-        conn.close() # close connection
+
+        # truncate target table
+        truncate_table(
+            connection=connection,
+            schema_name=target_schema_name,
+            table_name=target_table_name
+        )
+
+        # # merge into target table
+        # merge_target_table(
+        #     connection=connection,
+        #     target_schema_name=target_schema_name,
+        #     target_table_name=target_table_name,
+        #     source_schema_name=temp_schema_name,
+        #     source_table_name=temp_table_name,
+        #     unique_column_list=unique_column_list
+        # )
+
+        # insert into target table
+        insert_into_target_table(
+            connection=connection,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name
+        )
+
+        # load_df_to_sql(
+        #     connection=conn,
+        #     df=match_data_df,
+        #     target_schema_name=target_schema_name,
+        #     target_table_name=target_table_name,
+        #     temp_schema_name=temp_schema_name,
+        #     temp_table_name=temp_table_name
+        # )
+
+        # close connection
+        conn.close()
 
 
 if __name__ == "__main__":
