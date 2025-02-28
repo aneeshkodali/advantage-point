@@ -36,7 +36,7 @@ def main():
     temp_table_name = target_table_name
 
     # get list of match urls from source
-    match_url_list = get_match_url_list_tennisabstract()[:5]
+    match_url_list = get_match_url_list_tennisabstract()
 
     # loop through match urls
     match_data_list = []
