@@ -70,6 +70,7 @@ def main():
     player_url_list = player_url_df.to_dict(orient='records')
 
     # loop through player url list
+    player_data_list = []
     for i, player_url_dict in enumerate(player_url_list):
 
         logging.info(f"({i+1}/{len(player_url_list)}) Getting player data")

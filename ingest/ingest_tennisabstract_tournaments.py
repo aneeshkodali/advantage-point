@@ -63,6 +63,7 @@ def main():
     tournament_url_list = tournament_url_df.to_dict(orient='records')
 
     # loop through tournament url list
+    tournament_data_list = []
     for i, tournament_url_dict in enumerate(tournament_url_list):
 
         logging.info(f"({i+1}/{len(tournament_url_list)}) Getting tournament data")
