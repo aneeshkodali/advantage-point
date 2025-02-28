@@ -1,3 +1,7 @@
+from datetime import (
+    datetime,
+    timezone,
+)
 from ingest.utils.functions.sql import (
     create_connection,
     load_df_to_sql,
@@ -26,6 +30,7 @@ def main():
     match_url_list = get_match_url_list_tennisabstract()
 
     # loop through match urls
+    match_point_data_list = []
     for i, match_url_dict in enumerate(match_url_list):
 
         match_url = match_url_dict['match_url']
@@ -42,6 +47,15 @@ def main():
         if match_point_scraped_list != []:
 
             logging.info(f"Match point data found for match url: {match_url}")
+
+            # add load date
+            match_point_scraped_list = [
+                {
+                    **match_point_scraped_dict,
+                    **{'load_datetime': datetime.now(timezone.utc)},
+                }
+                for match_point_scraped_list in match_point_scraped_list
+            ]
 
             # load data to database
             match_point_data_df = pd.DataFrame(match_point_scraped_list) # create dataframe
