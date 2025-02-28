@@ -4,7 +4,6 @@ from datetime import (
 )
 from ingest.utils.functions.sql import (
     create_connection,
-    get_table_column_list,
     load_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.matches import (
