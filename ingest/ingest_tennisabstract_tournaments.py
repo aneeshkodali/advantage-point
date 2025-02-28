@@ -3,8 +3,13 @@ from datetime import (
     timezone,
 )
 from ingest.utils.functions.sql import (
+    create_and_load_table,
     create_connection,
-    load_df_to_sql,
+    create_or_alter_target_table,
+    drop_table,
+    insert_into_target_table,
+    # load_df_to_sql,
+    truncate_table,
 )
 from ingest.utils.functions.tennisabstract.matches import (
     get_match_data_url,
@@ -100,17 +105,53 @@ def main():
     # load to database if not empty
     if tournament_data_list != []:
     
-        # load data to database
+        # create dataframe
         tournament_data_df = pd.DataFrame(tournament_data_list) # create dataframe
-        conn = create_connection() # create connection
-        load_df_to_sql(
+        tournament_data_df = tournament_data_df.where(pd.notnull(tournament_data_df), None) # convert null values to SQL-compatible null values
+
+        # create connection
+        conn = create_connection()
+
+        # drop temp table
+        drop_table(
+            connection=conn,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
+        )
+        
+        # create temp table
+        create_and_load_table(
             connection=conn,
             df=tournament_data_df,
+            schema_name=temp_schema_name,
+            table_name=temp_table_name
+        )
+
+        # create or alter target table
+        create_or_alter_target_table(
+            connection=conn,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
-            temp_schema_name=temp_schema_name,
-            temp_table_name=temp_table_name
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name
         )
+
+        # truncate target table
+        truncate_table(
+            connection=conn,
+            schema_name=target_schema_name,
+            table_name=target_table_name
+        )
+
+        # insert into target table
+        insert_into_target_table(
+            connection=conn,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            source_schema_name=temp_schema_name,
+            source_table_name=temp_table_name
+        )
+
         conn.close() # close connection
 
 if __name__ == "__main__":

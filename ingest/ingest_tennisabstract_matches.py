@@ -112,16 +112,6 @@ def main():
             table_name=target_table_name
         )
 
-        # # merge into target table
-        # merge_target_table(
-        #     connection=connection,
-        #     target_schema_name=target_schema_name,
-        #     target_table_name=target_table_name,
-        #     source_schema_name=temp_schema_name,
-        #     source_table_name=temp_table_name,
-        #     unique_column_list=unique_column_list
-        # )
-
         # insert into target table
         insert_into_target_table(
             connection=conn,
@@ -130,15 +120,6 @@ def main():
             source_schema_name=temp_schema_name,
             source_table_name=temp_table_name
         )
-
-        # load_df_to_sql(
-        #     connection=conn,
-        #     df=match_data_df,
-        #     target_schema_name=target_schema_name,
-        #     target_table_name=target_table_name,
-        #     temp_schema_name=temp_schema_name,
-        #     temp_table_name=temp_table_name
-        # )
 
         # close connection
         conn.close()
