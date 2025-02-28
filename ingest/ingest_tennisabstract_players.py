@@ -28,7 +28,9 @@ def main():
 
     # set constants
     target_schema_name = os.getenv('SCHEMA_INGESTION')
+    temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
     target_table_name = 'tennisabstract_players'
+    temp_table_name = target_table_name
 
     # get list of match urls from source
     match_url_list = get_match_url_list_tennisabstract()
@@ -112,6 +114,8 @@ def main():
             df=player_data_df,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=temp_table_name
         )
         conn.close() # close connection
 
