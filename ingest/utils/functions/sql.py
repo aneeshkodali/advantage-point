@@ -607,6 +607,7 @@ def merge_target_table(
     # close cursor
     cursor.close()
 
+
 def ingest_df_to_sql(
     connection: psycopg2.connect,
     df: pd.DataFrame,
@@ -669,6 +670,60 @@ def ingest_df_to_sql(
         unique_column_list=unique_column_list
     )
 
+def insert_into_target_table(
+    connection: psycopg2.connect,
+    target_schema_name: str,
+    target_table_name: str,
+    source_schema_name: str,
+    source_table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - target_schema_name: Schema name for target table
+    - target_table_name: Target table name
+    - source_schema_name: Schema name for source table
+    - source_table_name: Source table name
+
+    Based on source table rows, handles row inserts, updates for target table
+    """
+
+    # create cursor
+    cursor = connection.cursor()
+
+    # get list of columns from source table (for use in INSERT/UPDATE statements)
+    source_column_sql = f"""
+        SELECT
+            COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE
+                TABLE_SCHEMA = '{source_schema_name}'
+            AND TABLE_NAME = '{source_table_name}'
+    """
+    cursor.execute(source_column_sql)
+
+    # get column names
+    source_column_list = [row[0] for row in cursor.fetchall()]
+
+    # handle inserts
+    insert_source_column_str = ', '.join(source_column_list)
+    insert_sql = f"""
+        INSERT INTO {target_schema_name}.{target_table_name} ({insert_source_column_str})
+        SELECT
+            {insert_source_column_str}
+        FROM {source_schema_name}.{source_table_name}
+    """
+    # logging.info(f"Running insert statement: {insert_sql}")
+    cursor.execute(insert_sql)
+
+    # commit
+    connection.commit()
+    logging.info(f"Target table records inserted: {target_schema_name}.{target_table_name}")
+
+
+    # close cursor
+    cursor.close()
+
 def load_df_to_sql(
     connection: psycopg2.connect,
     df: pd.DataFrame,
@@ -726,14 +781,23 @@ def load_df_to_sql(
         table_name=target_table_name
     )
 
-    # merge into target table
-    merge_target_table(
+    # # merge into target table
+    # merge_target_table(
+    #     connection=connection,
+    #     target_schema_name=target_schema_name,
+    #     target_table_name=target_table_name,
+    #     source_schema_name=temp_schema_name,
+    #     source_table_name=temp_table_name,
+    #     unique_column_list=unique_column_list
+    # )
+
+    # insert into target table
+    insert_into_target_table(
         connection=connection,
         target_schema_name=target_schema_name,
         target_table_name=target_table_name,
         source_schema_name=temp_schema_name,
-        source_table_name=temp_table_name,
-        unique_column_list=unique_column_list
+        source_table_name=temp_table_name
     )
 
 
