@@ -75,7 +75,7 @@ def main():
     if match_data_list != []:
 
         # create dataframe
-        match_data_df = pd.DataFrame([match_data_list]) # create dataframe
+        match_data_df = pd.DataFrame(match_data_list) # create dataframe
         match_data_df = match_data_df.where(pd.notnull(match_data_df), None) # convert null values to SQL-compatible null values
 
         # create connection
