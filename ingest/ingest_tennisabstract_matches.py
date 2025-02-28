@@ -57,7 +57,7 @@ def main():
             match_data_dict = {
                 **match_url_dict,
                 **match_scrape_dict,
-                {'load_datetime': datetime.now(timezone.utc)},
+                **{'load_datetime': datetime.now(timezone.utc)},
             }
 
             # append to list

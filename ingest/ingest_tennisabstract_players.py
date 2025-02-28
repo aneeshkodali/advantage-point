@@ -90,6 +90,7 @@ def main():
             player_data_dict = {
                 **player_url_dict,
                 **player_scrape_dict,
+                **{'load_datetime': datetime.now(timezone.utc)},
             }
 
             # append to player list
@@ -105,7 +106,7 @@ def main():
             connection=conn,
             df=player_data_df,
             target_schema_name=target_schema_name,
-            target_table_name=players_target_table_name,
+            target_table_name=target_table_name,
         )
         conn.close() # close connection
 
