@@ -180,6 +180,30 @@ def drop_table(
     # close cursor
     cursor.close()
 
+def truncate_table(
+    connection: psycopg2.connect,
+    schema_name: str,
+    table_name: str
+):
+    """
+    Arguments:
+    - connection: SQL database connection
+    - schema_name: Schema name
+    - table_name: Table name
+
+    Truncate the table.
+    """
+
+    # inititialize cursor
+    cursor = connection.cursor()
+
+    # truncate table
+    truncate_table_sql = f"TRUNCATE TABLE {schema_name}.{table_name}"
+    cursor.execute(truncate_table_sql)
+
+    # closer cursor
+    cursor.close()
+
 def create_and_load_table(
     connection: psycopg2.connect,
     df: pd.DataFrame,
@@ -649,7 +673,9 @@ def load_df_to_sql(
     connection: psycopg2.connect,
     df: pd.DataFrame,
     target_schema_name: str,
-    target_table_name: str
+    target_table_name: str,
+    temp_schema_name: str,
+    temp_table_name: str
 ):
     """
     Arguments:
@@ -657,25 +683,91 @@ def load_df_to_sql(
     - df: Pandas dataframe
     - target_schema_name: Schema name for target table
     - target_table_name: Target table name
-    
+    - temp_schema_name: Schema name for temp table
+    - temp_table_name: Temp table name
+
     Ingests dataframe data into database:
-    - create target table using dataframe
+    - create temp table using dataframe data
+    - create or alter target table using temp table schema
+    - merge records from temp table into target table, handling inserts, updates, deletes
     """
 
     # convert null values to SQL-compatible null values
     df = df.where(pd.notnull(df), None)
     
-    # # drop temp table
-    # drop_table(
-    #     connection=connection,
-    #     schema_name=target_schema_name,
-    #     table_name=target_table_name
-    # )
+    # drop temp table
+    drop_table(
+        connection=connection,
+        schema_name=temp_schema_name,
+        table_name=temp_table_name
+    )
     
-    # create target table
+    # create temp table
     create_and_load_table(
         connection=connection,
         df=df,
+        schema_name=temp_schema_name,
+        table_name=temp_table_name
+    )
+
+    # create or alter target table
+    create_or_alter_target_table(
+        connection=connection,
+        target_schema_name=target_schema_name,
+        target_table_name=target_table_name,
+        source_schema_name=temp_schema_name,
+        source_table_name=temp_table_name
+    )
+
+    # truncate target table
+    truncate_table(
+        connection=connection,
         schema_name=target_schema_name,
         table_name=target_table_name
     )
+
+    # merge into target table
+    merge_target_table(
+        connection=connection,
+        target_schema_name=target_schema_name,
+        target_table_name=target_table_name,
+        source_schema_name=temp_schema_name,
+        source_table_name=temp_table_name,
+        unique_column_list=unique_column_list
+    )
+
+
+# def load_df_to_sql(
+#     connection: psycopg2.connect,
+#     df: pd.DataFrame,
+#     target_schema_name: str,
+#     target_table_name: str
+# ):
+#     """
+#     Arguments:
+#     - connection: SQL database connection
+#     - df: Pandas dataframe
+#     - target_schema_name: Schema name for target table
+#     - target_table_name: Target table name
+    
+#     Ingests dataframe data into database:
+#     - create target table using dataframe
+#     """
+
+#     # convert null values to SQL-compatible null values
+#     df = df.where(pd.notnull(df), None)
+    
+#     # # drop temp table
+#     # drop_table(
+#     #     connection=connection,
+#     #     schema_name=target_schema_name,
+#     #     table_name=target_table_name
+#     # )
+    
+#     # create target table
+#     create_and_load_table(
+#         connection=connection,
+#         df=df,
+#         schema_name=target_schema_name,
+#         table_name=target_table_name
+#     )
