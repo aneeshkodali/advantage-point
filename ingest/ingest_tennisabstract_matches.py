@@ -1,4 +1,7 @@
-from datetime import datetime, timezone
+from datetime import (
+    datetime,
+    timezone,
+)
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
