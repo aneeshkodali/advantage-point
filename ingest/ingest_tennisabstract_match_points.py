@@ -59,18 +59,23 @@ def main():
                 for match_point_scraped_dict in match_point_scraped_list
             ]
 
-            # load data to database
-            match_point_data_df = pd.DataFrame(match_point_scraped_list) # create dataframe
-            conn = create_connection() # create connection
-            load_df_to_sql(
-                connection=conn,
-                df=match_point_data_df,
-                target_schema_name=target_schema_name,
-                target_table_name=target_table_name,
-                temp_schema_name=temp_schema_name,
-                temp_table_name=temp_table_name
-            )
-            conn.close() # close connection
+            # append to match data list
+            match_point_data_list.extend(match_point_scraped_list)
+
+    
+    # load data to database
+    if match_point_data_list != []:
+        match_point_data_df = pd.DataFrame(match_point_scraped_list) # create dataframe
+        conn = create_connection() # create connection
+        load_df_to_sql(
+            connection=conn,
+            df=match_point_data_df,
+            target_schema_name=target_schema_name,
+            target_table_name=target_table_name,
+            temp_schema_name=temp_schema_name,
+            temp_table_name=temp_table_name
+        )
+        conn.close() # close connection
 
 if __name__ == "__main__":
     main()
