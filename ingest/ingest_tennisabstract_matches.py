@@ -1,17 +1,17 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
 from ingest.utils.functions.sql import (
     create_connection,
     get_table_column_list,
-    ingest_df_to_sql,
+    load_df_to_sql,
 )
 from ingest.utils.functions.tennisabstract.matches import (
+    get_match_data_scraped,
+    get_match_data_url,
     get_match_url_list as get_match_url_list_tennisabstract,
-    get_match_data,
 )
 import logging
 import os
 import pandas as pd
-
 
 def main():
 
@@ -21,87 +21,58 @@ def main():
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
 
-    # set constants for use in function
+    # set constants
     target_schema_name = os.getenv('SCHEMA_INGESTION')
-    temp_schema_name = os.getenv('SCHEMA_INGESTION_TEMP')
     target_table_name = 'tennisabstract_matches'
-    temp_table_name = target_table_name
-    unique_column_list = ['match_url',]    
 
-    # get list of matches
-    match_url_list_tennisabstract = get_match_url_list_tennisabstract()
-    conn = create_connection()
-    match_url_list_db = get_table_column_list(
-        connection=conn,
-        schema_name=target_schema_name,
-        table_name=target_table_name,
-        column_name_list=unique_column_list,
-    )
-    conn.close()
-    match_url_list = list(filter(lambda url_dict: url_dict not in match_url_list_db, match_url_list_tennisabstract))
-    logging.info(f"Found {len(match_url_list)} matches.")
+    # get list of match urls from source
+    match_url_list = get_match_url_list_tennisabstract()
 
-    # loop through matches
-    # initialize chunk logic
-    i = 0
-    chunk_size = 100
-    max_workers = 5
-    for i in range(0, len(match_url_list), chunk_size):
+    # loop through match urls
+    match_data_list = []
+    for i, match_url_dict in enumerate(match_url_list):
 
-        match_url_chunk_list = match_url_list[i:i + chunk_size]
+        match_url = match_url_dict['match_url']
+        logging.info(f"({i+1}/{len(match_url_list)}) Getting match data for match url: {match_url}")
 
-        chunk_size_start = i
-        chunk_size_end = min(i + chunk_size, len(match_url_list))
-        logging.info(f"Chunking: {chunk_size_start} to {chunk_size_end}")
+        # get data from match url
+        match_url_dict = get_match_data_url(match_url=match_url)
+        logging.info(f"Got match url data for match url: {match_url}")
 
-        # initialize data list
-        match_data_list = []
+        # get data from match scraping
+        match_scrape_dict = get_match_data_scraped(
+            match_url=match_url,
+            retries=3,
+            delay=3
+        )
 
-        # Use ThreadPoolExecutor to scrape match data in parallel
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            # Submit tasks directly to executor
-            future_to_url = {
-                executor.submit(
-                    get_match_data,
-                    match_url=match_url_dict['match_url'],
-                    retries=3,
-                    delay=3
-                ): idx
-                for idx, match_url_dict in enumerate(match_url_chunk_list, start=chunk_size_start)
+        # continue with match data logic if data is returned from scraping
+        if match_scrape_dict != {}:
+
+            logging.info(f"Data found for match url: {match_url}")
+
+            # combine match data
+            match_data_dict = {
+                **match_url_dict,
+                **match_scrape_dict,
+                {'load_datetime': datetime.now(timezone.utc)},
             }
 
-            # Process results as they complete
-            for future in as_completed(future_to_url):
-                url_index = future_to_url[future]  # Get the original index of the URL
-                match_url_dict = match_url_chunk_list[url_index - chunk_size_start]
-                try:
-                    result = future.result()  # Get the result of `get_match_data`
-                    if result:
-                        match_data_list.append(result)
-                        logging.info(
-                            f"Successfully fetched data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']}"
-                        )
-                except Exception as e:
-                    logging.info(
-                        f"Failed to fetch data for URL {url_index + 1}/{len(match_url_list)}: {match_url_dict['match_url']} - Error: {e}"
-                    )
+            # append to list
+            match_data_list.append(match_data_dict)
 
-            
-        # create dataframe
-        match_data_df = pd.DataFrame(match_data_list)
-
-        # ingest dataframe to sql
-        conn = create_connection()
-        ingest_df_to_sql(
+    # load data to database
+    if match_data_list != []:
+        match_data_df = pd.DataFrame([match_data_list]) # create dataframe
+        conn = create_connection() # create connection
+        load_df_to_sql(
             connection=conn,
             df=match_data_df,
             target_schema_name=target_schema_name,
             target_table_name=target_table_name,
-            temp_schema_name=temp_schema_name,
-            temp_table_name=temp_table_name,
-            unique_column_list=unique_column_list
         )
-        conn.close()
+        conn.close() # close connection
+
 
 if __name__ == "__main__":
     main()
