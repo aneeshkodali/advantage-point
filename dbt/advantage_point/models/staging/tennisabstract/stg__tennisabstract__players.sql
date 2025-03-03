@@ -14,7 +14,7 @@ renamed as (
         {{ remove_empty_string_from_source('atp_id') }} as player_tour_id,
         {{ remove_empty_string_from_source('photog_link') }} as photog_link,
         {{ remove_empty_string_from_source('fullname') }} as player_full_name,
-        {{ remove_empty_string_from_source('twitter') }} as twitter,
+        {{ remove_empty_string_from_source('twitter') }} as player_twitter_handle,
         {{ remove_empty_string_from_source('photog') }} as photog,
         to_date(peakfirst, 'YYYYMMDD') as peakfirst,
         chartagg,
@@ -42,7 +42,7 @@ renamed as (
         cast({{ remove_empty_string_from_source('ht') }} as int) as player_height_in_cm,
         {{ convert_rank_to_integer('peakrank') }} as peakrank,
         {{ remove_empty_string_from_source('itf_id') }} as player_itf_id,
-        {{ remove_empty_string_from_source('wiki_id') }} as wiki_id
+        {{ remove_empty_string_from_source('wiki_id') }} as player_wikipedia_id
     from source
 )
 

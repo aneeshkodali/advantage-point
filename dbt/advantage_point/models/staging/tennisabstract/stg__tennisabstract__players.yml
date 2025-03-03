@@ -48,7 +48,7 @@ models:
         data_type: string
         description: Player full name.
 
-      - name: twitter
+      - name: player_twitter_handle
         data_type: string
         description: Player Twitter handle.
 
@@ -133,6 +133,6 @@ models:
         data_type: string
         description: Player's ITF (International Tennis Foundation) ID.
 
-      - name: wiki_id
+      - name: player_wikipedia_id
         data_type: string
         description: Player's Wikipedia ID.
