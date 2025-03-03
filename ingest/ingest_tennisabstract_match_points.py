@@ -1,7 +1,3 @@
-from datetime import (
-    datetime,
-    timezone,
-)
 from ingest.utils.functions.sql import (
     create_and_load_table,
     create_connection,
@@ -54,15 +50,6 @@ def main():
         if match_point_scraped_list != []:
 
             logging.info(f"Match point data found for match url: {match_url}")
-
-            # add load date
-            match_point_scraped_list = [
-                {
-                    **match_point_scraped_dict,
-                    **{'load_datetime': datetime.now(timezone.utc)},
-                }
-                for match_point_scraped_dict in match_point_scraped_list
-            ]
 
             # append to match data list
             match_point_data_list.extend(match_point_scraped_list)

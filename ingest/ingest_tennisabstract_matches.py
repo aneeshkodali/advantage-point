@@ -1,7 +1,3 @@
-from datetime import (
-    datetime,
-    timezone,
-)
 from ingest.utils.functions.sql import (
     create_and_load_table,
     create_connection,
@@ -65,7 +61,6 @@ def main():
             match_data_dict = {
                 **match_url_dict,
                 **match_scrape_dict,
-                **{'load_datetime': datetime.now(timezone.utc)},
             }
 
             # append to list

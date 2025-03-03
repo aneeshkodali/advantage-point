@@ -1,7 +1,3 @@
-from datetime import (
-    datetime,
-    timezone,
-)
 from ingest.utils.functions.sql import (
     create_and_load_table,
     create_connection,
@@ -103,7 +99,6 @@ def main():
             player_data_dict = {
                 **player_url_dict,
                 **player_scrape_dict,
-                **{'load_datetime': datetime.now(timezone.utc)},
             }
 
             # append to player list
