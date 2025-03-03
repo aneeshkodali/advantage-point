@@ -48,12 +48,13 @@ final as (
     select
         hk_tournament,
 
+        current_timestamp as load_datetime,
+        record_source,
+
         tournament_year,
         tournament_gender,
-        tournament_name,
+        tournament_name
         
-        current_timestamp as load_datetime,
-        record_source
     from records_rownum
     where 1=1
         and rn = 1 -- filter for row number

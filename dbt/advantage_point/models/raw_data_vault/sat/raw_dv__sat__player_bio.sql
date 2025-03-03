@@ -53,17 +53,18 @@ final as (
     select
         hk_player,
 
+        current_timestamp as load_datetime,
+        hash_diff,
+        record_source,
+
         player_full_name,
         player_last_name,
         player_date_of_birth,
         player_country,
         player_hand,
         player_backhand,
-        player_height_in_cm,
+        player_height_in_cm
 
-        hash_diff,
-        current_timestamp as load_datetime,
-        record_source
     from records_hash
     where 1=1
         {% if is_incremental() %}

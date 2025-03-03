@@ -50,11 +50,12 @@ final as (
     select
         hk_player,
 
-        player_name,
-        player_gender,
-        
         current_timestamp as load_datetime,
-        record_source
+        record_source,
+
+        player_name,
+        player_gender
+        
     from records_rownum
     where 1=1
         and rn = 1 -- filter for row number

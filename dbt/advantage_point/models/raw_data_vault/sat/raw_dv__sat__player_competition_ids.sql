@@ -47,13 +47,14 @@ final as (
     select
         hk_player,
 
+        current_timestamp as load_datetime,
+        hash_diff,
+        record_source,
+
         player_tour_id,
         player_team_cup_id,
-        player_itf_id,
+        player_itf_id
 
-        hash_diff,
-        current_timestamp as load_datetime,
-        record_source
     from records_hash
     where 1=1
         {% if is_incremental() %}

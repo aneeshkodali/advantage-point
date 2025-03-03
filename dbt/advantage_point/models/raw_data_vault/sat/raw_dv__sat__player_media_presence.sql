@@ -43,12 +43,13 @@ final as (
     select
         hk_player,
 
-        player_twitter_handle,
-        player_wikipedia_id,
-
-        hash_diff,
         current_timestamp as load_datetime,
-        record_source
+        hash_diff,
+        record_source,
+
+        player_twitter_handle,
+        player_wikipedia_id
+
     from records_hash
     where 1=1
         {% if is_incremental() %}

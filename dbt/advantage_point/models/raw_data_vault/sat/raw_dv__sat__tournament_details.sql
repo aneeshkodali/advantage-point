@@ -47,13 +47,14 @@ final as (
     select
         hk_tournament,
 
+        current_timestamp as load_datetime,
+        hash_diff,
+        record_source,
+
         tournament_start_date,
         tournament_surface,
-        tournament_draw_size,
+        tournament_draw_size
 
-        hash_diff,
-        current_timestamp as load_datetime,
-        record_source
     from records_hash
     where 1=1
         {% if is_incremental() %}
