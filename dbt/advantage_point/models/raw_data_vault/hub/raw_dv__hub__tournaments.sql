@@ -58,12 +58,13 @@ final as (
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
-        and (tournament_year, tournament_gender, tournament_name) not in (
-            select
-                tournament_year,
-                tournament_gender,
-                tournament_name
-            from {{ this }}
+        and not exists (
+            select 1
+            from {{ this }} as existing
+            where 1=1
+                and existing.tournament_year = final.tournament_year
+                and existing.tournament_gender = final.tournament_gender
+                and existing.tournament_name = final.tournament_name
         ) -- filter for new pk records
         {% endif %}
 )
