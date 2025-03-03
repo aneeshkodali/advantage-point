@@ -7,35 +7,38 @@
 with
 
 tennisabstract_tournaments as (
-    select * from {{ ref('stg__tennisabstract__tournaments') }}
-),
-
--- union data
-tournaments_union as (
     select
-        hk_tournament,
-
         tournament_year,
         tournament_gender,
         tournament_name,
 
-        record_source,
-        row_number() over (partition by hk_tournament order by record_source) as rn -- assing row number
-    from (
-        select
-            {{ generate_tournament_surrogate_key(
+        'tennisabstract__tournaments' as record_source
+    from {{ ref('stg__tennisabstract__tournaments') }}
+),
+
+-- union data
+records_union as (
+    (select * from tennisabstract_tournaments)
+),
+
+-- add hub key
+records_hkey as (
+    select
+        *,
+        {{ generate_tournament_surrogate_key(
                 tournament_year_col='tournament_year',
                 tournament_gender_col='tournament_gender',
                 tournament_name_col='tournament_name'
-            ) }} as hk_tournament,
+        ) }} as hk_tournament
+    from records_union
+),
 
-            tournament_year,
-            tournament_gender,
-            tournament_name,
-            
-            'tennisabstract' as record_source
-        from tennisabstract_tournaments
-    ) as t_union
+-- add row number to order records
+records_rownum as (
+    select
+        *,
+        row_number() over (partition by hk_tournament order by record_source) as rn -- assing row number
+    from records_hkey
 ),
 
 final as (
@@ -48,7 +51,7 @@ final as (
         
         current_timestamp as load_datetime,
         record_source
-    from tournaments_union
+    from records_rownum
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}

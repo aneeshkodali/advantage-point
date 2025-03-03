@@ -7,32 +7,36 @@
 with
 
 tennisabstract_players as (
-    select * from {{ ref('stg__tennisabstract__players') }}
-),
-
--- union data
-players_union as (
     select
-        hk_player,
-
         player_name,
         player_gender,
 
-        record_source,
-        row_number() over (partition by hk_player order by record_source) as rn -- assing row number
-    from (
-        select
-            {{ generate_player_surrogate_key(
+        'tennisabstract__players' as record_source
+    from {{ ref('stg__tennisabstract__players') }}
+),
+
+-- union data
+records_union as (
+    (select * from tennisabstract_players)
+),
+
+-- add hub key
+records_hkey as (
+    select
+        *,
+        {{ generate_player_surrogate_key(
                 player_name_col='player_name',
                 player_gender_col='player_gender'
-            ) }} as hk_player,
+        ) }} as hk_player
+    from records_union
+),
 
-            player_name,
-            player_gender,
-
-            'tennisabstract' as record_source
-        from tennisabstract_players
-    ) as p_union
+-- add row number to order records
+records_rownum as (
+    select
+        *,
+        row_number() over (partition by hk_player order by record_source) as rn -- assing row number
+    from records_hkey
 ),
 
 final as (
@@ -44,7 +48,7 @@ final as (
         
         current_timestamp as load_datetime,
         record_source
-    from players_union
+    from records_rownum
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
