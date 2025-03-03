@@ -59,8 +59,11 @@ final as (
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
-        and hk_player not in (
-            select hk_player from {{ this }}
+        and (player_name, player_gender) not in (
+            select
+                player_name,
+                player_gender
+            from {{ this }}
         ) -- filter for new pk records
         {% endif %}
 )
