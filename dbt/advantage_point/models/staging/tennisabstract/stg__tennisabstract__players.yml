@@ -32,7 +32,7 @@ models:
         data_type: string
         description: ""
 
-      - name: current_dubs
+      - name: player_current_doubles_ranking
         data_type: integer
         description: Current doubles ranking.
 
@@ -63,7 +63,7 @@ models:
       - name: chartagg
         description: ""
 
-      - name: active
+      - name: is_player_active
         data_type: boolean
         description: Denotes if player is active.
 
@@ -81,11 +81,11 @@ models:
       - name: careerjs
         description: ""
 
-      - name: peak_dubs
+      - name: player_peak_doubles_ranking
         data_type: integer
         description: Player's peak doubles ranking.
 
-      - name: peakfirst_dubs
+      - name: player_first_peak_doubles_ranking_date
         data_type: date
         description: Date when player first achieved highest doubles ranking.
 
@@ -93,7 +93,7 @@ models:
         data_type: string
         description: Denotes if player is right or left handed.
 
-      - name: currentrank
+      - name: player_current_singles_rank
         data_type: integer
         description: Current singles ranking.
 
@@ -105,7 +105,7 @@ models:
         data_type: string
         description: Denotes if player uses one-handed or two-handed backhand.
 
-      - name: peaklast
+      - name: player_last_peak_singles_ranking_date
         data_type: date
         description: Date when player last achieved highest singles ranking.
  
@@ -125,7 +125,7 @@ models:
         data_type: integer
         description: Player height (in centimeters).
       
-      - name: peakrank
+      - name: player_peak_singles_ranking
         data_type: integer
         description: Player's highest singles ranking.
 
