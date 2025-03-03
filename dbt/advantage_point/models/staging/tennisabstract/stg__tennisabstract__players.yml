@@ -56,7 +56,7 @@ models:
         data_type: string
         description: ""
 
-      - name: peakfirst
+      - name: player_first_peak_singles_ranking_date
         data_type: date
         description: Date when player first achieved highest singles ranking.
 

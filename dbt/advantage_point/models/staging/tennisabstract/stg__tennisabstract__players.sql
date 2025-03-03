@@ -16,7 +16,7 @@ renamed as (
         {{ remove_empty_string_from_source('fullname') }} as player_full_name,
         {{ remove_empty_string_from_source('twitter') }} as player_twitter_handle,
         {{ remove_empty_string_from_source('photog') }} as photog,
-        to_date(peakfirst, 'YYYYMMDD') as peakfirst,
+        to_date(peakfirst, 'YYYYMMDD') as player_first_peak_singles_ranking_date,
         chartagg,
         cast(cast(active as int) as boolean) as is_player_active,
         nameparam,
