@@ -6,89 +6,65 @@
 
 with
 
-hub_tournaments as (
-    select * from {{ ref('raw_dv__hub__tournaments') }}
-),
-
 tennisabstract_tournaments as (
     select
-        *,
-        'tennisabstract' as record_source
-    from {{ ref('stg__tennisabstract__tournaments') }}
-),
-
--- union data
-tournaments_union as (
-    select
-        {{ generate_tournament_surrogate_key(
-            tournament_year_col='tournament_year',
-            tournament_gender_col='tournament_gender',
-            tournament_name_col='tournament_name'
-        ) }} as hk_tournament,
+        tournament_year,
+        tournament_gender,
+        tournament_name,
 
         tournament_start_date,
         tournament_surface,
         tournament_draw_size,
 
+        'tennisabstract__tournaments' as record_source
+    from {{ ref('stg__tennisabstract__tournaments') }}
+),
+
+-- union data
+records_union as (
+    (select * from tennisabstract_tournaments)
+),
+
+-- create hashes (surrogate key, hash diff)
+records_hash as (
+    select
+        *,
+        {{ generate_tournament_surrogate_key(
+            tournament_year_col='tournament_year',
+            tournament_gender_col='tournament_gender',
+            tournament_name_col='tournament_name'
+        ) }} as hk_tournament,
         {{ dbt_utils.generate_surrogate_key([
             'tournament_start_date',
             'tournament_surface',
             'tournament_draw_size'
         ]) }} as hash_diff,
-        record_source
-    from (
-        select
-            tournament_year,
-            tournament_gender,
-            tournament_name,
-
-            tournament_start_date,
-            tournament_surface,
-            tournament_draw_size,
-
-            record_source
-        from tennisabstract_tournaments
-    ) as t_union
-),
-
--- join to hub
-tournaments_joined as (
-    select
-        t.hk_tournament,
-
-        t.tournament_start_date,
-        t.tournament_surface,
-        t.tournament_draw_size,
-
-        t.hash_diff,
-        t.record_source
-    from tournaments_union as t
-    inner join hub_tournaments as t_hub on t.hk_tournament = t_hub.hk_tournament
+    from records_union
 ),
 
 -- filter for incremental changes
-tournaments_filtered as (
+final as (
     select
         hk_tournament,
 
         tournament_start_date,
         tournament_surface,
         tournament_draw_size,
-        
+
         hash_diff,
         current_timestamp as load_datetime,
         record_source
-    from tournaments_joined as t
+    from records_hash
     where 1=1
         {% if is_incremental() %}
         and not exists (
             select 1
-            from {{ this }} as t_sat
+            from {{ this }} as existing
             where 1=1
-                and t_sat.hk_tournament = t.hk_tournament
-                and t_sat.hash_diff = t.hash_diff
+                and existing.hk_tournament = final.hk_tournament
+                and existing.hash_diff = final.hash_diff
         )
         {% endif %} 
 )
 
-select * from tournaments_filtered
+select * from final

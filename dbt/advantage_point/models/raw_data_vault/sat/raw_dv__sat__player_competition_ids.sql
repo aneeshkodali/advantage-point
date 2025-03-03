@@ -6,66 +6,44 @@
 
 with
 
-hub_players as (
-    select * from {{ ref('raw_dv__hub__players') }}
-),
-
 tennisabstract_players as (
     select
-        *,
-        'tennisabstract' as record_source
-    from {{ ref('stg__tennisabstract__players') }}
-),
-
--- union data
-players_union as (
-    select
-        {{ generate_player_surrogate_key(
-            player_name_col='player_name',
-            player_gender_col='player_gender'
-        ) }} as hk_player,
+        player_name,
+        player_gender,
 
         player_tour_id,
         player_team_cup_id,
         player_itf_id,
 
+        'tennisabstract__players' as record_source
+    from {{ ref('stg__tennisabstract__players') }}
+),
+
+-- union data
+records_union as (
+    (select * from tennisabstract_players)
+),
+
+
+-- create hashes (surrogate key, hash diff)
+records_hash as (
+    select
+        *,
+        {{ generate_player_surrogate_key(
+            player_name_col='player_name',
+            player_gender_col='player_gender'
+        ) }} as hk_player,
         {{ dbt_utils.generate_surrogate_key([
             'player_tour_id',
             'player_team_cup_id',
             'player_itf_id',
-        ]) }} as hash_diff,
-        record_source
-    from (
-        select
-            player_name,
-            player_gender,
-
-            player_tour_id,
-            player_team_cup_id,
-            player_itf_id,
-
-            record_source
-        from tennisabstract_players
-    ) as p_union
+        ]) }} as hash_diff
+    from records_union
 ),
 
--- join to hub
-players_joined as (
-    select
-        p.hk_player,
-
-        p.player_tour_id,
-        p.player_team_cup_id,
-        p.player_itf_id,
-
-        p.hash_diff,
-        p.record_source
-    from players_union as p
-    inner join hub_players as p_hub on p.hk_player = p_hub.hk_player
-),
 
 -- filter for incremental changes
-players_filtered as (
+final as (
     select
         hk_player,
 
@@ -76,17 +54,17 @@ players_filtered as (
         hash_diff,
         current_timestamp as load_datetime,
         record_source
-    from players_joined as p
+    from records_hash
     where 1=1
         {% if is_incremental() %}
         and not exists (
             select 1
-            from {{ this }} as p_sat
+            from {{ this }} as existing
             where 1=1
-                and p_sat.hk_player = p.hk_player
-                and p_sat.hash_diff = p.hash_diff
+                and existing.hk_player = final.hk_player
+                and existing.hash_diff = final.hash_diff
         )
         {% endif %} 
 )
 
-select * from players_filtered
+select * from final
