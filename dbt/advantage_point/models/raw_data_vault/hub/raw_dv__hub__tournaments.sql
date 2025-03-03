@@ -36,9 +36,12 @@ records_hkey as (
 -- add row number to order records
 records_rownum as (
     select
-        *,
-        row_number() over (partition by hk_tournament order by record_source) as rn -- assing row number
-    from records_hkey
+        hub.*,
+        row_number() over (partition by hub.hk_tournament order by hub_rec_src.sort_order) as rn -- assing row number
+    from records_hkey as hub
+    left join hub_record_sources as hub_rec_src on 1=1
+        and hub_rec_src.hub_name = 'hub__tournaments'
+        and hub.record_source = hub_rec_src.record_source
 ),
 
 final as (
