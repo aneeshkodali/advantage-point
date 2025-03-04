@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: raw_dv__hub__matches
+    description: Hub table for match data.
+    columns:
+      - name: hk_match
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: load_datetime
+        data_type: timestamp
+        description: Datetime when business key(s) is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
+      
+      - name: match_date
+        data_type: date
+        description: Date when match took place.
+        data_tests:
+          - not_null
+        
+      - name: match_gender
+        data_type: string
+        description: Gender of the match.
+        data_tests:
+          - not_null
+
+      - name: match_tournament
+        data_type: string
+        description: Tournament where match took place.
+        data_tests:
+          - not_null
+
+      - name: match_round
+        data_type: string
+        description: Round within tournament when match took place.
+        data_tests:
+          - not_null
+
+      - name: match_player_one
+        data_type: string
+        description: One of the players in the match.
+        data_tests:
+          - not_null
+
+      - name: match_player_two
+        data_type: string
+        description: One of the players in the match.
+        data_tests:
+          - not_null

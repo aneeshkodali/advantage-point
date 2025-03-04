@@ -1,0 +1,94 @@
+{{
+    config(
+        unique_key='hk_match'
+    )
+}}
+
+with
+
+hub_record_sources as (
+    select * from {{ ref('stg__seed__hub_record_sources') }}
+)
+
+tennisabstract_matches as (
+    select
+        match_date,
+        match_gender,
+        match_tournament,
+        match_round,
+        match_player_one,
+        match_player_two,
+        {{ create_match_player_sorted_array(
+            array[
+                match_player_one,
+                match_player_two
+            ]
+        ) }} as match_player_array,
+
+        'tennisabstract__matches' as record_source
+    from {{ ref('stg__tennisabstract__matches') }}
+),
+
+-- union data
+records_union as (
+    (select * from tennisabstract_matches)
+),
+
+-- add hub key
+records_hkey as (
+    select
+        *,
+        {{ generate_match_surrogate_key(
+            match_date_col='match_date',
+            match_gender_col='match_gender',
+            match_tournament_col='match_tournament',
+            match_round_col='match_round',
+            match_player_array_col='match_player_array'
+        ) }} as hk_match
+    from records_union
+),
+
+-- add row number to order records
+records_rownum as (
+    select
+        hub.*,
+        row_number() over (partition by hub.hk_match order by hub_rec_src.sort_order) as rn -- assing row number
+    from records_hkey as hub
+    left join hub_record_sources as hub_rec_src on 1=1
+        and hub_rec_src.hub_name = 'hub__matches'
+        and hub.record_source = hub_rec_src.record_source
+),
+
+final as (
+    select
+        hk_match,
+
+        current_timestamp as load_datetime,
+        record_source,
+
+        match_date,
+        match_gender,
+        match_tournament,
+        match_round,
+        match_player_array,
+        match_player_one,
+        match_player_two,
+        
+    from records_rownum
+    where 1=1
+        and rn = 1 -- filter for row number
+        {% if is_incremental() %}
+        and not exists (
+            select 1
+            from {{ this }} as existing
+            where 1=1
+                and existing.match_date = final.match_date
+                and existing.match_gender = final.match_gender
+                and existing.match_tournament = final.match_tournament
+                and existing.match_round = final.match_round
+                and existing.match_player_array = final.match_player_array
+        ) -- filter for new pk records
+        {% endif %}
+)
+
+select * from final
