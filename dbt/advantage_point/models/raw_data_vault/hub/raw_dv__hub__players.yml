@@ -34,3 +34,6 @@ models:
         description: Makes up business key.
         data_tests:
           - not_null
+          - accepted_values:
+              values: ['M', 'W']
+              quote: true

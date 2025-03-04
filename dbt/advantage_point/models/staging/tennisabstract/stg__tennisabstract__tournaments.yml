@@ -34,9 +34,6 @@ models:
         description: Gender of the tournament.
         data_tests:
           - not_null
-          - accepted_values:
-              values: ['M', 'W']
-              quote: true
       
       - name: tournament_title
         data_type: string

@@ -34,6 +34,9 @@ models:
         description: Gender of the match.
         data_tests:
           - not_null
+          - accepted_values:
+              values: ['M', 'W']
+              quote: true
 
       - name: match_tournament
         data_type: string
