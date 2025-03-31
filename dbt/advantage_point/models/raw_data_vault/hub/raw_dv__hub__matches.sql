@@ -12,19 +12,7 @@ hub_record_sources as (
 
 tennisabstract_matches as (
     select
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        match_player_one,
-        match_player_two,
-        {{ create_match_player_sorted_array(
-            array[
-                match_player_one,
-                match_player_two
-            ]
-        ) }} as match_player_array,
-
+        bk_match,
         'tennisabstract__matches' as record_source
     from {{ ref('stg__tennisabstract__matches') }}
 ),
@@ -34,32 +22,14 @@ records_union as (
     (select * from tennisabstract_matches)
 ),
 
--- add business key
-records_bk as (
-    select
-        *,
-        {{ generate_match_business_key(
-            match_date_col='match_date',
-            match_gender_col='match_gender',
-            match_tournament_col='match_tournament',
-            match_round_col='match_round',
-            match_player_array_col='match_player_array'
-        ) }} as bk_match
-    from records_union
-),
-
 -- add hub key
 records_hkey as (
     select
         *,
         {{ generate_match_surrogate_key(
-            match_date_col='match_date',
-            match_gender_col='match_gender',
-            match_tournament_col='match_tournament',
-            match_round_col='match_round',
-            match_player_array_col='match_player_array'
+            match_business_key_col='bk_match'
         ) }} as hk_match
-    from records_bk
+    from records_union
 ),
 
 -- add row number to order records
@@ -79,16 +49,7 @@ final as (
         bk_match,
 
         current_timestamp as load_datetime,
-        record_source,
-
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        match_player_array,
-        match_player_one,
-        match_player_two,
-        
+        record_source
     from records_rownum
     where 1=1
         and rn = 1 -- filter for row number
@@ -97,11 +58,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.match_date = final.match_date
-                and existing.match_gender = final.match_gender
-                and existing.match_tournament = final.match_tournament
-                and existing.match_round = final.match_round
-                and existing.match_player_array = final.match_player_array
+                and existing.bk_match = final.bk_match
         ) -- filter for new pk records
         {% endif %}
 )
