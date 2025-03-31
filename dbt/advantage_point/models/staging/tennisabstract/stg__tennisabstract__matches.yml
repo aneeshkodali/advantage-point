@@ -65,3 +65,16 @@ models:
       - name: match_result
         data_type: string
         description: Outcome of the match. Includes winner, loser, and score.
+
+      - name: match_player_array
+        data_type: array
+        description: Array of players in the match.
+        data_tests:
+          - not_null
+
+      - name: bk_match
+        data_type: string
+        description: Business key.
+        data_tests:
+          - unique
+          - not_null

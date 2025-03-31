@@ -18,6 +18,35 @@ renamed as (
         match_title,
         match_result
     from source
+),
+
+-- create player array (for use in bk creation)
+player_array as (
+    select
+        *,
+        {{ create_match_player_sorted_array(
+            array[
+                match_player_one,
+                match_player_two
+            ]
+        ) }} as match_player_array
+
+    from renamed 
+),
+
+-- create business key
+bk as (
+    select
+        *,
+        {{ generate_match_business_key(
+            match_date_col='match_date',
+            match_gender_col='match_gender',
+            match_tournament_col='match_tournament',
+            match_round_col='match_round',
+            match_player_array_col='match_player_array'
+        ) }} as bk_match
+
+    from player_array
 )
 
-select * from renamed
+select * from bk
