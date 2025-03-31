@@ -25,10 +25,7 @@ player_array as (
     select
         *,
         {{ sort_player_array(
-            [
-                match_player_one,
-                match_player_two
-            ]
+            player_array='[match_player_one, match_player_two]'
         ) }} as match_players
 
     from renamed 

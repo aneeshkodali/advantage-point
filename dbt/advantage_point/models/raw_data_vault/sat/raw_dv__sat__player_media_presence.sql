@@ -50,15 +50,15 @@ final as (
         player_twitter_handle,
         player_wikipedia_id
 
-    from records_hash
+    from records_hash as incr
     where 1=1
         {% if is_incremental() %}
         and not exists (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.hk_player = final.hk_player
-                and existing.hash_diff = final.hash_diff
+                and existing.hk_player = incr.hk_player
+                and existing.hash_diff = incr.hash_diff
         )
         {% endif %} 
 )

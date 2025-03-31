@@ -55,15 +55,15 @@ final as (
         tournament_surface,
         tournament_draw_size
 
-    from records_hash
+    from records_hash as incr
     where 1=1
         {% if is_incremental() %}
         and not exists (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.hk_tournament = final.hk_tournament
-                and existing.hash_diff = final.hash_diff
+                and existing.hk_tournament = incr.hk_tournament
+                and existing.hash_diff = incr.hash_diff
         )
         {% endif %} 
 )

@@ -52,15 +52,15 @@ final as (
         match_title,
         match_result
 
-    from records_hash
+    from records_hash as incr
     where 1=1
         {% if is_incremental() %}
         and not exists (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.hk_match = final.hk_match
-                and existing.hash_diff = final.hash_diff
+                and existing.hk_match = incr.hk_match
+                and existing.hash_diff = incr.hash_diff
         )
         {% endif %} 
 )
