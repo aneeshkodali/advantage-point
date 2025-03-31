@@ -17,7 +17,6 @@ renamed as (
                 end
             ) as date
         ) as match_date,
-        cast(match_date as date) as match_date,
         match_gender,
         replace(match_tournament, '_', ' ') as match_tournament,
         match_round,
