@@ -66,9 +66,9 @@ models:
         data_type: string
         description: Outcome of the match. Includes winner, loser, and score.
 
-      - name: match_player_array
-        data_type: array
-        description: Array of players in the match.
+      - name: match_players
+        data_type: string
+        description: List-like string of players in the match.
         data_tests:
           - not_null
 
