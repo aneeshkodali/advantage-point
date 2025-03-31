@@ -29,7 +29,7 @@ player_array as (
                 match_player_one,
                 match_player_two
             ]
-        ) }} as match_player_array
+        ) }} as match_players
 
     from renamed 
 ),
@@ -43,7 +43,7 @@ bk as (
             match_gender_col='match_gender',
             match_tournament_col='match_tournament',
             match_round_col='match_round',
-            match_player_array_col='match_player_array'
+            match_player_array_col='match_players'
         ) }} as bk_match
 
     from player_array

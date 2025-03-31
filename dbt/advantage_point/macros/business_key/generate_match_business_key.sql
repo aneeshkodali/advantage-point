@@ -3,7 +3,7 @@
     match_gender_col,
     match_tournament_col,
     match_round_col,
-    match_player_array_col
+    match_players_col
 ) %}
 
     concat_ws(
@@ -12,7 +12,7 @@
         {{ match_gender_col }},
         {{ match_tournament_col }},
         {{ match_round_col }},
-        cast({{ match_player_array_col }} as string)
+        {{ match_players_col }}
     )
     
 {% endmacro %}
