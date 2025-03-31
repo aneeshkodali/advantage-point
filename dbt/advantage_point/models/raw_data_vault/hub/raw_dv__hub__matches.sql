@@ -61,7 +61,7 @@ final as (
         match_tournament,
         match_round,
         match_players
-    from records_rownum
+    from records_rownum as incr
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
@@ -69,7 +69,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.bk_match = final.bk_match
+                and existing.bk_match = incr.bk_match
         ) -- filter for new pk records
         {% endif %}
 )

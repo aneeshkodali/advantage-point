@@ -24,8 +24,8 @@ renamed as (
 player_array as (
     select
         *,
-        {{ create_match_player_sorted_array(
-            array[
+        {{ sort_player_array(
+            [
                 match_player_one,
                 match_player_two
             ]

@@ -56,7 +56,7 @@ final as (
         player_name,
         player_gender
         
-    from records_rownum
+    from records_rownum as incr
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
@@ -64,8 +64,8 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.player_name = final.player_name
-                and existing.player_gender = final.player_gender
+                and existing.player_name = incr.player_name
+                and existing.player_gender = incr.player_gender
         ) -- filter for new pk records
         {% endif %}
 )

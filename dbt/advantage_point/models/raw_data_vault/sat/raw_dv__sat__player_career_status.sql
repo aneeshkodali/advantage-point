@@ -19,6 +19,7 @@ tennisabstract_players as (
         player_current_doubles_ranking,
         player_peak_doubles_ranking,
         player_first_peak_doubles_ranking_date,
+        player_last_match_played_date,
 
         'tennisabstract__players' as record_source
     from {{ ref('stg__tennisabstract__players') }}
@@ -47,6 +48,7 @@ records_hash as (
             'player_current_doubles_ranking',
             'player_peak_doubles_ranking',
             'player_first_peak_doubles_ranking_date',
+            'player_last_match_played_date',
         ]) }} as hash_diff
     from records_union
 ),
@@ -68,7 +70,8 @@ final as (
         player_last_peak_singles_ranking_date,
         player_current_doubles_ranking,
         player_peak_doubles_ranking,
-        player_first_peak_doubles_ranking_date
+        player_first_peak_doubles_ranking_date,
+        player_last_match_played_date
 
     from records_hash
     where 1=1

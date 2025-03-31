@@ -67,3 +67,7 @@ models:
       - name: player_first_peak_doubles_ranking_date
         data_type: date
         description: Date when player first achieved highest doubles ranking.
+
+      - name: player_last_played_date
+        date_type: date
+        description: Date on which player's last match took place.

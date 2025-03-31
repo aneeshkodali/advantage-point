@@ -26,6 +26,7 @@ renamed as (
         {{ convert_rank_to_integer('peak_dubs') }} as player_peak_doubles_ranking,
         case peakfirst_dubs
             when '''""''' then null
+            when '''''' then null
             else to_date(peakfirst_dubs, 'YYYYMMDD')
         end as player_first_peak_doubles_ranking_date,
         {{ remove_empty_string_from_source('hand') }} as player_hand,
@@ -42,7 +43,11 @@ renamed as (
         cast({{ remove_empty_string_from_source('ht') }} as int) as player_height_in_cm,
         {{ convert_rank_to_integer('peakrank') }} as player_peak_singles_ranking,
         {{ remove_empty_string_from_source('itf_id') }} as player_itf_id,
-        {{ remove_empty_string_from_source('wiki_id') }} as player_wikipedia_id
+        {{ remove_empty_string_from_source('wiki_id') }} as player_wikipedia_id,
+        case lastdate
+            when '0' then null
+            else to_date(lastdate, 'YYYYMMDD')
+        end as player_last_played_date
     from source
 )
 

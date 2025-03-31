@@ -136,3 +136,7 @@ models:
       - name: player_wikipedia_id
         data_type: string
         description: Player's Wikipedia ID.
+      
+      - name: player_last_played_date
+        date_type: date
+        description: Date on which player's last match took place.

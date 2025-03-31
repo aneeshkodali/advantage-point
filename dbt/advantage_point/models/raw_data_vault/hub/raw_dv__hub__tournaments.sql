@@ -59,7 +59,7 @@ final as (
         tournament_gender,
         tournament_name
         
-    from records_rownum
+    from records_rownum as incr
     where 1=1
         and rn = 1 -- filter for row number
         {% if is_incremental() %}
@@ -67,9 +67,9 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.tournament_year = final.tournament_year
-                and existing.tournament_gender = final.tournament_gender
-                and existing.tournament_name = final.tournament_name
+                and existing.tournament_year = incr.tournament_year
+                and existing.tournament_gender = incr.tournament_gender
+                and existing.tournament_name = incr.tournament_name
         ) -- filter for new pk records
         {% endif %}
 )
