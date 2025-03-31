@@ -43,7 +43,7 @@ bk as (
             match_gender_col='match_gender',
             match_tournament_col='match_tournament',
             match_round_col='match_round',
-            match_player_col='match_players'
+            match_players_col='match_players'
         ) }} as bk_match,
         'tennisabstract__matches' as record_source
 
