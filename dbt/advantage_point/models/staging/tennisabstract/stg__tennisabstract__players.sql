@@ -35,7 +35,10 @@ renamed as (
         {{ convert_rank_to_integer('currentrank') }} as player_current_singles_rank,
         {{ remove_empty_string_from_source('country') }} as player_country,
         {{ remove_empty_string_from_source('backhand') }} as player_backhand,
-        to_date(peaklast, 'YYYYMMDD') as player_last_peak_singles_ranking_date,
+        to_date(
+            {{ remove_empty_string_from_source('peaklast') }},
+            'YYYYMMDD'
+        ) as player_last_peak_singles_ranking_date,
         {{ remove_empty_string_from_source('dc_id') }} as player_team_cup_id,
         {{ remove_empty_string_from_source('lastname') }} as player_last_name,
         to_date(
