@@ -6,6 +6,10 @@
 
 with
 
+hub_record_sources as (
+    select * from {{ ref('stg__seed__hub_record_sources') }}
+),
+
 tennisabstract_tournaments as (
     select
         tournament_year,

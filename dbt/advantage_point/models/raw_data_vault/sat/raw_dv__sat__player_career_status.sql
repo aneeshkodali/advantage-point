@@ -68,7 +68,7 @@ final as (
         player_last_peak_singles_ranking_date,
         player_current_doubles_ranking,
         player_peak_doubles_ranking,
-        player_first_peak_doubles_ranking_date,
+        player_first_peak_doubles_ranking_date
 
     from records_hash
     where 1=1

@@ -38,7 +38,7 @@ records_hash as (
             'tournament_start_date',
             'tournament_surface',
             'tournament_draw_size'
-        ]) }} as hash_diff,
+        ]) }} as hash_diff
     from records_union
 ),
 
