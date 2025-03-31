@@ -47,7 +47,7 @@ renamed as (
         case lastdate
             when '0' then null
             else to_date(lastdate, 'YYYYMMDD')
-        end as player_last_played_date
+        end as player_last_match_played_date
     from source
 )
 
