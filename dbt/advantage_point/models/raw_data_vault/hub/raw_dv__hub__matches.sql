@@ -13,12 +13,13 @@ hub_record_sources as (
 tennisabstract_matches as (
     select
         bk_match,
+        record_source,
+
         match_date,
         match_gender,
         match_tournament,
         match_round,
-        match_players,
-        'tennisabstract__matches' as record_source
+        match_players
     from {{ ref('stg__tennisabstract__matches') }}
 ),
 
@@ -54,6 +55,7 @@ final as (
         bk_match,
         current_timestamp as load_datetime,
         record_source,
+        
         match_date,
         match_gender,
         match_tournament,
