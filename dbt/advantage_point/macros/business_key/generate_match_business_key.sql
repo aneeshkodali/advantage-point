@@ -8,7 +8,7 @@
 
     concat_ws(
         '||',
-        cast({{ match_date_col }} as string),
+        cast({{ match_date_col }} as text),
         {{ match_gender_col }},
         {{ match_tournament_col }},
         {{ match_round_col }},
