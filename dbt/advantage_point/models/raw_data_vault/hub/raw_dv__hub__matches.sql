@@ -34,6 +34,20 @@ records_union as (
     (select * from tennisabstract_matches)
 ),
 
+-- add business key
+records_bk as (
+    select
+        *,
+        {{ generate_match_business_key(
+            match_date_col='match_date',
+            match_gender_col='match_gender',
+            match_tournament_col='match_tournament',
+            match_round_col='match_round',
+            match_player_array_col='match_player_array'
+        ) }} as bk_match
+    from records_union
+),
+
 -- add hub key
 records_hkey as (
     select
@@ -45,7 +59,7 @@ records_hkey as (
             match_round_col='match_round',
             match_player_array_col='match_player_array'
         ) }} as hk_match
-    from records_union
+    from records_bk
 ),
 
 -- add row number to order records
@@ -62,6 +76,7 @@ records_rownum as (
 final as (
     select
         hk_match,
+        bk_match,
 
         current_timestamp as load_datetime,
         record_source,

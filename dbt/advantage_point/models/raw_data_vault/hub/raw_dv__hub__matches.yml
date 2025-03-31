@@ -11,6 +11,13 @@ models:
           - unique
           - not_null
 
+      - name: bk_match
+        data_type: string
+        description: Unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
       - name: load_datetime
         data_type: timestamp
         description: Datetime when business key(s) is first recorded.
