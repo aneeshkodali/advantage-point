@@ -13,6 +13,11 @@ hub_record_sources as (
 tennisabstract_matches as (
     select
         bk_match,
+        match_date,
+        match_gender,
+        match_tournament,
+        match_round,
+        match_players,
         'tennisabstract__matches' as record_source
     from {{ ref('stg__tennisabstract__matches') }}
 ),
@@ -47,9 +52,13 @@ final as (
     select
         hk_match,
         bk_match,
-
         current_timestamp as load_datetime,
-        record_source
+        record_source,
+        match_date,
+        match_gender,
+        match_tournament,
+        match_round,
+        match_players
     from records_rownum
     where 1=1
         and rn = 1 -- filter for row number

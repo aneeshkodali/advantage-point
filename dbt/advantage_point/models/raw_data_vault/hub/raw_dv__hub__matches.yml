@@ -29,3 +29,33 @@ models:
         description: Source from which business key(s) originated.
         data_tests:
           - not_null
+
+      - name: match_date
+        data_type: date
+        description: Date when match took place.
+        data_tests:
+          - not_null
+        
+      - name: match_gender
+        data_type: string
+        description: Gender of the match.
+        data_tests:
+          - not_null
+
+      - name: match_tournament
+        data_type: string
+        description: Tournament where match took place.
+        data_tests:
+          - not_null
+
+      - name: match_round
+        data_type: string
+        description: Round within tournament when match took place.
+        data_tests:
+          - not_null
+
+      - name: match_players
+        data_type: string
+        description: List-like string of players in the match.
+        data_tests:
+          - not_null
