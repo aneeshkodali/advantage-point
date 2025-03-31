@@ -6,24 +6,17 @@
 
 with
 
+hub_matches as (
+    select * from {{ ref('raw_dv__hub__matches') }}
+),
+
 tennisabstract_matches as (
     select
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        {{ create_match_player_sorted_array(
-            array[
-                match_player_one,
-                match_player_two
-            ]
-        ) }} as match_player_array,
-
-        match_round,
+        bk_match,
+        record_source,
+        
         match_title,
-        match_result,
-
-        'tennisabstract__matches' as record_source
+        match_result
     from {{ ref('stg__tennisabstract__matches') }}
 ),
 
@@ -32,23 +25,19 @@ records_union as (
     (select * from tennisabstract_matches)
 ),
 
--- create hashes (surrogate key, hash diff)
+-- create hash_diff
 records_hash as (
     select
-        *,
-        {{ generate_match_surrogate_key(
-            match_date_col='match_date',
-            match_gender_col='match_gender',
-            match_tournament_col='match_tournament',
-            match_round_col='match_round',
-            match_player_array_col='match_player_array'
-        ) }} as hk_match
+        hub.hk_match,
+        sat.*,
+        
         {{ dbt_utils.generate_surrogate_key([
-            'match_round',
-            'match_title',
-            'match_result',
+            'sat.match_title',
+            'sat.match_result',
         ]) }} as hash_diff
-    from records_union
+    from records_union as sat
+    left join hub_matches as hub on 1=1
+        and sat.bk_match = hub.bk_match
 ),
 
 -- filter for incremental changes
@@ -60,7 +49,6 @@ final as (
         hash_diff,
         record_source,
 
-        match_round,
         match_title,
         match_result
 
