@@ -44,7 +44,8 @@ bk as (
             match_tournament_col='match_tournament',
             match_round_col='match_round',
             match_player_array_col='match_players'
-        ) }} as bk_match
+        ) }} as bk_match,
+        'tennisabstract__matches' as record_source
 
     from player_array
 )
