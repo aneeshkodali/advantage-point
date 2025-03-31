@@ -10,8 +10,7 @@ models:
             - match_gender
             - match_tournament
             - match_round
-            - match_player_one
-            - match_player_two
+            - match_players
     columns:
       - name: match_url
         data_type: string
