@@ -9,6 +9,14 @@ source as (
 renamed as (
     select
         match_url,
+        cast(
+            (
+                case
+                    when match_url = 'https://www.tennisabstract.com/charting/20170890-W-Toronto-R32-Ashleigh_Barty-Elena_Vesnina.html' then '20170809'
+                    else match_date
+                end
+            ) as date
+        ) as match_date,
         cast(match_date as date) as match_date,
         match_gender,
         replace(match_tournament, '_', ' ') as match_tournament,
