@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: raw_dv__sat__player_bio
+  - name: raw_dv__sat__player_media_presence
     description: Satellite table for player media presence.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
