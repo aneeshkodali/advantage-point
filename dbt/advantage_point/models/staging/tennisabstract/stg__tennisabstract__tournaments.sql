@@ -17,6 +17,20 @@ renamed as (
         tournament_surface,
         cast(tournament_draw_size as int) as tournament_draw_size
     from source
+),
+
+-- create business key
+bk as (
+    select
+        *,
+        {{ generate_tournament_business_key(
+            tournament_year_col='tournament_year',
+            tournament_gender_col='tournament_gender',
+            tournament_name_col='tournament_name'
+        ) }} as bk_tournament,
+        'tennisabstract__tournaments' as record_source
+
+    from renamed
 )
 
-select * from renamed
+select * from bk
