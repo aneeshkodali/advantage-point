@@ -12,7 +12,7 @@ hub_tournaments as (
 
 tennisabstract_tournaments as (
     select
-        bk_player,
+        bk_tournament,
         record_source,
 
         tournament_start_date,
@@ -29,7 +29,7 @@ records_union as (
 -- create hash diff
 records_hash as (
     select
-        hub.hk_player,
+        hub.hk_tournament,
         sat.*,
 
         {{ dbt_utils.generate_surrogate_key([

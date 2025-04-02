@@ -12,7 +12,7 @@ hub_players as (
 
 tennisabstract_players as (
     select
-        bk_match,
+        bk_player,
         record_source,
 
         player_full_name,
