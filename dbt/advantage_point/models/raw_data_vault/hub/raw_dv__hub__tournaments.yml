@@ -13,6 +13,13 @@ models:
         data_tests:
           - unique
           - not_null
+      
+      - name: bk_tournament
+        data_type: string
+        description: Unique identifier.
+        data_tests:
+          - unique
+          - not_null
 
       - name: load_datetime
         data_type: timestamp

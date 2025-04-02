@@ -69,7 +69,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.bk_match = incr.bk_match
+                and existing.hk_match = incr.hk_match
         ) -- filter for new pk records
         {% endif %}
 )

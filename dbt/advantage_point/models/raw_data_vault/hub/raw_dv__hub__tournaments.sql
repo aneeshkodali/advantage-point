@@ -12,11 +12,12 @@ hub_record_sources as (
 
 tennisabstract_tournaments as (
     select
+        bk_player,
+        record_source,
+
         tournament_year,
         tournament_gender,
-        tournament_name,
-
-        'tennisabstract__tournaments' as record_source
+        tournament_name
     from {{ ref('stg__tennisabstract__tournaments') }}
 ),
 
@@ -30,9 +31,7 @@ records_hkey as (
     select
         *,
         {{ generate_tournament_surrogate_key(
-                tournament_year_col='tournament_year',
-                tournament_gender_col='tournament_gender',
-                tournament_name_col='tournament_name'
+            tournament_business_key_col='bk_tournament'
         ) }} as hk_tournament
     from records_union
 ),
@@ -51,7 +50,7 @@ records_rownum as (
 final as (
     select
         hk_tournament,
-
+        bk_tournament,
         current_timestamp as load_datetime,
         record_source,
 
@@ -67,9 +66,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.tournament_year = incr.tournament_year
-                and existing.tournament_gender = incr.tournament_gender
-                and existing.tournament_name = incr.tournament_name
+                and existing.hk_tournament = incr.hk_tournament
         ) -- filter for new pk records
         {% endif %}
 )

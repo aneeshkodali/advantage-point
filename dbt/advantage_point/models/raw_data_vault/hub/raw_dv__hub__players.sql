@@ -64,8 +64,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.player_name = incr.player_name
-                and existing.player_gender = incr.player_gender
+                and existing.hk_player = incr.hk_player
         ) -- filter for new pk records
         {% endif %}
 )
