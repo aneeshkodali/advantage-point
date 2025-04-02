@@ -12,7 +12,7 @@ hub_record_sources as (
 
 tennisabstract_tournaments as (
     select
-        bk_player,
+        bk_tournament,
         record_source,
 
         tournament_year,

@@ -66,7 +66,7 @@ bk as (
         {{ generate_player_business_key(
             player_name_col='player_name',
             player_gender_col='player_gender'
-        ) }} as bk_match,
+        ) }} as bk_player,
         'tennisabstract__players' as record_source
 
     from renamed
