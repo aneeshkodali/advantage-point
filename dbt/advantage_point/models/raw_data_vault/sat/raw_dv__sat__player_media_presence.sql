@@ -6,15 +6,17 @@
 
 with
 
+hub_players as (
+    select * from {{ ref('raw_dv__hub__players') }}
+),
+
 tennisabstract_players as (
     select
-        player_name,
-        player_gender,
+        bk_player,
+        record_source,
 
         player_twitter_handle,
-        player_wikipedia_id,
-
-        'tennisabstract__players' as record_source
+        player_wikipedia_id
     from {{ ref('stg__tennisabstract__players') }}
 ),
 
@@ -23,19 +25,19 @@ records_union as (
     (select * from tennisabstract_players)
 ),
 
--- create hashes (surrogate key, hash diff)
+-- create hash diff
 records_hash as (
     select
-        *,
-        {{ generate_player_surrogate_key(
-            player_name_col='player_name',
-            player_gender_col='player_gender'
-        ) }} as hk_player,
+        hub.hk_player,
+        sat.*,
+
         {{ dbt_utils.generate_surrogate_key([
-            'player_twitter_handle',
-            'player_wikipedia_id',
+            'sat.player_twitter_handle',
+            'sat.player_wikipedia_id',
         ]) }} as hash_diff
-    from records_union
+    from records_union as sat
+    left join hub_players as hub on 1=1
+        and sat.bk_player = hub.bk_player
 ),
 
 -- filter for incremental changes
