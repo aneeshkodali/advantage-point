@@ -12,10 +12,11 @@ hub_record_sources as (
 
 tennisabstract_players as (
     select
-        player_name,
-        player_gender,
+        bk_player,
+        record_source,
 
-        'tennisabstract__players' as record_source
+        player_name,
+        player_gender
     from {{ ref('stg__tennisabstract__players') }}
 ),
 
@@ -29,8 +30,7 @@ records_hkey as (
     select
         *,
         {{ generate_player_surrogate_key(
-                player_name_col='player_name',
-                player_gender_col='player_gender'
+            player_business_key_col='bk_player'
         ) }} as hk_player
     from records_union
 ),
@@ -49,7 +49,7 @@ records_rownum as (
 final as (
     select
         hk_player,
-
+        bk_player,
         current_timestamp as load_datetime,
         record_source,
 
