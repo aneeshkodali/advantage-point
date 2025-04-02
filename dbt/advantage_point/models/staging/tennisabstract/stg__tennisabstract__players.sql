@@ -57,6 +57,19 @@ renamed as (
             'YYYYMMDD'
         ) as player_last_match_played_date
     from source
+),
+
+-- create business key
+bk as (
+    select
+        *,
+        {{ generate_player_business_key(
+            player_name_col='player_name',
+            player_gender_col='player_gender'
+        ) }} as bk_match,
+        'tennisabstract__players' as record_source
+
+    from renamed
 )
 
-select * from renamed
+select * from bk

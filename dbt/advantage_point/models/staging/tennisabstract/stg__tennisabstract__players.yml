@@ -140,3 +140,16 @@ models:
       - name: player_last_match_played_date
         date_type: date
         description: Date on which player's last match took place.
+      
+      - name: bk_player
+        data_type: string
+        description: Business key.
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
