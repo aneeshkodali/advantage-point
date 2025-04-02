@@ -5,7 +5,6 @@ models:
     description: Hub table for player data.
     data_tests:
       - all_record_sources_referenced_in_hub
-          model: ref('raw_dv__hub__players')
     columns:
       - name: hk_player
         data_type: string
