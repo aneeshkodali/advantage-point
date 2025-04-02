@@ -6,17 +6,18 @@
 
 with
 
+hub_tournaments as (
+    select * from {{ ref('raw_dv__hub__tournaments') }}
+),
+
 tennisabstract_tournaments as (
     select
-        tournament_year,
-        tournament_gender,
-        tournament_name,
+        bk_player,
+        record_source,
 
         tournament_start_date,
         tournament_surface,
-        tournament_draw_size,
-
-        'tennisabstract__tournaments' as record_source
+        tournament_draw_size
     from {{ ref('stg__tennisabstract__tournaments') }}
 ),
 
@@ -25,21 +26,20 @@ records_union as (
     (select * from tennisabstract_tournaments)
 ),
 
--- create hashes (surrogate key, hash diff)
+-- create hash diff
 records_hash as (
     select
-        *,
-        {{ generate_tournament_surrogate_key(
-            tournament_year_col='tournament_year',
-            tournament_gender_col='tournament_gender',
-            tournament_name_col='tournament_name'
-        ) }} as hk_tournament,
+        hub.hk_player,
+        sat.*,
+
         {{ dbt_utils.generate_surrogate_key([
-            'tournament_start_date',
-            'tournament_surface',
-            'tournament_draw_size'
+            'sat.tournament_start_date',
+            'sat.tournament_surface',
+            'sat.tournament_draw_size'
         ]) }} as hash_diff
-    from records_union
+    from records_union as sat
+    left join hub_tournaments as hub on 1=1
+        and sat.bk_tournament = hub.bk_tournament
 ),
 
 -- filter for incremental changes
