@@ -2,3 +2,4 @@ hub_name,record_source,sort_order
 raw_dv__hub__match,tennisabstract__matches,1
 raw_dv__hub__player,tennisabstract__players,1
 raw_dv__hub__tournament,tennisabstract__tournaments,1
+raw_dv__hub__point,tennisabstract__match_points,1
