@@ -71,7 +71,7 @@ records_lkey as (
 records_rownum as (
     select
         lnk.*,
-        row_number() over (partition by lnk.lk_match_player order by coalesce(link_rec_src.sort_order, 9999), lnk.record_source) as rn -- assing row number
+        row_number() over (partition by lnk.lk_match_player order by link_rec_src.sort_order) as rn -- assing row number
     from records_lkey as lnk
     left join link_record_sources as link_rec_src on 1=1
         and link_rec_src.hub_name = 'raw_dv__link__match_player'
