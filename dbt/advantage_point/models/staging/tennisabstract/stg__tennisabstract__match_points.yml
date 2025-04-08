@@ -51,3 +51,15 @@ models:
         data_tests:
           - not_null
     
+      - name: bk_match_point
+        data_type: string
+        description: Business key.
+        data_tests:
+          - unique
+          - not_null
+      
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
