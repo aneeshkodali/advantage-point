@@ -7,7 +7,7 @@
 with
 
 hub_tournaments as (
-    select * from {{ ref('raw_dv__hub__tournaments') }}
+    select * from {{ ref('raw_dv__hub__tournament') }}
 ),
 
 tennisabstract_tournaments as (

@@ -7,7 +7,7 @@
 with
 
 hub_players as (
-    select * from {{ ref('raw_dv__hub__players') }}
+    select * from {{ ref('raw_dv__hub__player') }}
 ),
 
 tennisabstract_players as (

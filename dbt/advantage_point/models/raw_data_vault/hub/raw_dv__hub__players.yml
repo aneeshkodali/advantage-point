@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: raw_dv__hub__players
+  - name: raw_dv__hub__player
     description: Hub table for player data.
     data_tests:
       - all_record_sources_referenced_in_hub

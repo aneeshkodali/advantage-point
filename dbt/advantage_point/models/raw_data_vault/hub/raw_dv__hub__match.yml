@@ -1,19 +1,19 @@
 version: 2
 
 models:
-  - name: raw_dv__hub__tournaments
-    description: Hub table for tournament data.
+  - name: raw_dv__hub__match
+    description: Hub table for match data.
     data_tests:
       - all_record_sources_referenced_in_hub
     columns:
-      - name: hk_tournament
+      - name: hk_match
         data_type: string
         description: Hash-based unique identifier.
         data_tests:
           - unique
           - not_null
-      
-      - name: bk_tournament
+
+      - name: bk_match
         data_type: string
         description: Unique identifier.
         data_tests:
@@ -32,23 +32,32 @@ models:
         data_tests:
           - not_null
 
-      - name: tournament_year
-        data_type: integer
-        description: Makes up business key.
+      - name: match_date
+        data_type: date
+        description: Date when match took place.
+        data_tests:
+          - not_null
+        
+      - name: match_gender
+        data_type: string
+        description: Gender of the match.
         data_tests:
           - not_null
 
-      - name: tournament_gender
+      - name: match_tournament
         data_type: string
-        description: Makes up business key.
+        description: Tournament where match took place.
         data_tests:
           - not_null
-          - accepted_values:
-              values: ['M', 'W']
-              quote: true
-      
-      - name: tournament_name
+
+      - name: match_round
         data_type: string
-        description: Makes up business key.
+        description: Round within tournament when match took place.
         data_tests:
-          - not_null   
+          - not_null
+
+      - name: match_players
+        data_type: string
+        description: List-like string of players in the match.
+        data_tests:
+          - not_null
