@@ -42,7 +42,7 @@ records_rownum as (
         row_number() over (partition by hub.hk_player order by coalesce(hub_rec_src.sort_order, 9999), hub.record_source) as rn -- assing row number
     from records_hkey as hub
     left join hub_record_sources as hub_rec_src on 1=1
-        and hub_rec_src.hub_name = 'hub__players'
+        and hub_rec_src.hub_name = 'raw_dv__hub__player'
         and hub.record_source = hub_rec_src.record_source
 ),
 

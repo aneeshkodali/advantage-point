@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: raw_dv__link__match__player
+    description: Link table for match player data.
+    data_tests:
+      - all_record_sources_referenced_in_link
+    columns:
+      - name: lk_match_player
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: load_datetime
+        data_type: timestamp
+        description: Datetime when business key(s) is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
+
+      - name: hk_match
+        data_type: string
+        description: Hash-based unique identifier for match.
+        data_tests:
+          - not_null
+
+      - name: bk_match
+        data_type: string
+        description: Unique identifier for match.
+        data_tests:
+          - not_null
+
+      - name: hk_player
+        data_type: string
+        description: Hash-based unique identifier for player.
+        data_tests:
+          - not_null
+
+      - name: bk_player
+        data_type: string
+        description: Unique identifier for player.
+        data_tests:
+          - not_null
