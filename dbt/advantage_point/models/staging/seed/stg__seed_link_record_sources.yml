@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg__seed__link_record_sources
+    description: Contains sorting order to set record source for (raw data vault) links.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - link_name
+            - record_source
+            - sort_order
+    columns:
+      - name: link_name
+        description: Link name.
+        data_tests:
+          - not_null
+      
+      - name: record_source
+        description: Name of originating source.
+        data_tests:
+          - not_null
+
+      - name: sort_order
+        description: Used to sort record sources within link.
+        data_tests:
+          - not_null
