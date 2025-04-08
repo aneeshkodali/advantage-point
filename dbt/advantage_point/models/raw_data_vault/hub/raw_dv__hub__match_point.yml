@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: raw_dv__hub__match_point
+    description: Hub table for match point data.
+    data_tests:
+      - all_record_sources_referenced_in_hub
+    columns:
+      - name: hk_match_point
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: bk_match_point
+        data_type: string
+        description: Unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: load_datetime
+        data_type: timestamp
+        description: Datetime when business key(s) is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
+
+      - name: match_date
+        data_type: date
+        description: Date when match took place.
+        data_tests:
+          - not_null
+        
+      - name: match_gender
+        data_type: string
+        description: Gender of the match.
+        data_tests:
+          - not_null
+
+      - name: match_tournament
+        data_type: string
+        description: Tournament where match took place.
+        data_tests:
+          - not_null
+
+      - name: match_round
+        data_type: string
+        description: Round within tournament when match took place.
+        data_tests:
+          - not_null
+
+      - name: match_players
+        data_type: string
+        description: List-like string of players in the match.
+        data_tests:
+          - not_null
+
+      - name: point_number_in_match
+        data_type: integer
+        description: Point number in match.
+        data_tests:
+          - not_null
