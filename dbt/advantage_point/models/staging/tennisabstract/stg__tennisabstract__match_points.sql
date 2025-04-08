@@ -38,6 +38,11 @@ bk as (
             match_point_col='mp.point_number_in_match'
         ) }} as bk_match_point,
         m.bk_match,
+        m.match_date,
+        m.match_gender,
+        m.match_tournament,
+        m.match_round,
+        m.match_players,
         'tennisabstract__match_points' as record_source
     from renamed as mp
     left join matches as m on mp.match_url = m.match_url

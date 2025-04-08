@@ -50,6 +50,58 @@ models:
         description: Semicolon-separated list-like string of shots in the point rally.
         data_tests:
           - not_null
+
+      - name: match_date
+        data_type: date
+        description: Date when match took place.
+        data_tests:
+          - not_null
+        
+      - name: match_gender
+        data_type: string
+        description: Gender of the match.
+        data_tests:
+          - not_null
+
+      - name: match_tournament
+        data_type: string
+        description: Tournament where match took place.
+        data_tests:
+          - not_null
+
+      - name: match_round
+        data_type: string
+        description: Round within tournament when match took place.
+        data_tests:
+          - not_null
+
+      - name: match_player_one
+        data_type: string
+        description: One of the players in the match.
+        data_tests:
+          - not_null
+
+      - name: match_player_two
+        data_type: string
+        description: One of the players in the match.
+        data_tests:
+          - not_null
+
+      - name: match_title
+        data_type: string
+        description: Name of the match. Includes tournament, players, and round.
+        data_tests:
+          - not_null
+
+      - name: match_result
+        data_type: string
+        description: Outcome of the match. Includes winner, loser, and score.
+
+      - name: match_players
+        data_type: string
+        description: List-like string of players in the match.
+        data_tests:
+          - not_null
     
       - name: bk_match_point
         data_type: string
