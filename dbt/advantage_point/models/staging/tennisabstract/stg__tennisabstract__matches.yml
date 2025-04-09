@@ -77,6 +77,12 @@ models:
         data_tests:
           - unique
           - not_null
+
+      - name: bk_tournament
+        data_type: string
+        description: Business key for tournament.
+        data_tests:
+          - not_null
       
       - name: record_source
         data_type: string

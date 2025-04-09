@@ -50,6 +50,11 @@ bk as (
             match_round_col='match_round',
             match_players_col='match_players'
         ) }} as bk_match,
+        {{ generate_tournament_business_key(
+            tournament_year_col='extract(year from match_date)',
+            tournament_gender_col='match_gender',
+            tournament_name_col='match_tournament'
+        ) }} as bk_tournament,
         'tennisabstract__matches' as record_source
 
     from player_array
