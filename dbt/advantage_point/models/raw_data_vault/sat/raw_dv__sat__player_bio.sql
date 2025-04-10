@@ -15,6 +15,7 @@ tennisabstract_players as (
         bk_player,
         record_source,
 
+        player_name,
         player_full_name,
         player_last_name,
         player_date_of_birth,
@@ -37,6 +38,7 @@ records_hash as (
         sat.*,
         
         {{ dbt_utils.generate_surrogate_key([
+            'sat.player_name',
             'sat.player_full_name',
             'sat.player_last_name',
             'sat.player_date_of_birth',
@@ -59,6 +61,7 @@ final as (
         hash_diff,
         record_source,
 
+        player_name,
         player_full_name,
         player_last_name,
         player_date_of_birth,

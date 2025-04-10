@@ -36,6 +36,10 @@ models:
         data_tests:
           - not_null
 
+      - name: player_name
+        data_type: string
+        description: Player name.
+
       - name: player_full_name
         data_type: string
         description: Player full name.
