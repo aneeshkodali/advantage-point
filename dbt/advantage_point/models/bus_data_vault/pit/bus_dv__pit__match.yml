@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: bus_dv__pit__match
+    description: >
+      Point-in-Time (PIT) table for match details. Retrieves the most recent
+      satellite record per match (based on `load_datetime`) from 
+      `raw_dv__sat__match_details`, used to simplify downstream joins and 
+      provide latest match context for bridge and metric models.
+
+    columns:
+      - name: hk_match
+        description: Hash key representing a unique match.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__match')
+              field: hk_match
+
+      - name: hk_tournament
+        description: Hash key representing the tournament the match belongs to.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__tournament')
+              field: hk_tournament
+
+      - name: match_title
+        description: Title of the match (e.g., players, round, tournament).
+
+      - name: match_result
+        description: Result of the match, including the winner and score.
+
+      - name: hash_diff
+        description: Hash of the descriptive fields used to detect changes.
+        data_tests:
+          - not_null
+
+      - name: sat_load_datetime
+        description: Load timestamp from the source satellite table.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_load_datetime
+        description: Timestamp when this PIT record was generated in the Business Vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
