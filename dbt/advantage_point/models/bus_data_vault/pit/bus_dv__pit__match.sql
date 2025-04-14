@@ -12,7 +12,7 @@ match_details as (
 -- get unique list of hk
 hk_union as (
     (select hk_match from match_details)
-)
+),
 
 final as (
     select

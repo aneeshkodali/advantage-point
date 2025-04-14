@@ -61,7 +61,7 @@ hk_union as (
     (select hk_player from player_competition_ids)
     union
     (select hk_player from player_media_presence)
-)
+),
 
 final as (
     select
