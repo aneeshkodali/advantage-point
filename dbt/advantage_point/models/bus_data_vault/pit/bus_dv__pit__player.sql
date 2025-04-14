@@ -24,7 +24,20 @@ player_bio as (
 
 player_career_status as (
     select
-        *
+        hk_player,
+        load_datetime,
+        hash_diff,
+        record_source,
+
+        is_player_active,
+        player_current_singles_rank,
+        player_peak_singles_ranking,
+        player_first_peak_singles_ranking_date,
+        player_last_peak_singles_ranking_date,
+        player_current_doubles_ranking,
+        player_peak_doubles_ranking,
+        player_first_peak_doubles_ranking_date,
+        player_last_match_played_date
     from {{ get_latest_record(
         model_ref=ref('raw_dv__sat__player_career_status'),
         partition_by_col='hk_player',
@@ -34,7 +47,14 @@ player_career_status as (
 
 player_competition_ids as (
     select
-        *
+        hk_player,
+        load_datetime,
+        hash_diff,
+        record_source,
+
+        player_tour_id,
+        player_team_cup_id,
+        player_itf_id
     from {{ get_latest_record(
         model_ref=ref('raw_dv__sat__player_competition_ids'),
         partition_by_col='hk_player',
@@ -44,7 +64,13 @@ player_competition_ids as (
 
 player_media_presence as (
     select
-        *
+        hk_player,
+        load_datetime,
+        hash_diff,
+        record_source,
+
+        player_twitter_handle,
+        player_wikipedia_id
     from {{ get_latest_record(
         model_ref=ref('raw_dv__sat__player_media_presence'),
         partition_by_col='hk_player',
