@@ -1,4 +1,4 @@
-{% macro generate_match_business_key(
+{% macro generate_match_point_business_key(
     match_date_col,
     match_gender_col,
     match_tournament_col,
