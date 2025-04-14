@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: bus_dv__bridge__match__player
+    description: >
+      Bridge table for match_player data.
+
+    columns:
+      - name: lk_match_player
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('raw_dv__link__match_player')
+              field: lk_match_player
+
+      - name: hk_match
+        data_type: string
+        description: Hash-based unique identifier for match.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('bus_dv__pit__match')
+              field: hk_match
+
+      - name: hk_player
+        data_type: string
+        description: Hash-based unique identifier for player.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('bus_dv__pit__player')
+              field: hk_player
+
+      - name: is_match_winner
+        description: Boolean flag indicating if the player won the match.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: link_load_datetime
+        description: Load timestamp from the link model.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_load_datetime
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
