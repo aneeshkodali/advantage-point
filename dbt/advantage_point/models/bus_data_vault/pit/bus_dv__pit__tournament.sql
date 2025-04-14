@@ -1,7 +1,15 @@
 with
 
 tournament_details as (
-    select *
+    select
+        hk_player,
+        load_datetime,
+        hash_diff,
+        record_source,
+
+        tournament_start_date,
+        tournament_surface,
+        tournament_draw_size
     from {{ get_latest_record(
         model_ref=ref('raw_dv__sat__tournament_details'),
         partition_by_col='hk_tournament',
