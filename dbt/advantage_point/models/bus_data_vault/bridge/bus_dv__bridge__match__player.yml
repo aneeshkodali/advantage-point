@@ -13,7 +13,7 @@ models:
           - unique
           - not_null
           - relationships:
-              to: ref('raw_dv__link__match_player')
+              to: ref('raw_dv__link__match__player')
               field: lk_match_player
 
       - name: hk_match
