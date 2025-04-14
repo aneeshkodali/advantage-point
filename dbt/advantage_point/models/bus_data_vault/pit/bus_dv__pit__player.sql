@@ -15,11 +15,13 @@ player_bio as (
         player_hand,
         player_backhand,
         player_height_in_cm
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__player_bio'),
-        partition_by_col='hk_player',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__player_bio'),
+            partition_by_col='hk_player',
+            order_by_col='load_datetime'
+        ) }}
+    ) as p
 ),
 
 player_career_status as (
@@ -38,11 +40,13 @@ player_career_status as (
         player_peak_doubles_ranking,
         player_first_peak_doubles_ranking_date,
         player_last_match_played_date
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__player_career_status'),
-        partition_by_col='hk_player',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__player_career_status'),
+            partition_by_col='hk_player',
+            order_by_col='load_datetime'
+        ) }}
+    ) as p
 ),
 
 player_competition_ids as (
@@ -55,11 +59,13 @@ player_competition_ids as (
         player_tour_id,
         player_team_cup_id,
         player_itf_id
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__player_competition_ids'),
-        partition_by_col='hk_player',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__player_competition_ids'),
+            partition_by_col='hk_player',
+            order_by_col='load_datetime'
+        ) }}
+    ) as p
 ),
 
 player_media_presence as (
@@ -71,11 +77,13 @@ player_media_presence as (
 
         player_twitter_handle,
         player_wikipedia_id
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__player_media_presence'),
-        partition_by_col='hk_player',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__player_media_presence'),
+            partition_by_col='hk_player',
+            order_by_col='load_datetime'
+        ) }}
+    ) as p
 ),
 
 -- get unique list of hk

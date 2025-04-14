@@ -10,11 +10,13 @@ tournament_details as (
         tournament_start_date,
         tournament_surface,
         tournament_draw_size
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__tournament_details'),
-        partition_by_col='hk_tournament',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__tournament_details'),
+            partition_by_col='hk_tournament',
+            order_by_col='load_datetime'
+        ) }}
+    ) as t
 ),
 
 -- get unique list of hk

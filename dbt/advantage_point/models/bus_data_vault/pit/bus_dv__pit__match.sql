@@ -10,11 +10,13 @@ match_details as (
         hk_tournament,
         match_title,
         match_result
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__sat__match_details'),
-        partition_by_col='hk_match',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__sat__match_details'),
+            partition_by_col='hk_match',
+            order_by_col='load_datetime'
+        ) }}
+    ) as m
 ),
 
 -- get unique list of hk
