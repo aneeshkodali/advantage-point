@@ -75,28 +75,6 @@ models:
         data_tests:
           - not_null
 
-      - name: match_player_one
-        data_type: string
-        description: One of the players in the match.
-        data_tests:
-          - not_null
-
-      - name: match_player_two
-        data_type: string
-        description: One of the players in the match.
-        data_tests:
-          - not_null
-
-      - name: match_title
-        data_type: string
-        description: Name of the match. Includes tournament, players, and round.
-        data_tests:
-          - not_null
-
-      - name: match_result
-        data_type: string
-        description: Outcome of the match. Includes winner, loser, and score.
-
       - name: match_players
         data_type: string
         description: List-like string of players in the match.
