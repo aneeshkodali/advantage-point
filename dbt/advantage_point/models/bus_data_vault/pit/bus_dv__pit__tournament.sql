@@ -2,7 +2,7 @@ with
 
 tournament_details as (
     select
-        hk_player,
+        hk_tournament,
         load_datetime,
         hash_diff,
         record_source,
