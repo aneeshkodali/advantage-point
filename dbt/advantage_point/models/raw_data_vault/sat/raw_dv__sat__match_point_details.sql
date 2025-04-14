@@ -24,7 +24,7 @@ tennisabstract_match_points as (
         set_score_in_match,
         game_score_in_set,
         point_score_in_game
-    from {{ ref('stg__tennisabstract__matches') }}
+    from {{ ref('stg__tennisabstract__match_points') }}
 ),
 
 -- union data
