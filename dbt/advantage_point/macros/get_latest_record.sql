@@ -17,4 +17,4 @@
     ) as ranked
     where row_num = 1
 
-{% end macro %}
+{% endmacro %}
