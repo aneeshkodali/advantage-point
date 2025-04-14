@@ -9,17 +9,25 @@ match_details as (
     ) }}
 ),
 
+-- get unique list of hk
+hk_union as (
+    (select hk_match from match_details)
+)
+
 final as (
     select
-        hk_match,
-        hk_tournament,
-        match_title,
-        match_result,
-        hash_diff,
-        load_datetime as sat_load_datetime,
+        hk_union.hk_match,
+
+        match_details.hk_tournament,
+        match_details.match_title,
+        match_details.match_result,
+        match_details.hash_diff as match_detail_hash_diff,
+        match_details.load_datetime as match_details_load_datetime,
+        
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__pit__match' as bus_dv_source_model
-    from match_details
+    from hk_union
+    left join match_details using (hk_match)
 )
 
 select * from final
