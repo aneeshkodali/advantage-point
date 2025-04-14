@@ -22,7 +22,7 @@ missing_record_sources as (
     left join stg_record_sources as stg_rec_src on 1=1
         and hub_rec_src.record_source = stg_rec_src.record_source
     where 1=1
-        and stg_rec_src.hub_name = '{{ model.identifier }}'
+        and stg_rec_src.hub_name = {{ model.identifier | string }}
         and stg_rec_src.record_source is null
 )
 
