@@ -21,7 +21,7 @@ final as (
         match_details.hk_tournament,
         match_details.match_title,
         match_details.match_result,
-        match_details.hash_diff as match_detail_hash_diff,
+        match_details.hash_diff as match_details_hash_diff,
         match_details.load_datetime as match_details_load_datetime,
         
         current_timestamp as bus_dv_load_datetime,
