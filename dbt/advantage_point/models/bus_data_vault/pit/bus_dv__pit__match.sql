@@ -3,7 +3,7 @@ with
 match_details as (
     select *
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__match_details')",
+        model_ref=ref('raw_dv__sat__match_details'),
         partition_by_col='hk_match',
         order_by_col='load_datetime'
     ) }}

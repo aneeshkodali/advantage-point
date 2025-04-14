@@ -16,7 +16,7 @@ player_bio as (
         player_backhand,
         player_height_in_cm
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__player_bio')",
+        model_ref=ref('raw_dv__sat__player_bio'),
         partition_by_col='hk_player',
         order_by_col='load_datetime'
     ) }}
@@ -26,7 +26,7 @@ player_career_status as (
     select
         *
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__player_career_status')",
+        model_ref=ref('raw_dv__sat__player_career_status'),
         partition_by_col='hk_player',
         order_by_col='load_datetime'
     ) }}
@@ -36,7 +36,7 @@ player_competition_ids as (
     select
         *
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__player_competition_ids')",
+        model_ref=ref('raw_dv__sat__player_competition_ids'),
         partition_by_col='hk_player',
         order_by_col='load_datetime'
     ) }}
@@ -46,7 +46,7 @@ player_media_presence as (
     select
         *
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__player_media_presence')",
+        model_ref=ref('raw_dv__sat__player_media_presence'),
         partition_by_col='hk_player',
         order_by_col='load_datetime'
     ) }}

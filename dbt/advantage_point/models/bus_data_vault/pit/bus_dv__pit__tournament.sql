@@ -3,7 +3,7 @@ with
 tournament_details as (
     select *
     from {{ get_latest_record(
-        model_ref="ref('raw_dv__sat__tournament_details')",
+        model_ref=ref('raw_dv__sat__tournament_details'),
         partition_by_col='hk_tournament',
         order_by_col='load_datetime'
     ) }}
