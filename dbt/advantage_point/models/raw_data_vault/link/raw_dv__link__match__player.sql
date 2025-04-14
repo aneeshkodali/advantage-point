@@ -55,7 +55,7 @@ records_lkey as (
     select
         {{ generate_match_player_surrogate_key(
             match_business_key_col='lnk.bk_match',
-            player_business_key_col='lnk.bk_player',
+            player_business_key_col='lnk.bk_player'
         ) }} as lk_match_player,
 
         hub_match.hk_match,
