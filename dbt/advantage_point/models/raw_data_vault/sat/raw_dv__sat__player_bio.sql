@@ -35,7 +35,16 @@ records_union as (
 records_hash as (
     select
         hub.hk_player,
-        sat.*,
+        sat.record_source,
+    
+        sat.player_name,
+        sat.player_full_name,
+        sat.player_last_name,
+        sat.player_date_of_birth,
+        sat.player_country,
+        sat.player_hand,
+        sat.player_backhand,
+        sat.player_height_in_cm,
         
         {{ dbt_utils.generate_surrogate_key([
             'sat.player_name',

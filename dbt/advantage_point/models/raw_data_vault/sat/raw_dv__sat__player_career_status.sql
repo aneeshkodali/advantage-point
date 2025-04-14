@@ -37,7 +37,17 @@ records_union as (
 records_hash as (
     select
         hub.hk_player,
-        sat.*,
+        sat.record_source,
+
+        sat.is_player_active,
+        sat.player_current_singles_rank,
+        sat.player_peak_singles_ranking,
+        sat.player_first_peak_singles_ranking_date,
+        sat.player_last_peak_singles_ranking_date,
+        sat.player_current_doubles_ranking,
+        sat.player_peak_doubles_ranking,
+        sat.player_first_peak_doubles_ranking_date,
+        sat.player_last_match_played_date,
 
         {{ dbt_utils.generate_surrogate_key([
             'sat.is_player_active',

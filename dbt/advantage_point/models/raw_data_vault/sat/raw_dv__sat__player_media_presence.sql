@@ -29,7 +29,10 @@ records_union as (
 records_hash as (
     select
         hub.hk_player,
-        sat.*,
+        sat.record_source,
+
+        sat.player_twitter_handle,
+        sat.player_wikipedia_id,
 
         {{ dbt_utils.generate_surrogate_key([
             'sat.player_twitter_handle',

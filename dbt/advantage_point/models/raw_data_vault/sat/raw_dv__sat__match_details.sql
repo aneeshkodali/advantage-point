@@ -34,8 +34,11 @@ records_union as (
 records_hash as (
     select
         hub_m.hk_match,
+        sat.record_source,
+
         hub_t.hk_tournament,
-        sat.*,
+        sat.match_title,
+        sat.match_result,
         
         {{ dbt_utils.generate_surrogate_key([
             'hub_t.hk_tournament',

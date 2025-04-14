@@ -30,12 +30,16 @@ records_union as (
 records_hash as (
     select
         hub.hk_tournament,
-        sat.*,
+        sat.record_source,
+
+        sat.tournament_start_date,
+        sat.tournament_surface,
+        sat.tournament_draw_size,
 
         {{ dbt_utils.generate_surrogate_key([
             'sat.tournament_start_date',
             'sat.tournament_surface',
-            'sat.tournament_draw_size'
+            'sat.tournament_draw_size',
         ]) }} as hash_diff
     from records_union as sat
     left join hub_tournaments as hub on 1=1

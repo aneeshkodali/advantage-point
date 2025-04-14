@@ -36,9 +36,14 @@ records_union as (
 records_hash as (
     select
         hub_mp.hk_match_point,
+        sat.record_source,
+
         hub_m.hk_match,
-        sat.*,
-        
+        sat.point_server,
+        sat.set_score_in_match,
+        sat.game_score_in_set,
+        sat.point_score_in_game,
+
         {{ dbt_utils.generate_surrogate_key([
             'hub_m.hk_match',
             'sat.point_server',
