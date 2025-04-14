@@ -61,7 +61,9 @@ records_lkey as (
         hub_match.hk_match,
         hub_player.hk_player,
 
-        lnk.*
+        lnk.bk_match,
+        lnk.bk_player,
+        lnk.record_source
     from records_union as lnk
     left join hub_match on lnk.bk_match = hub_match.bk_match
     left join hub_player on lnk.bk_player = hub_player.bk_player
