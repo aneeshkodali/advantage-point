@@ -46,4 +46,4 @@ models:
 
       - name: player_itf_id
         data_type: string
-        description: Player's ITF (International Tennis Foundation) ID
+        description: Player's ITF (International Tennis Foundation) ID.
