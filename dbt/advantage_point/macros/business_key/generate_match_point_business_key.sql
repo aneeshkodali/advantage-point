@@ -4,7 +4,7 @@
     match_tournament_col,
     match_round_col,
     match_players_col,
-    match_point_col,
+    match_point_col
 ) %}
 
     concat_ws(
