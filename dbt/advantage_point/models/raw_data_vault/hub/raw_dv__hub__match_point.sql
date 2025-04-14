@@ -34,7 +34,7 @@ records_hkey as (
     select
         *,
         {{ generate_match_point_surrogate_key(
-            match_business_key_col='bk_match_point'
+            match_point_business_key_col='bk_match_point'
         ) }} as hk_match_point
     from records_union
 ),
