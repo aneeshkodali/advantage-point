@@ -1,7 +1,15 @@
 with
 
 match_details as (
-    select *
+    select
+        hk_match,
+        load_datetime,
+        hash_diff,
+        record_source,
+
+        hk_tournament,
+        match_title,
+        match_result
     from {{ get_latest_record(
         model_ref=ref('raw_dv__sat__match_details'),
         partition_by_col='hk_match',
