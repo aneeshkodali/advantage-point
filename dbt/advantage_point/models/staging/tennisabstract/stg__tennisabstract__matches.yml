@@ -89,6 +89,18 @@ models:
         description: Business key for tournament.
         data_tests:
           - not_null
+
+      - name: bk_player_one
+        data_type: string
+        description: Business key for player one.
+        data_tests:
+          - not_null
+
+      - name: bk_player_two
+        data_type: string
+        description: Business key for player two.
+        data_tests:
+          - not_null
       
       - name: record_source
         data_type: string

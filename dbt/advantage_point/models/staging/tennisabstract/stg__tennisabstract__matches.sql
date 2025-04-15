@@ -56,6 +56,14 @@ bk as (
             tournament_gender_col='match_gender',
             tournament_name_col='match_tournament'
         ) }} as bk_tournament,
+        {{ generate_player_business_key(
+            player_name_col='match_player_one',
+            player_gender_col='match_gender'
+        ) }} as bk_player_one,
+        {{ generate_player_business_key(
+            player_name_col='match_player_two',
+            player_gender_col='match_gender'
+        ) }} as bk_player_two,
         'tennisabstract__matches' as record_source
 
     from player_array
