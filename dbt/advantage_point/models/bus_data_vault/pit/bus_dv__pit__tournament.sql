@@ -33,7 +33,7 @@ final as (
         tournament_details.tournament_surface,
         tournament_details.tournament_draw_size,
         tournament_details.hash_diff as tournament_details_hash_diff,
-        tournament_details.load_datetime as tournament_details._load_datetime,
+        tournament_details.load_datetime as tournament_details_load_datetime,
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__pit__tournament' as bus_dv_source_model
