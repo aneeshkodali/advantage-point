@@ -184,7 +184,7 @@ def scrape_player_data_playwright(
                 player_url,
                 wait_until='networkidle'
             )
-            page.wait_for_function(f"window.{response_var_list[0]} !== undefined", timeout=5000)
+            page.wait_for_function("typeof nameparam !== undefined", timeout=5000)
             response_text = page.content()
             response_status_code = response.status if response else None
                 
