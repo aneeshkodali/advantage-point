@@ -34,25 +34,29 @@ tennisabstract_match_players as (
 -- union player one and player two
 -- get distinct list
 tennisabstract_match_players_union as (
-    (
-        select
-            bk_match_player_one as bk_player,
-            record_source,
+    select distinct
+        *
+    from (
+        (
+            select
+                bk_match_player_one as bk_player,
+                record_source,
 
-            match_player_one as player_name,
-            match_gender as player_gender
-        from tennisabstract_match_players
-    )
-    union
-    (
-        select
-            bk_match_player_two as bk_player,
-            record_source,
+                match_player_one as player_name,
+                match_gender as player_gender
+            from tennisabstract_match_players
+        )
+        union all
+        (
+            select
+                bk_match_player_two as bk_player,
+                record_source,
 
-            match_player_two as player_name,
-            match_gender as player_gender
-        from tennisabstract_match_players
-    )
+                match_player_two as player_name,
+                match_gender as player_gender
+            from tennisabstract_match_players
+        )
+    ) as m_p_union
 ),
 
 -- union data
