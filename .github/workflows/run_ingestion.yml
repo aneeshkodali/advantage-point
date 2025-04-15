@@ -81,6 +81,9 @@ jobs:
         run: |
           sudo apt-get remove -y google-chrome-stable || true  # Ignore error if Chrome is not installed
       
+      - name: Install Playwright Browsers (Chromium)
+        run: python -m playwright install --with-deps
+        
       - name: Install Chrome
         id: setup-chrome
         uses: browser-actions/setup-chrome@v1
