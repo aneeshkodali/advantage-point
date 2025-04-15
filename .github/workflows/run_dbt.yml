@@ -48,9 +48,12 @@ jobs:
         run:
           pip install -r dbt/requirements.txt
 
+      - name: Clean dbt artifacts
+        working-directory: dbt/advantage_point
+        run: dbt clean --profiles-dir ../../dbt
+
       - name: Run dbt commands
         run: |
-          dbt clean --profiles-dir ./dbt --project-dir dbt/advantage_point &&
           dbt deps --project-dir dbt/advantage_point &&
           dbt seed --full-refresh --profiles-dir ./dbt --project-dir dbt/advantage_point &&
           dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
