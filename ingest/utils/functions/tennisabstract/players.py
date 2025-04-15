@@ -180,11 +180,13 @@ def scrape_player_data_playwright(
             # navigate to the page
             # response = make_request(url=player_url)
             # response_text = response.text
-            page.goto(
+            response = page.goto(
                 player_url,
                 wait_until='networkidle'
             )
+            page.wait_for_function(f"window.{response_var_list[0]} !== undefined", timeout=5000)
             response_text = page.content()
+            response_status_code = response.status_code
                 
             for var in response_var_list:
                 try:
@@ -203,7 +205,7 @@ def scrape_player_data_playwright(
                 
                 # Log possible causes
                 logging.debug(f"Page Content Length: {len(response_text)}")
-                logging.debug(f"Response Status Code: {response.status_code}")
+                logging.debug(f"Response Status Code: {response_status_code}")
                 
                 # Log which variables were not found
                 missing_vars = [var for var, val in player_dict.items() if val is None]
