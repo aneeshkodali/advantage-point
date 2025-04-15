@@ -23,8 +23,6 @@ platformdirs==4.3.6
 playwright==1.51.0
 psycopg2==2.9.9
 pycparser==2.22
-pyee==12.1.1
-pyppeteer==2.0.0
 pyquery==2.0.1
 PySocks==1.7.1
 python-dateutil==2.9.0.post0
