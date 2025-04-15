@@ -14,6 +14,8 @@ from ingest.utils.functions.tennisabstract.matches import (
 from ingest.utils.functions.tennisabstract.players import (
     create_player_url,
     scrape_player_data,
+    create_playwright_page,
+    scrape_player_data_playwright,
 )
 import logging
 import os
@@ -70,6 +72,9 @@ def main():
     player_url_df = pd.DataFrame(player_url_list).drop_duplicates()
     player_url_list = player_url_df.to_dict(orient='records')
 
+    # create playwright page
+    playwright, browser, page = create_playwright_page()
+
     # loop through player url list
     player_data_list = []
     for i, player_url_dict in enumerate(player_url_list):
@@ -83,9 +88,17 @@ def main():
         player_url_dict['player_url'] = player_url
         logging.info(f"Getting player data for player url: {player_url}")
 
+        # # get data from player scraping
+        # player_scrape_dict = scrape_player_data(
+        #     player_url=player_url,
+        #     retries=3,
+        #     delay=3,
+        # )
+
         # get data from player scraping
-        player_scrape_dict = scrape_player_data(
+        player_scrape_dict = scrape_player_data_playwright(
             player_url=player_url,
+            page=page,
             retries=3,
             delay=3,
         )
@@ -155,6 +168,9 @@ def main():
         )
         
         conn.close() # close connection
+
+    browser.close()
+    playwright.stop()
 
 if __name__ == "__main__":
     main()
