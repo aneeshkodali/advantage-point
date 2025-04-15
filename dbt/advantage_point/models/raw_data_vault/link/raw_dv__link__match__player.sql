@@ -26,10 +26,7 @@ tennisabstract_matches as (
 tennisabstract_matches_union as (
     select
         bk_match,
-        {{ generate_player_business_key(
-            player_name_col='match_player_one',
-            player_gender_col='match_gender'
-        ) }} as bk_player,
+        bk_match_player_one as bk_player,
         record_source
     from tennisabstract_matches
 
@@ -37,10 +34,7 @@ tennisabstract_matches_union as (
 
     select
         bk_match,
-        {{ generate_player_business_key(
-            player_name_col='match_player_two',
-            player_gender_col='match_gender'
-        ) }} as bk_player,
+        bk_match_player_two as bk_player,
         record_source
     from tennisabstract_matches
 ),
