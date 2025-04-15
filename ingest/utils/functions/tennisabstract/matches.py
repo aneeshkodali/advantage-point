@@ -32,7 +32,7 @@ def get_match_url_list() -> List[Dict]:
         {'match_url': match_url} for match_url in match_href_list
     ]
 
-    return match_url_list[:10]
+    return match_url_list[:20]
 
 def get_match_data_url(
     match_url: str
