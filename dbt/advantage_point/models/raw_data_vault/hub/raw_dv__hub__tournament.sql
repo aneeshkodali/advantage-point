@@ -21,9 +21,23 @@ tennisabstract_tournaments as (
     from {{ ref('stg__tennisabstract__tournaments') }}
 ),
 
+tennisabstract_match_tournaments as (
+    select distinct
+        bk_tournament,
+        record_source,
+
+        match_year as tournament_year,
+        match_gender as tournament_gender,
+        match_tournament as tournament_name
+    from {{ ref('stg__tennisabstract__matches') }}
+
+),
+
 -- union data
 records_union as (
     (select * from tennisabstract_tournaments)
+    union all
+    (select * from tennisabstract_match_tournaments)
 ),
 
 -- add hub key
