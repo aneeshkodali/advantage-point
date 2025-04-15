@@ -20,9 +20,46 @@ tennisabstract_players as (
     from {{ ref('stg__tennisabstract__players') }}
 ),
 
+tennisabstract_match_players as (
+    select
+        bk_match_player_one,
+        bk_match_player_two,
+        record_source,
+        match_player_one,
+        match_player_two,
+        match_gender
+    from {{ ref('stg__tennisabstract__matches') }}
+),
+
+-- union player one and player two
+-- get distinct list
+tennisabstract_match_players_union as (
+    (
+        select
+            bk_match_player_one as bk_player,
+            record_source,
+
+            match_player_one as player_name,
+            match_gender as player_gender
+        from tennisabstract_match_players
+    )
+    union
+    (
+        select
+            bk_match_player_two as bk_player,
+            record_source,
+
+            match_player_two as player_name,
+            match_gender as player_gender
+        from tennisabstract_match_players
+    )
+),
+
 -- union data
 records_union as (
     (select * from tennisabstract_players)
+    union all
+    (select * from tennisabstract_match_players_union)
 ),
 
 -- add hub key
