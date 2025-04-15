@@ -2,6 +2,7 @@ from ingest.utils.functions.scrape import (
     make_request,
     scrape_javascript_var,
 )
+from playwright.sync_api import sync_playwright
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -141,6 +142,15 @@ def get_player_list() -> List[Dict]:
 #     logging.info(f"Returning empty dictionary")
 #     return {}
 
+def fetch_html_with_playwright(url: str) -> str:
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(url, wait_until='networkidle')  # wait until page fully loads
+        html = page.content()
+        browser.close()
+        return html
+
 def scrape_player_data(
     player_url: str,
     retries: int,
@@ -167,8 +177,9 @@ def scrape_player_data(
         try:
 
             # navigate to the page
-            response = make_request(url=player_url)
-            response_text = response.text
+            # response = make_request(url=player_url)
+            # response_text = response.text
+            response_text = fetch_html_with_playwright(url=player_url)
                 
             for var in response_var_list:
                 try:
