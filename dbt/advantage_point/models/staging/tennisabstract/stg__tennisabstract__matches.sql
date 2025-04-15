@@ -34,7 +34,8 @@ player_array as (
         (
             select array_to_string(array_agg(player order by player), ', ')
             from unnest(array[match_player_one, match_player_two]) as player
-        ) as match_players
+        ) as match_players,
+        cast(extract(year from match_date) as int) as match_year
 
     from renamed 
 ),
@@ -51,7 +52,7 @@ bk as (
             match_players_col='match_players'
         ) }} as bk_match,
         {{ generate_tournament_business_key(
-            tournament_year_col='extract(year from match_date)',
+            tournament_year_col='match_year',
             tournament_gender_col='match_gender',
             tournament_name_col='match_tournament'
         ) }} as bk_tournament,

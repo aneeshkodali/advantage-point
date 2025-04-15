@@ -71,6 +71,12 @@ models:
         data_tests:
           - not_null
 
+      - name: match_year
+        data_type: integer
+        description: Year that the match took place.
+        data_tests:
+          - not_null
+
       - name: bk_match
         data_type: string
         description: Business key.
