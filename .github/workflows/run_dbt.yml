@@ -53,6 +53,6 @@ jobs:
           # dbt deps --project-dir dbt/advantage_point &&
           # dbt seed --full-refresh --profiles-dir ./dbt --project-dir dbt/advantage_point &&
           # dbt build --profiles-dir ./dbt --project-dir dbt/advantage_point
-          dbt run --select raw_dv__sat__match_point_details+
+          dbt run --select raw_dv__sat__match_point_details+ --profiles-dir ./dbt --project-dir dbt/advantage_point
 
 
