@@ -8,11 +8,13 @@ link_match_player as (
         hk_player,
 
         load_datetime
-    from {{ get_latest_record(
-        model_ref=ref('raw_dv__link__match__player'),
-        partition_by_col='lk_match_player',
-        order_by_col='load_datetime'
-    ) }}
+    from (
+        {{ get_latest_record(
+            model_ref=ref('raw_dv__link__match__player'),
+            partition_by_col='lk_match_player',
+            order_by_col='load_datetime'
+        ) }}
+    ) as m_p
 ),
 
  pit_match as (
