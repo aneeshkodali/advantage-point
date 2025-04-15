@@ -23,7 +23,8 @@ tennisabstract_match_points as (
         point_server,
         set_score_in_match,
         game_score_in_set,
-        point_score_in_game
+        point_score_in_game,
+        point_description
     from {{ ref('stg__tennisabstract__match_points') }}
 ),
 
@@ -43,13 +44,15 @@ records_hash as (
         sat.set_score_in_match,
         sat.game_score_in_set,
         sat.point_score_in_game,
+        sat.point_description,
 
         {{ dbt_utils.generate_surrogate_key([
             'hub_m.hk_match',
             'sat.point_server',
             'sat.set_score_in_match',
             'sat.game_score_in_set',
-            'sat.point_score_in_game'
+            'sat.point_score_in_game',
+            'sat.point_description',
         ]) }} as hash_diff
     from records_union as sat
     left join hub_match_point as hub_mp on 1=1
@@ -71,7 +74,8 @@ final as (
         point_server,
         set_score_in_match,
         game_score_in_set,
-        point_score_in_game
+        point_score_in_game,
+        point_description
 
     from records_hash as incr
     where 1=1
