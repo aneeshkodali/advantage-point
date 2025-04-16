@@ -1,3 +1,4 @@
 link_name,record_source,sort_order
 raw_dv__link__match__player,tennisabstract__matches,1
 raw_dv__link__match__tournament,tennisabstract__matches,1
+raw_dv__link__point__server,tennisabstract__match_points,1
