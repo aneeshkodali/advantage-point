@@ -1,13 +1,13 @@
 {{
     config(
-        unique_key=['hk_match_point', 'load_datetime']
+        unique_key=['hk_point', 'load_datetime']
     )
 }}
 
 with
 
-hub_match_point as (
-    select * from {{ ref('raw_dv__hub__match_point') }}
+hub_point as (
+    select * from {{ ref('raw_dv__hub__point') }}
 ),
 
 hub_match as (
@@ -16,7 +16,7 @@ hub_match as (
 
 tennisabstract_match_points as (
     select
-        bk_match_point,
+        bk_point,
         record_source,
         
         bk_match,
@@ -36,7 +36,7 @@ records_union as (
 -- create hash_diff
 records_hash as (
     select
-        hub_mp.hk_match_point,
+        hub_mp.hk_point,
         sat.record_source,
 
         hub_m.hk_match,
@@ -55,8 +55,8 @@ records_hash as (
             'sat.point_description',
         ]) }} as hash_diff
     from records_union as sat
-    left join hub_match_point as hub_mp on 1=1
-        and sat.bk_match_point = hub_mp.bk_match_point
+    left join hub_point as hub_mp on 1=1
+        and sat.bk_point = hub_mp.bk_point
     left join hub_match as hub_m on 1=1
         and sat.bk_match = hub_m.bk_match
 ),
@@ -64,7 +64,7 @@ records_hash as (
 -- filter for incremental changes
 final as (
     select
-        hk_match_point,
+        hk_point,
 
         current_timestamp as load_datetime,
         hash_diff,
@@ -84,7 +84,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.hk_match_point = incr.hk_match_point
+                and existing.hk_point = incr.hk_point
                 and existing.hash_diff = incr.hash_diff
         )
         {% endif %} 

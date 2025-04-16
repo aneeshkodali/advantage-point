@@ -1,19 +1,19 @@
 version: 2
 
 models:
-  - name: raw_dv__hub__match_point
-    description: Hub table for match point data.
+  - name: raw_dv__hub__point
+    description: Hub table for point data.
     data_tests:
       - all_record_sources_referenced_in_hub
     columns:
-      - name: hk_match_point
+      - name: hk_point
         data_type: string
         description: Hash-based unique identifier.
         data_tests:
           - unique
           - not_null
 
-      - name: bk_match_point
+      - name: bk_point
         data_type: string
         description: Unique identifier.
         data_tests:

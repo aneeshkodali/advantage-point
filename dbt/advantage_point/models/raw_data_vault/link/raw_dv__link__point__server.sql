@@ -10,8 +10,8 @@ link_record_sources as (
     select * from {{ ref('stg__seed__link_record_sources') }}
 ),
 
-hub_match_point as (
-    select * from {{ ref('raw_dv__hub__match_point') }}
+hub_point as (
+    select * from {{ ref('raw_dv__hub__point') }}
 ),
 
 hub_player as (
@@ -33,40 +33,40 @@ records_lkey as (
         {{ generate_point_player_surrogate_key(
             point_business_key_col='lnk.bk_point',
             player_business_key_col='lnk.bk_server'
-        ) }} as lk_match_player,
+        ) }} as lk_point_server,
 
-        hub_match_point.hk_match,
-        hub_player.hk_player,
+        hub_point.hk_point,
+        hub_player.hk_player as hk_server,
 
-        lnk.bk_match,
-        lnk.bk_player,
+        lnk.bk_point,
+        lnk.bk_server,
         lnk.record_source
     from records_union as lnk
-    left join hub_match_point on lnk.bk_match = hub_match_point.bk_match
-    left join hub_player on lnk.bk_player = hub_player.bk_player
+    left join hub_point on lnk.bk_point = hub_point.bk_point
+    left join hub_player on lnk.bk_server = hub_player.bk_player
 ),
 
 -- add row number to order records
 records_rownum as (
     select
         lnk.*,
-        row_number() over (partition by lnk.lk_match_player order by link_rec_src.sort_order) as rn -- assing row number
+        row_number() over (partition by lnk.lk_point_server order by link_rec_src.sort_order) as rn -- assing row number
     from records_lkey as lnk
     left join link_record_sources as link_rec_src on 1=1
-        and link_rec_src.link_name = 'raw_dv__link__match__player'
+        and link_rec_src.link_name = 'raw_dv__link__point__server'
         and lnk.record_source = link_rec_src.record_source
 ),
 
 final as (
     select
-        lk_match_player,
+        lk_point_server,
         current_timestamp as load_datetime,
         record_source,
 
-        hk_match,
-        bk_match,
-        hk_player,
-        bk_player
+        hk_point,
+        bk_point,
+        hk_server,
+        bk_server
 
     from records_rownum as incr
     where 1=1
@@ -76,7 +76,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.lk_match_player = incr.lk_match_player
+                and existing.lk_point_server = incr.lk_point_server
         ) -- filter for new pk records
         {% endif %}
 )

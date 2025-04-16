@@ -33,14 +33,14 @@ bk as (
             player_name_col='mp.point_server',
             player_gender_col='m.match_gender'
         ) }} as bk_point_server,
-        {{ generate_match_point_business_key(
+        {{ generate_point_business_key(
             match_date_col='m.match_date',
             match_gender_col='m.match_gender',
             match_tournament_col='m.match_tournament',
             match_round_col='m.match_round',
             match_players_col='m.match_players',
-            match_point_col='mp.point_number_in_match'
-        ) }} as bk_match_point,
+            point_col='mp.point_number_in_match'
+        ) }} as bk_point,
         m.bk_match,
         m.match_date,
         m.match_gender,

@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: raw_dv__link__point__server
+    description: Link table for point server data.
+    data_tests:
+      - all_record_sources_referenced_in_link
+    columns:
+      - name: lk_point_server
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: load_datetime
+        data_type: timestamp
+        description: Datetime when business key(s) is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
+
+      - name: hk_point
+        data_type: string
+        description: Hash-based unique identifier for point.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__point')
+              field: hk_point
+
+      - name: bk_point
+        data_type: string
+        description: Unique identifier for point.
+        data_tests:
+          - not_null
+
+      - name: hk_server
+        data_type: string
+        description: Hash-based unique identifier for server.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__player')
+              field: hk_player
+
+      - name: bk_server
+        data_type: string
+        description: Unique identifier for server.
+        data_tests:
+          - not_null

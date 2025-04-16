@@ -1,22 +1,22 @@
 version: 2
 
 models:
-  - name: raw_dv__sat__match_point_details
-    description: Satellite table for match point details.
+  - name: raw_dv__sat__point_details
+    description: Satellite table for point details.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - hk_match_point
+            - hk_point
             - load_datetime
     columns:
-      - name: hk_match_point
+      - name: hk_point
         data_type: string
         description: Hash-based unique identifier.
         data_tests:
           - not_null
           - relationships:
-              to: ref('raw_dv__hub__match_point')
-              field: hk_match_point
+              to: ref('raw_dv__hub__point')
+              field: hk_point
 
       - name: load_datetime
         data_type: timestamp

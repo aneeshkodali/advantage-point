@@ -1,6 +1,6 @@
 {{
     config(
-        unique_key='hk_match_point'
+        unique_key='hk_point'
     )
 }}
 
@@ -12,7 +12,7 @@ hub_record_sources as (
 
 tennisabstract_match_points as (
     select
-        bk_match_point,
+        bk_point,
         record_source,
 
         match_date,
@@ -33,9 +33,9 @@ records_union as (
 records_hkey as (
     select
         *,
-        {{ generate_match_point_surrogate_key(
-            match_point_business_key_col='bk_match_point'
-        ) }} as hk_match_point
+        {{ generate_point_surrogate_key(
+            point_business_key_col='bk_point'
+        ) }} as hk_point
     from records_union
 ),
 
@@ -43,17 +43,17 @@ records_hkey as (
 records_rownum as (
     select
         hub.*,
-        row_number() over (partition by hub.hk_match_point order by hub_rec_src.sort_order) as rn -- assing row number
+        row_number() over (partition by hub.hk_point order by hub_rec_src.sort_order) as rn -- assing row number
     from records_hkey as hub
     left join hub_record_sources as hub_rec_src on 1=1
-        and hub_rec_src.hub_name = 'raw_dv__hub__match_point'
+        and hub_rec_src.hub_name = 'raw_dv__hub__point'
         and hub.record_source = hub_rec_src.record_source
 ),
 
 final as (
     select
-        hk_match_point,
-        bk_match_point,
+        hk_point,
+        bk_point,
         current_timestamp as load_datetime,
         record_source,
         
@@ -71,7 +71,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.hk_match_point = incr.hk_match_point
+                and existing.hk_point = incr.hk_point
         ) -- filter for new pk records
         {% endif %}
 )
