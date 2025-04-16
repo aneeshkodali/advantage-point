@@ -68,7 +68,6 @@ final as (
         record_source,
 
         hk_match,
-        point_server,
         set_score_in_match,
         game_score_in_set,
         point_score_in_game,
