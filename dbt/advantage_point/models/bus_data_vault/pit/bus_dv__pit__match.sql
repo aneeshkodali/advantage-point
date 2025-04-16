@@ -7,7 +7,6 @@ match_details as (
         hash_diff,
         record_source,
 
-        hk_tournament,
         match_title,
         match_result
     from (
@@ -28,7 +27,6 @@ final as (
     select
         hk_union.hk_match,
 
-        match_details.hk_tournament,
         match_details.match_title,
         match_details.match_result,
         match_details.hash_diff as match_details_hash_diff,
