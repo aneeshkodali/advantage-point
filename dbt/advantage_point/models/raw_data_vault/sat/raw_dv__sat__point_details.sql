@@ -20,7 +20,6 @@ tennisabstract_match_points as (
         record_source,
         
         bk_match,
-        point_server,
         set_score_in_match,
         game_score_in_set,
         point_score_in_game,
@@ -40,7 +39,6 @@ records_hash as (
         sat.record_source,
 
         hub_m.hk_match,
-        sat.point_server,
         sat.set_score_in_match,
         sat.game_score_in_set,
         sat.point_score_in_game,
@@ -48,7 +46,6 @@ records_hash as (
 
         {{ dbt_utils.generate_surrogate_key([
             'hub_m.hk_match',
-            'sat.point_server',
             'sat.set_score_in_match',
             'sat.game_score_in_set',
             'sat.point_score_in_game',
