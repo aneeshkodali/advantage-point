@@ -70,7 +70,7 @@ records_rownum as (
         row_number() over (partition by lnk.lk_match_player order by link_rec_src.sort_order) as rn -- assing row number
     from records_lkey as lnk
     left join link_record_sources as link_rec_src on 1=1
-        and link_rec_src.link_name = 'raw_dv__link__match_player'
+        and link_rec_src.link_name = 'raw_dv__link__match__player'
         and lnk.record_source = link_rec_src.record_source
 ),
 
