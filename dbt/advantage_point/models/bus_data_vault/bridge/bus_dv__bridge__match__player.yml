@@ -34,7 +34,7 @@ models:
               to: ref('bus_dv__pit__player')
               field: hk_player
 
-      - name: is_match_winner
+      - name: is_winner
         description: Boolean flag indicating if the player won the match.
         tests:
           - not_null

@@ -33,7 +33,7 @@ joined as (
         link_match_player.lk_match_player,
         link_match_player.hk_match,
         link_match_player.hk_player,
-        pit_match.match_winner = pit_player.player_name as is_match_winner,
+        pit_match.match_winner = pit_player.player_name as is_winner,
 
         link_match_player.load_datetime as link_load_datetime,
         current_timestamp as bus_dv_load_datetime,
