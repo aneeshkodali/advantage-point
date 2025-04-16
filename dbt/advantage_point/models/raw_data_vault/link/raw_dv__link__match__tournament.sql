@@ -21,7 +21,7 @@ hub_tournament as (
 tennisabstract_matches as (
     select
         bk_match,
-        bk_tournament,
+        bk_tournament
     from {{ ref('stg__tennisabstract__matches') }}
 ),
 
