@@ -29,6 +29,10 @@ renamed as (
 bk as (
     select
         mp.*,
+        {{ generate_player_business_key(
+            player_name_col='mp.point_server',
+            player_gender_col='m.match_gender'
+        ) }} as bk_point_server,
         {{ generate_match_point_business_key(
             match_date_col='m.match_date',
             match_gender_col='m.match_gender',

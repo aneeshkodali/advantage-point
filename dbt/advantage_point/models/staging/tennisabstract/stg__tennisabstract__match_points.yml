@@ -80,7 +80,13 @@ models:
         description: List-like string of players in the match.
         data_tests:
           - not_null
-    
+
+      - name: bk_point_server
+        data_type: string
+        description: Business key for server.
+        data_tests:
+          - not_null
+      
       - name: bk_match_point
         data_type: string
         description: Business key.
