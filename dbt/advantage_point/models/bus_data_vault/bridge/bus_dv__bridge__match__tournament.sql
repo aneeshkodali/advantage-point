@@ -13,7 +13,7 @@ link_match_tournament as (
             partition_by_col='lk_match_tournament',
             order_by_col='load_datetime'
         ) }}
-    ) as m_p
+    ) as m_t
 ),
 
  pit_match as (
