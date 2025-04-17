@@ -34,6 +34,12 @@ bridge_match_player as (
     from {{ ref('bus_dv__bridge__match__player') }}
 ),
 
+bridge_match_point as (
+    select
+        *
+    from {{ ref('bus_dv__bridge__match__point') }}
+),
+
 hub_player as (
     select
         *
@@ -44,12 +50,6 @@ hub_point as (
     select
         *
     from {{ ref('raw_dv__hub__point') }}
-),
-
-link_match_point as (
-    select
-        *
-    from {{ ref('raw_dv__link__match__point') }}
 ),
 
 -- prep server rows
