@@ -43,7 +43,7 @@ hub_player as (
 hub_point as (
     select
         *
-    from {{ ref('bus_dv__hub__point') }}
+    from {{ ref('raw_dv__hub__point') }}
 ),
 
 link_match_point as (
