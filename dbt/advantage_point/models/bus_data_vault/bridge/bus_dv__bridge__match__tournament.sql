@@ -18,8 +18,7 @@ link_match_tournament as (
 
  pit_match as (
     select
-        *,
-        split_part(match_result, ' d.', 1) as match_winner
+        *
     from {{ ref('bus_dv__pit__match') }}
 ),
 
