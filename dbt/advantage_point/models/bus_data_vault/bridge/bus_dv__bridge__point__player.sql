@@ -34,10 +34,22 @@ bridge_match_player as (
     from {{ ref('bus_dv__bridge__match__player') }}
 ),
 
-bridge_match_point as (
+hub_player as (
     select
         *
-    from {{ ref('bus_dv__bridge__match__point') }}
+    from {{ ref('raw_dv__hub__player') }}
+),
+
+hub_point as (
+    select
+        *
+    from {{ ref('bus_dv__hub__point') }}
+),
+
+link_match_point as (
+    select
+        *
+    from {{ ref('raw_dv__link__match__point') }}
 ),
 
 -- prep server rows
@@ -54,16 +66,27 @@ point_player_server as (
 -- prep receiver rows
 point_player_receiver as (
     select
-        link_point_server.lk_point_server as lk_point_player,
+        {{ generate_point_player_surrogate_key(
+            point_business_key_col='hub_point.bk_point',
+            player_business_key_col='hub_player.bk_player'
+        ) }} as lk_point_player,
         link_point_server.hk_point,
         bridge_match_player.hk_player,
         false as is_server,
         link_point_server.load_datetime as link_load_datetime
     from link_point_server
+    -- join match_point to point_server on point to get match_point
     left join bridge_match_point on link_point_server.hk_point = bridge_match_point.hk_point
-    left join bridge_match_player on 1=1
-        and bridge_match_point.hk_match = bridge_match_player.hk_match
-        and link_point_server.hk_server != bridge_match_player.hk_player -- filter out where player is server
+    -- join match_player to match_point to get point_player (WHERE clause filters out server)
+    left join bridge_match_player on bridge_match_point.hk_match = bridge_match_player.hk_match
+    -- join to get bk for hk generation
+    left join hub_point on bridge_match_point.hk_point = hub_point.hk_point
+    -- join to get bk for hk generation
+    left join hub_player on bridge_match_player.hk_player = hub_player.hk_player
+    where 1=1
+        -- filter out where player is server
+        and link_point_server.hk_server != bridge_match_player.hk_player
+
 ),
 
 -- union
