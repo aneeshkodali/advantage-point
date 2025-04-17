@@ -6,7 +6,7 @@ match_agg as (
     select
         hk_match,
         count(*) as player_count,
-        sum(cast(is_match_winner as int)) as winner_count
+        sum(cast(is_winner as int)) as winner_count
     from {{ ref('bus_dv__bridge__match__player') }}
     group by 1
 )
