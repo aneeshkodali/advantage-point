@@ -64,6 +64,7 @@ point_player_server as (
 ),
 
 -- prep receiver rows
+-- creates new lk_point_player values since receiver rows do not exist in raw data vault
 point_player_receiver as (
     select
         {{ generate_point_player_surrogate_key(
