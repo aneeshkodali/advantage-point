@@ -22,7 +22,7 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('bus_dv__pit__match')
+              to: ref('raw_dv__hub__match')
               field: hk_match
 
       - name: hk_point
@@ -31,7 +31,7 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('bus_dv__pit__point')
+              to: ref('raw_dv__hub__point')
               field: hk_point
 
       - name: link_load_datetime
