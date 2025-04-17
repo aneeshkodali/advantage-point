@@ -19,7 +19,7 @@ link_point_server as (
  pit_point as (
     select
         *
-    from {{ ref('bus_dv__pit__match') }}
+    from {{ ref('bus_dv__pit__point') }}
 ),
 
 pit_player as (
