@@ -35,6 +35,7 @@ models:
               field: hk_player
 
       - name: is_winner
+        data_type: boolean
         description: Boolean flag indicating if the player won the match.
         tests:
           - not_null
@@ -42,16 +43,19 @@ models:
               values: [true, false]
 
       - name: link_load_datetime
+        data_type: timestamp
         description: Load timestamp from the link model.
         data_tests:
           - not_null
 
       - name: bus_dv_load_datetime
+        data_type: timestamp
         description: Timestamp when this bridge record was generated in the business vault.
         data_tests:
           - not_null
 
       - name: bus_dv_source_model
+        data_type: string
         description: Name of the dbt model that generated this record for traceability.
         data_tests:
           - not_null

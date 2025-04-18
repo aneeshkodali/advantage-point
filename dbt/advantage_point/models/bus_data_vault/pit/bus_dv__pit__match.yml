@@ -8,6 +8,7 @@ models:
 
     columns:
       - name: hk_match
+        data_type: string
         description: Hash-based unique identifier.
         data_tests:
           - unique
@@ -17,27 +18,33 @@ models:
               field: hk_match
 
       - name: match_title
+        data_type: string
         description: Name of the match. Includes tournament, players, and round.
 
       - name: match_result
+        data_type: string
         description: Outcome of the match. Includes winner, loser, and score.
 
       - name: match_details_hash_diff
+        data_type: string
         description: Hash of attributes to track change in match_details satellite model.
         data_tests:
           - not_null
 
       - name: match_details_load_datetime
+        data_type: timestamp
         description: Load timestamp from the match_details satellite model.
         data_tests:
           - not_null
 
       - name: bus_dv_load_datetime
+        data_type: timestamp
         description: Timestamp when this PIT record was generated in the business vault.
         data_tests:
           - not_null
 
       - name: bus_dv_source_model
+        data_type: string
         description: Name of the dbt model that generated this record for traceability.
         data_tests:
           - not_null
