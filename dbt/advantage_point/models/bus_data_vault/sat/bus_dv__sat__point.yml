@@ -162,7 +162,7 @@ models:
         description: >
           Number of shots in the rally, accounting for point outcome (does not count shot that resulted in an 'error').
           Does NOT factor in second serves (1st and 2nd serve count as 1 serve attempt/shot).
-        data_type:
+        data_tests:
           - not_null
 
       - name: point_side
