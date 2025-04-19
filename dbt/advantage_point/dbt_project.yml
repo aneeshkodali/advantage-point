@@ -41,6 +41,9 @@ models:
     raw_data_vault:
       +schema: "{{ env_var('DBT_SCHEMA_RAW_DATA_VAULT') }}"
       +materialized: incremental
+
     bus_data_vault:
       +schema: "{{ env_var('DBT_SCHEMA_BUSINESS_DATA_VAULT') }}"
       +materialized: table
+      hub:
+        +materialized: incremental
