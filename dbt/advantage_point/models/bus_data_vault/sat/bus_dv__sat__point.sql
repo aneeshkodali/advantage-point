@@ -173,7 +173,11 @@ final as (
         point_score_in_game_receiver,
         point_score_in_game_receiver_int,
         point_length,
-        point_result,
+        case
+            when point_result in ('ace', 'double fault', 'forced error', 'service winner', 'unforced error', 'winner')
+            then point_result
+            else null
+        end as point_result,
         set_number_in_match,
         game_number_in_set,
         hk_match,

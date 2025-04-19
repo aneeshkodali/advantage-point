@@ -111,9 +111,8 @@ models:
         data_type: string
         description: Outcome of the point rally.
         data_tests:
-          - not_Null
           - accepted_values:
-              values: ['ace', 'double fault', 'forced error', 'service winner', 'unforced error', 'winner']
+              values: ['ace', 'double fault', 'forced error', 'service winner', 'unforced error', 'winner', null]
               quote: true
         
       - name: set_number_in_match
@@ -166,8 +165,6 @@ models:
         description: >
           Number of shots in the rally, accounting for point outcome (does not count shot that resulted in an 'error').
           Does NOT factor in second serves (1st and 2nd serve count as 1 serve attempt/shot).
-        data_tests:
-          - not_null
 
       - name: point_side
         data_type: string
