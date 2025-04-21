@@ -27,7 +27,7 @@ models:
         data_tests:
           - not_null
 
-      - name: bus_dv_source_model
+      - name: record_source
         data_type: string
         description: Name of the dbt model that generated this record for traceability.
         data_tests:

@@ -51,7 +51,7 @@ final as (
         hk_set,
         bk_set,
         current_timestamp as bus_dv_load_datetime,
-        bus_dv_source_model,
+        bus_dv_source_model as record_source,
         
         bk_match,
         set_number_in_match

@@ -51,7 +51,7 @@ final as (
         hk_game,
         bk_game,
         current_timestamp as bus_dv_load_datetime,
-        bus_dv_source_model,
+        bus_dv_source_model as record_source,
         
         bk_match,
         game_number_in_match
