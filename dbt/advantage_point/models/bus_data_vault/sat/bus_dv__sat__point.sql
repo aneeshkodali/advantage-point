@@ -12,6 +12,12 @@ bridge_match_point as (
     from {{ ref('bus_dv__bridge__match__point') }}
 ),
 
+hub_match as (
+    select
+        *
+    from {{ ref('raw_dv__hub__match') }}
+),
+
 hub_point as (
     select
         *
@@ -73,6 +79,11 @@ running_numbers as (
     select
         ext_sat_points.*,
         bridge_match_point.hk_match,
+        hub_match.match_date,
+        hub_match.match_gender,
+        hub_match.match_tournament,
+        hub_match.match_round,
+        hub_match.match_players,
         hub_point.point_number_in_match,
         dense_rank() over (
             partition by bridge_match_point.hk_match
@@ -89,6 +100,7 @@ running_numbers as (
     from scores_add as ext_sat_points
     left join bridge_match_point on ext_sat_points.hk_point = bridge_match_point.hk_point
     left join hub_point on ext_sat_points.hk_point = hub_point.hk_point
+    left join hub_match on bridge_match_point.hk_match = hub_match.hk_match
 ),
 
 -- calculate rally length
@@ -181,6 +193,11 @@ final as (
         set_number_in_match,
         game_number_in_set,
         hk_match,
+        match_date,
+        match_gender,
+        match_tournament,
+        match_round,
+        match_players,
         point_number_in_match,
         game_number_in_match,
         point_number_in_set,
