@@ -15,11 +15,7 @@ tennisabstract_match_points as (
         bk_point,
         record_source,
 
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        match_players,
+        bk_match
         point_number_in_match
     from {{ ref('stg__tennisabstract__match_points') }}
 ),
@@ -57,11 +53,7 @@ final as (
         current_timestamp as load_datetime,
         record_source,
         
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        match_players,
+        bk_match,
         point_number_in_match
     from records_rownum as incr
     where 1=1
