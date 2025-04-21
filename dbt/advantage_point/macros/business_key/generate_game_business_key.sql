@@ -5,7 +5,7 @@
 
     concat_ws(
         '||',
-        bk_match_col,
+        {{ bk_match_col }},
         lpad(cast({{ game_col }} as text), 4, '0')
     )
     

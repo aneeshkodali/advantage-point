@@ -5,7 +5,7 @@
 
     concat_ws(
         '||',
-        bk_match_col,
+        {{ bk_match_col }},
         cast({{ set_col }} as text)
     )
     
