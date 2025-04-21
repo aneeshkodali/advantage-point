@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: bus_dv__hub__game
+    description: >
+      Hub table for game data.
+    data_tests:
+      - all_record_sources_referenced_in_hub
+    columns:
+      - name: hk_game
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: bk_game
+        data_type: string
+        description: Unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
+
+      - name: bk_match
+        data_type: string
+        description: Unique identifier for match.
+        data_tests:
+          - not_null
+        
+      - name: game_number_in_match
+        data_type: integer
+        description: Game number in the match.
+        data_tests:
+          - not_null
