@@ -136,33 +136,21 @@ models:
               to: ref('raw_dv__hub__match')
               field: hk_match
 
-      - name: match_date
-        data_type: date
-        description: Date when match took place.
-        data_tests:
-          - not_null
-        
-      - name: match_gender
+      - name: bk_match
         data_type: string
-        description: Gender of the match.
+        description: Unique identifier for match.
         data_tests:
           - not_null
 
-      - name: match_tournament
+      - name: bk_set
         data_type: string
-        description: Tournament where match took place.
+        description: Unique identifier for set.
         data_tests:
           - not_null
 
-      - name: match_round
+      - name: bk_game
         data_type: string
-        description: Round within tournament when match took place.
-        data_tests:
-          - not_null
-
-      - name: match_players
-        data_type: string
-        description: List-like string of players in the match.
+        description: Unique identifier for game.
         data_tests:
           - not_null
 

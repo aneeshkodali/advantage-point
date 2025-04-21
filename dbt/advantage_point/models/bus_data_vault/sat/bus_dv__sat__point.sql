@@ -79,11 +79,7 @@ running_numbers as (
     select
         ext_sat_points.*,
         bridge_match_point.hk_match,
-        hub_match.match_date,
-        hub_match.match_gender,
-        hub_match.match_tournament,
-        hub_match.match_round,
-        hub_match.match_players,
+        hub_match.bk_match,
         hub_point.point_number_in_match,
         dense_rank() over (
             partition by bridge_match_point.hk_match
@@ -103,6 +99,21 @@ running_numbers as (
     left join hub_match on bridge_match_point.hk_match = hub_match.hk_match
 ),
 
+-- generate bk
+entity_bks as (
+    select
+        *,
+        {{ generate_set_business_key(
+            bk_match_col='bk_match',
+            set_col='set_number_in_match'
+        ) }} as bk_set,
+        {{ generate_game_business_key(
+            bk_match_col='bk_match',
+            game_col='game_number_in_match'
+        ) }} as bk_game
+    from running_numbers
+),
+
 -- calculate rally length
 rally_length as (
     select
@@ -114,7 +125,7 @@ rally_length as (
         when point_result in ('ace', 'service winner', 'winner') then point_length
         else null
         end as rally_length
-    from running_numbers
+    from entity_bks
 ),
 
 -- get side (of court)
@@ -193,11 +204,9 @@ final as (
         set_number_in_match,
         game_number_in_set,
         hk_match,
-        match_date,
-        match_gender,
-        match_tournament,
-        match_round,
-        match_players,
+        bk_match,
+        bk_set,
+        bk_game,
         point_number_in_match,
         game_number_in_match,
         point_number_in_set,
