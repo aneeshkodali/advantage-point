@@ -43,7 +43,7 @@ records_rownum as (
     from records_hkey as hub
     left join hub_record_sources as hub_rec_src on 1=1
         and hub_rec_src.hub_name = 'bus_dv__hub__game'
-        and hub.record_source = hub_rec_src.record_source
+        and hub.bus_dv_source_model = hub_rec_src.record_source
 ),
 
 final as (
