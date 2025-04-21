@@ -1,5 +1,3 @@
--- tests/business_vault/test_match_player_winner_validity.sql
-
 with
 
 match_agg as (
