@@ -15,7 +15,7 @@ tennisabstract_match_points as (
         bk_point,
         record_source,
 
-        bk_match
+        bk_match,
         point_number_in_match
     from {{ ref('stg__tennisabstract__match_points') }}
 ),
