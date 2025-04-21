@@ -1,19 +1,11 @@
 {% macro generate_point_business_key(
-    match_date_col,
-    match_gender_col,
-    match_tournament_col,
-    match_round_col,
-    match_players_col,
+    bk_match_col,
     point_col
 ) %}
 
     concat_ws(
         '||',
-        cast({{ match_date_col }} as text),
-        {{ match_gender_col }},
-        {{ match_tournament_col }},
-        {{ match_round_col }},
-        {{ match_players_col }},
+        {{ bk_match_col }},
         lpad(cast({{ point_col }} as text), 4, '0')
     )
     

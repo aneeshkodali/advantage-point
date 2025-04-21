@@ -93,6 +93,12 @@ models:
         data_tests:
           - unique
           - not_null
+
+      - name: bk_match
+        data_type: string
+        description: Business key for match.
+        data_tests:
+          - not_null
       
       - name: record_source
         data_type: string

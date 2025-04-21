@@ -34,19 +34,10 @@ bk as (
             player_gender_col='m.match_gender'
         ) }} as bk_server,
         {{ generate_point_business_key(
-            match_date_col='m.match_date',
-            match_gender_col='m.match_gender',
-            match_tournament_col='m.match_tournament',
-            match_round_col='m.match_round',
-            match_players_col='m.match_players',
+            bk_match_col='m.bk_match',
             point_col='mp.point_number_in_match'
         ) }} as bk_point,
         m.bk_match,
-        m.match_date,
-        m.match_gender,
-        m.match_tournament,
-        m.match_round,
-        m.match_players,
         'tennisabstract__match_points' as record_source
     from renamed as mp
     left join matches as m on mp.match_url = m.match_url
