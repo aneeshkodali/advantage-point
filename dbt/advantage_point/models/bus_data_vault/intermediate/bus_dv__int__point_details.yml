@@ -1,0 +1,60 @@
+version: 2
+
+models:
+  - name: bus_dv__int__point_details
+    description: >
+      Intermediate model for point details data.
+
+    columns:
+      - name: hk_point
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__point')
+              field: hk_point
+
+      - name: point_score_in_game
+        data_type: string
+        description: Point score within the game (from server's perspective).
+        data_tests:
+          - not_null
+
+      - name: point_side
+        data_type: string
+        description: Side of the court on which the point is played.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['ad', 'deuce']
+              quote: true
+
+      - name: is_break_point
+        data_type: boolean
+        description: Boolean flag to indicate if point is a break point (receiver has a chance to win the game).
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
+
+      - name: is_game_point
+        data_type: boolean
+        description: Boolean flag to indicate if point is a game point (server has a chance to win the game).
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
