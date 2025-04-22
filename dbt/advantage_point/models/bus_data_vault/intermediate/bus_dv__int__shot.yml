@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: bus_dv__int__shot
+    description: >
+      Intermediate model for shot data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - hk_point
+            - shot_number_w_serve
+
+    columns:
+      - name: hk_point
+        data_type: string
+        description: Hash-based unique identifier for point.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__point')
+              field: hk_point
+
+      - name: shot_number
+        data_type: integer
+        description: Shot number in point (assigns same value to multiple serve attempts).
+        data_type:
+          - not_null
+      
+      - name: shot_text
+        data_type: string
+        description: Shot description. Includes stroke, direction, and result information.
+        data_type:
+          - not_null
+
+      - name: shot_number_w_serve
+        data_type: integer
+        description: Shot number in point (treats each serve as separate 'shot').
+        data_type:
+          - not_null
+
+      - name: bk_point
+        data_type: string
+        description: Unique identifier for point.
+        data_tests:
+          - not_null
+
+      - name: bk_shot
+        data_type: string
+        description: Unique identifier for shot.
+        data_tests:
+          - not_null
+
+      - name: hk_shot
+        data_type: string
+        description: Hash-based unique identifier for shot.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
