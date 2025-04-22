@@ -35,7 +35,7 @@ bk as (
         ) }} as bk_server,
         {{ generate_point_business_key(
             bk_match_col='m.bk_match',
-            point_col='mp.point_number_in_match'
+            point_number_col='mp.point_number_in_match'
         ) }} as bk_point,
         m.bk_match,
         'tennisabstract__match_points' as record_source
