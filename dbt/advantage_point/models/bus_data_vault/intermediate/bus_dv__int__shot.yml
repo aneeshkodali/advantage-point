@@ -8,7 +8,7 @@ models:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - hk_point
-            - shot_number_w_serve
+            - shot_number_in_point
 
     columns:
       - name: hk_point
@@ -32,7 +32,7 @@ models:
         data_tests:
           - not_null
 
-      - name: shot_number_w_serve
+      - name: shot_number_in_point
         data_type: integer
         description: Shot number in point (treats each serve as separate 'shot').
         data_tests:

@@ -50,7 +50,7 @@ shots_union as (
 shot_number_w_serve as (
     select
         *,
-        row_number() over (partition by hk_point order by shot_number) as shot_number_w_serve
+        row_number() over (partition by hk_point order by shot_number) as shot_number_in_point
     from shots_union
 ),
 
@@ -61,7 +61,7 @@ shot_bk as (
         hub_point.bk_point,
         {{ generate_shot_business_key(
             bk_point_col='hub_point.bk_point',
-            shot_number_col='shots.shot_number_w_serve'
+            shot_number_col='shots.shot_number_in_point'
         ) }} as bk_shot
     from shot_number_w_serve as shots
     left join hub_point on shots.hk_point = hub_point.hk_point
@@ -72,7 +72,7 @@ final as (
         hk_point,
         shot_number,
         shot_text,
-        shot_number_w_serve,
+        shot_number_in_point,
         bk_point,
         bk_shot,
        
