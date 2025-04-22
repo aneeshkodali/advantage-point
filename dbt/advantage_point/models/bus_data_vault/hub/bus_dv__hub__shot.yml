@@ -1,0 +1,46 @@
+version: 2
+
+models:
+  - name: bus_dv__hub__shot
+    description: >
+      Hub model for shot data.
+    data_tests:
+      - all_record_sources_referenced_in_hub
+    columns:
+      - name: hk_shot
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: bk_shot
+        data_type: string
+        description: Unique identifier.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
+
+      - name: bk_point
+        data_type: string
+        description: Unique identifier for point.
+        data_tests:
+          - not_null
+        
+      - name: shot_number_in_point
+        data_type: integer
+        description: Shot number in the point.
+        data_tests:
+          - not_null
