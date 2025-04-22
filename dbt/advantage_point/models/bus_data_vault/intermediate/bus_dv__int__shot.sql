@@ -15,7 +15,7 @@ shots_exploded as (
     row_number() over (partition by hk_point order by ordinality) AS shot_number,
     trim(shot_text) AS shot_text
   from pit_point,
-  lateral unnest(string_to_array(point_description, '; ')) with ordinality as u(shot_text, ordinality)
+  lateral unnest(string_to_array(point_description, ';')) with ordinality as u(shot_text, ordinality)
 ),
 
 -- split serves into own rows (by .)
