@@ -10,19 +10,19 @@ hub_record_sources as (
     select * from {{ ref('stg__seed__hub_record_sources') }}
 ),
 
-sat_point as (
+int_set as (
     select distinct
         bk_set,
         bus_dv_source_model,
 
         bk_match,
         set_number_in_match
-    from {{ ref('bus_dv__sat__point') }}
+    from {{ ref('bus_dv__int__set') }}
 ),
 
 -- union data
 records_union as (
-    (select * from sat_point)
+    (select * from int_set)
 ),
 
 -- add hub key
