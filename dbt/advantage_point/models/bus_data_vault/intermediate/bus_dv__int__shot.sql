@@ -26,7 +26,9 @@ serve_exploded as (
         trim(shot_description) as shot_text
     from shots_exploded,
     lateral unnest(string_to_array(shot_text, '.')) as shot_description
-    where shot_number = 1
+    where 1=1
+      and shot_number = 1 -- filter for 'serve' rows
+      and trim(shot_description) != '' -- filter out blank rows since some rows end with '.'
 ),
 
 -- filter out serve rows
