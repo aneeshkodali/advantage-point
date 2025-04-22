@@ -1,5 +1,5 @@
 hub_name,record_source,sort_order
-bus_dv__hub__game,bus_dv__sat__point,1
+bus_dv__hub__game,bus_dv__int__game,1
 bus_dv__hub__set,bus_dv__sat__point,1
 bus_dv__hub__shot,bus_dv__int__point,1
 raw_dv__hub__match,tennisabstract__matches,1
