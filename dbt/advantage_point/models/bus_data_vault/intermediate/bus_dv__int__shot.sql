@@ -1,7 +1,7 @@
 with
 
-pit_point as (
-    select * from {{ ref('bus_dv__pit__point') }}
+sat_point_details as (
+    select * from {{ ref('raw_dv__sat__point_details') }}
 ),
 
 hub_point as (
@@ -14,7 +14,7 @@ shots_exploded as (
     hk_point,
     row_number() over (partition by hk_point order by ordinality) AS shot_number,
     trim(shot_text) AS shot_text
-  from pit_point,
+  from sat_point_details,
   lateral unnest(string_to_array(point_description, ';')) with ordinality as u(shot_text, ordinality)
 ),
 
