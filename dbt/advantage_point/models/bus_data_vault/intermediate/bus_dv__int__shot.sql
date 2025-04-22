@@ -69,6 +69,55 @@ shot_bk as (
     left join hub_point on shots.hk_point = hub_point.hk_point
 ),
 
+-- get shot attributes
+shot_attributes as (
+  select
+    *,
+
+    (
+      regexp_match(
+        lower(shot_text),
+        'crosscourt|down the line|down the middle|down the t|inside-in|inside-out|to body|wide'
+      )
+    )[1] as shot_direction,
+    case
+      -- if double fault (in case logic codes it as 'fault' instead)
+      when lower(shot_text) ilike '%double fault%' then 'double fault'
+      else (
+        regexp_match(
+          lower(shot_text),
+          'ace|double fault|fault|forced error|service winner|unforced error|winner'
+        )
+      )[1]
+    end as shot_result
+
+  from shot_bk
+),
+
+-- get shot_type
+shot_type as (
+  select
+    *,
+
+    case
+      -- if shot was point penalty then NULL
+      when shot_text ilike '%point%penalty%' then null
+      -- if shot was unknown then NULL
+      when shot_text ilike '%unknown%' then null
+      -- if shot was a 'challenge' then NULL
+      when shot_text ilike '%challenge was incorrect%' then null
+      -- if shot text is (...) then null
+      when left(shot_text, 1) = '(' then null
+      -- get text before shot_direction
+      when shot_direction is not null then trim(split_part(shot_text, shot_direction, 1))
+      -- if not shot_direction, get text before ','
+      when shot_direction is null then trim(split_part(shot_text, ',', 1))
+      else null      
+    end as shot_type
+
+  from shot_attributes
+)
+
 final as (
     select 
         hk_point,
@@ -77,10 +126,13 @@ final as (
         shot_number_in_point,
         bk_point,
         bk_shot,
+        shot_direction,
+        shot_result,
+        shot_type,
        
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__shot' as bus_dv_source_model
-    from shot_bk
+    from shot_type
 )
 
 select * from final

@@ -51,6 +51,22 @@ models:
           - unique
           - not_null
 
+      - name: shot_direction
+        data_type: string
+        description: Direction of the shot.
+
+      - name: shot_result
+        data_type: string
+        description: Outcome of the shot.
+        data_tests:
+          - accepted_values:
+              values: ['ace', 'double fault', 'forced error', 'service winner', 'unforced error', 'winner', null]
+              quote: true
+        
+      - name: shot_type
+        data_type: string
+        description: Type of shot.
+
       - name: bus_dv_load_datetime
         data_type: timestamp
         description: Timestamp when this bridge record was generated in the business vault.
