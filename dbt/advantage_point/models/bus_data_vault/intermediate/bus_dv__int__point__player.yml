@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: bus_dv__bridge__point__player
+    description: >
+      Intermediate model for point_player data.
+
+    columns:
+      - name: lk_point_player
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('raw_dv__link__point__player')
+              field: lk_point_player
+          
+      - name: hk_point
+        data_type: string
+        description: Hash-based unique identifier for point.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__point')
+              field: hk_point
+
+      - name: hk_player
+        data_type: string
+        description: Hash-based unique identifier for player.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__player')
+              field: hk_player
+
+      - name: is_server
+        data_type: boolean
+        description: Boolean flag indicating if the player served that point.
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: link_load_datetime
+        data_type: timestamp
+        description: Load timestamp from the link model.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
