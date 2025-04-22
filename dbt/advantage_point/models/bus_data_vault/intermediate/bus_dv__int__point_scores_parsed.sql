@@ -86,65 +86,12 @@ entity_bks as (
     from running_numbers
 ),
 
--- get side (of court)
-point_side as (
-    select
-        *,
-        case
-            -- determine side based on non-tiebreaker scores
-            when point_score_in_game in (
-                '0-0', '0-30',
-                '15-15', '15-40',
-                '30-0', '30-30',
-                '40-40'
-            ) then 'deuce'
-            when point_score_in_game in (
-                '0-15', '0-40',
-                '15-0', '15-30',
-                '30-15', '30-40',
-                'AD-40', '40-AD'
-            ) then 'ad'
-            -- determine side based on tiebreak scores
-            when point_score_in_game_server_int + point_score_in_game_receiver_int % 2 = 0 then 'deuce'
-            when point_score_in_game_server_int + point_score_in_game_receiver_int % 2 != 0 then 'ad'
-            else null
-        end as point_side
-    from entity_bks
-),
-
--- determine 'point type' boolean fields
-point_type as (
-    select
-        *,
-
-        -- determine break point
-        case
-            when point_score_in_game in (
-                '0-40', '15-40', '30-40', '40-AD'
-            ) then true
-            else false
-        end as is_break_point,
-
-        -- determine game point
-        case
-            when point_score_in_game in (
-                '40-0', '40-15', '40-30', 'AD-40'
-            ) then true
-            else false
-        end as is_game_point
-
-    from point_side
-),
-
 final as (
     select
         hk_point,
         set_score_in_match,
         game_score_in_set,
         point_score_in_game,
-        point_description,
-        point_details_hash_diff,
-        point_details_load_datetime,
         set_score_in_match_server,
         set_score_in_match_receiver,
         game_score_in_set_server,
@@ -163,12 +110,9 @@ final as (
         point_number_in_game,
         bk_set,
         bk_game,
-        point_side,
-        is_break_point,
-        is_game_point,
 
         current_timestamp as bus_dv_load_datetime,
-        'bus_dv__int__point' as bus_dv_source_model
+        'bus_dv__int__point_scores_parsed' as bus_dv_source_model
     from point_type
 )
 
