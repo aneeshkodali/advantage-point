@@ -62,7 +62,7 @@ shot_bk as (
         {{ generate_shot_business_key(
             bk_point_col='hub_point.bk_point',
             shot_number_col='shots.shot_number_w_serve'
-        ) }} as bk_shot,
+        ) }} as bk_shot
     from shot_number_w_serve as shots
     left join hub_point on shots.hk_point = hub_point.hk_point
 ),
