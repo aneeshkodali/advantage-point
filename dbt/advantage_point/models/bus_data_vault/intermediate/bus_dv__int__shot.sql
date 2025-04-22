@@ -75,10 +75,7 @@ final as (
         shot_number_w_serve,
         bk_point,
         bk_shot,
-        {{ generate_shot_surrogate_key(
-            shot_business_key_col='bk_shot'
-        ) }} as hk_shot,
-        
+       
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__shot' as bus_dv_source_model
     from shots_union

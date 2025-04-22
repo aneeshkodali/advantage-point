@@ -23,19 +23,19 @@ models:
       - name: shot_number
         data_type: integer
         description: Shot number in point (assigns same value to multiple serve attempts).
-        data_type:
+        data_tests:
           - not_null
       
       - name: shot_text
         data_type: string
         description: Shot description. Includes stroke, direction, and result information.
-        data_type:
+        data_tests:
           - not_null
 
       - name: shot_number_w_serve
         data_type: integer
         description: Shot number in point (treats each serve as separate 'shot').
-        data_type:
+        data_tests:
           - not_null
 
       - name: bk_point
@@ -48,12 +48,7 @@ models:
         data_type: string
         description: Unique identifier for shot.
         data_tests:
-          - not_null
-
-      - name: hk_shot
-        data_type: string
-        description: Hash-based unique identifier for shot.
-        data_tests:
+          - unique
           - not_null
 
       - name: bus_dv_load_datetime
