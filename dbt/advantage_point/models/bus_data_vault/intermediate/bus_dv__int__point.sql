@@ -1,15 +1,11 @@
 with
 
-pit_point as (
-    select
-        *
-    from {{ ref('bus_dv__pit__point') }}
+sat_point_details as (
+    select * from {{ ref('raw_dv__sat__point_details') }}
 ),
 
-bridge_match_point as (
-    select
-        *
-    from {{ ref('bus_dv__bridge__match__point') }}
+link_match_point as (
+    select * from {{ ref('raw_dv__link__match__point') }}
 ),
 
 hub_match as (
@@ -34,7 +30,7 @@ columns_parse as (
         cast(split_part(game_score_in_set, '-', 2) as int) as game_score_in_set_receiver,
         split_part(point_score_in_game, '-', 1) as point_score_in_game_server,
         split_part(point_score_in_game, '-', 2) as point_score_in_game_receiver
-    from pit_point
+    from sat_point_details
 ),
 
 -- add scores
@@ -54,25 +50,25 @@ scores_add as (
 running_numbers as (
     select
         ext_sat_points.*,
-        bridge_match_point.hk_match,
+        link_match_point.hk_match,
         hub_match.bk_match,
         hub_point.point_number_in_match,
         dense_rank() over (
-            partition by bridge_match_point.hk_match
+            partition by link_match_point.hk_match
             order by ext_sat_points.set_number_in_match, ext_sat_points.game_number_in_set
         ) as game_number_in_match,
         row_number() over (
-            partition by bridge_match_point.hk_match, ext_sat_points.set_number_in_match
+            partition by link_match_point.hk_match, ext_sat_points.set_number_in_match
             order by ext_sat_points.game_number_in_set, hub_point.point_number_in_match
         ) as point_number_in_set,
         row_number() over (
-            partition by bridge_match_point.hk_match, ext_sat_points.set_number_in_match, ext_sat_points.game_number_in_set
+            partition by link_match_point.hk_match, ext_sat_points.set_number_in_match, ext_sat_points.game_number_in_set
             order by hub_point.point_number_in_match
         ) as point_number_in_game
     from scores_add as ext_sat_points
-    left join bridge_match_point on ext_sat_points.hk_point = bridge_match_point.hk_point
+    left join link_match_point on ext_sat_points.hk_point = link_match_point.hk_point
     left join hub_point on ext_sat_points.hk_point = hub_point.hk_point
-    left join hub_match on bridge_match_point.hk_match = hub_match.hk_match
+    left join hub_match on link_match_point.hk_match = hub_match.hk_match
 ),
 
 -- generate bk
