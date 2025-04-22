@@ -15,7 +15,7 @@ final as (
         game_number_in_match,
 
         bus_dv_load_datetime,
-        bus_dv_source_model
+        'bus_dv__int__game' as bus_dv_source_model
     from int_point_scores_parsed
 )
 

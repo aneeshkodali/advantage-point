@@ -15,7 +15,7 @@ final as (
         bk_set,
 
         bus_dv_load_datetime,
-        bus_dv_source_model
+        'bus_dv__int__set' as bus_dv_source_model
     from int_point_scores_parsed
 )
 
