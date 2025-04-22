@@ -45,5 +45,7 @@ models:
     bus_data_vault:
       +schema: "{{ env_var('DBT_SCHEMA_BUSINESS_DATA_VAULT') }}"
       +materialized: table
+      intermediate:
+        +materialized: view
       hub:
         +materialized: incremental
