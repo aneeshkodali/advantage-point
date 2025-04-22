@@ -76,7 +76,7 @@ final as (
         bk_point,
         bk_shot,
         {{ generate_shot_surrogate_key(
-            bk_shot_col='bk_shot'
+            shot_business_key_col='bk_shot'
         ) }} as hk_shot,
         
         current_timestamp as bus_dv_load_datetime,
