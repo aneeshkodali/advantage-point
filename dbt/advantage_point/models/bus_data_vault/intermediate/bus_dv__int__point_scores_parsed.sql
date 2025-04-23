@@ -50,7 +50,6 @@ scores_add as (
 running_numbers as (
     select
         ext_sat_points.*,
-        link_match_point.hk_match,
         hub_match.bk_match,
         hub_point.point_number_in_match,
         dense_rank() over (
