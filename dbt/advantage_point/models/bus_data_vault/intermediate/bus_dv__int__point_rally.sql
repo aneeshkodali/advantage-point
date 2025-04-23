@@ -2,6 +2,7 @@ with
 
 int_shot as (
     select * from {{ ref('bus_dv__int__shot') }}
+    where shot_result != 'fault'
 ),
 
 -- rank rows to determine last shot in rally (=1)
