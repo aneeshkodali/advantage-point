@@ -11,25 +11,6 @@ models:
             - set_number_in_match
 
     columns:
-
-      - name: set_score_in_match
-        data_type: string
-        description: Set score within the match (from server's perspective).
-        data_tests:
-          - not_null
-
-      - name: set_score_in_match_server
-        data_type: integer
-        description: Server set score in the match.
-        data_tests:
-          - not_null
-
-      - name: set_score_in_match_receiver
-        data_type: integer
-        description: Receiver set score in the match.
-        data_tests:
-          - not_null
-
       - name: set_number_in_match
         data_type: integer
         description: Set number in the match.

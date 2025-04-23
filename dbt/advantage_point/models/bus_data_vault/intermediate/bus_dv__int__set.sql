@@ -8,9 +8,6 @@ final as (
     select distinct
         hk_match,
         bk_match,
-        set_score_in_match,
-        set_score_in_match_server,
-        set_score_in_match_receiver,
         set_number_in_match,
         bk_set,
 

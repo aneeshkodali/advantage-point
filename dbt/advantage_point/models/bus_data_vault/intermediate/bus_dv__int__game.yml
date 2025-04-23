@@ -11,25 +11,6 @@ models:
             - game_number_in_match
 
     columns:
-
-      - name: game_score_in_set
-        data_type: string
-        description: Game score within the set (from server's perspective).
-        data_tests:
-          - not_null
-
-      - name: game_score_in_set_server
-        data_type: integer
-        description: Server game score in the current set.
-        data_tests:
-          - not_null
-
-      - name: game_score_in_set_receiver
-        data_type: integer
-        description: Receiver game score in the current set.
-        data_tests:
-          - not_null
-
       - name: game_number_in_set
         data_type: integer
         description: Game number in the current set.
