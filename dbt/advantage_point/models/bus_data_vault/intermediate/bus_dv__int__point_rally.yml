@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: bus_dv__int__point_details
+  - name: bus_dv__int__point_rally
     description: >
       Intermediate model for point rally data.
 
