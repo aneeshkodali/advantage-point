@@ -116,7 +116,7 @@ shot_type as (
     end as shot_type
 
   from shot_attributes
-)
+),
 
 final as (
     select 
