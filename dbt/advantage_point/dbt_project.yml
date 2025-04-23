@@ -49,3 +49,5 @@ models:
         +materialized: view
       hub:
         +materialized: incremental
+      sat:
+        +materialized: incremental
