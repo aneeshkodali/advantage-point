@@ -29,7 +29,7 @@ records_hash as (
         sat.point_score_in_game,
         sat.point_side,
         sat.is_break_point,
-        sat.is_game_point
+        sat.is_game_point,
         
         {{ dbt_utils.generate_surrogate_key([
             'sat.point_score_in_game',
