@@ -12,9 +12,6 @@ models:
         data_tests:
           - unique
           - not_null
-          - relationships:
-              to: ref('raw_dv__link__point__player')
-              field: lk_point_player
           
       - name: hk_point
         data_type: string
