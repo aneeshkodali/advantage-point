@@ -113,7 +113,7 @@ final as (
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__point_scores_parsed' as bus_dv_source_model
-    from point_type
+    from entity_bks
 )
 
 select * from final
