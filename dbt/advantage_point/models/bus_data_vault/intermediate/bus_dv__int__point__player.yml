@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: bus_dv__bridge__point__player
+  - name: bus_dv__int__point__player
     description: >
       Intermediate model for point_player data.
 
