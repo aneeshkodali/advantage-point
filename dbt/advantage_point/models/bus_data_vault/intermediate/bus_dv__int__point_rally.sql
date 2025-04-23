@@ -1,21 +1,25 @@
 with
 
--- rank rows to determine last shot in rally (=1)
 int_shot as (
+    select * from {{ ref('bus_dv__int__shot') }}
+),
+
+-- rank rows to determine last shot in rally (=1)
+int_shot_last_shot as (
     select
         *,
         row_number() over (
             partition by hk_point
             order by shot_number desc, shot_number_in_point desc
         ) as last_shot_row_number
-    from {{ ref('bus_dv__int__shot') }}
+    from int_shot
 ),
 
 -- filter for last rows
 int_shot_filtered as (
     select
         *
-    from int_shot
+    from int_shot_last_shot
     where last_shot_row_number = 1
 ),
 
