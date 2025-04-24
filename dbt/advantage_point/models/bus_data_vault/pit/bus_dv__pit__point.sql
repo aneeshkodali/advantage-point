@@ -7,7 +7,6 @@ point_details as (
         hash_diff,
         record_source,
 
-        point_score_in_game,
         point_side,
         is_break_point,
         is_game_point

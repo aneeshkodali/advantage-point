@@ -13,7 +13,6 @@ point_details as (
         hk_point,
         bus_dv_source_model as record_source,
 
-        point_score_in_game,
         point_side,
         is_break_point,
         is_game_point
