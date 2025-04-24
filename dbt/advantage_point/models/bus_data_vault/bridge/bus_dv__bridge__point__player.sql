@@ -52,15 +52,15 @@ point_player_point_scores as (
 
         -- add player point score
         case
-            when link_point_player.is_server = true then int_point_scores_parsed.point_score_in_game_server
-            when link_point_player.is_server != true then int_point_scores_parsed.point_score_in_game_receiver
+            when link_point_player.is_point_server = true then int_point_scores_parsed.point_score_in_game_server
+            when link_point_player.is_point_server != true then int_point_scores_parsed.point_score_in_game_receiver
             else null
         end as point_score_in_game_player,
 
         -- add player int point score
         case
-            when link_point_player.is_server = true then int_point_scores_parsed.point_score_in_game_server_int
-            when link_point_player.is_server != true then int_point_scores_parsed.point_score_in_game_receiver_int
+            when link_point_player.is_point_server = true then int_point_scores_parsed.point_score_in_game_server_int
+            when link_point_player.is_point_server != true then int_point_scores_parsed.point_score_in_game_receiver_int
             else null
         end as point_score_in_game_player_int
             
@@ -119,7 +119,7 @@ player_point_is_point_winner as (
                     else null
                 end
             -- if player did NOT hit last shot --> opponent hit last shot
-            when is_point_ending_player = false then
+            when is_point_ending_player != true then
                 case
                     -- if 'winner'-like shot
                     when point_result in ('ace', 'service winner', 'winner') then false
