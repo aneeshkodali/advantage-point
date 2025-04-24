@@ -10,10 +10,6 @@ link_record_sources as (
     select * from {{ ref('stg__seed__link_record_sources') }}
 ),
 
-link_point_player as (
-    select * from {{ ref('bus_dv__int__point__player') }}
-),
-
 bridge_shot_point as (
     select * from {{ ref('bus_dv__bridge__shot__point') }}
 ),
@@ -26,6 +22,53 @@ bridge_shot_player as (
     select * from {{ ref('bus_dv__pit__point') }}
 ),
 
+int_point_scores_parsed as (
+    select * from {{ ref('bus_dv__int__point_scores_parsed') }}
+),
+
+-- select initial columns
+link_point_player as (
+    select
+        lk_point_player,
+        hk_point,
+        bk_point,
+        hk_player,
+        bk_player,
+        is_point_server,
+        bus_dv_source_model as record_source
+    from {{ ref('bus_dv__int__point__player') }}
+),
+
+-- add point scores
+point_player_point_scores as (
+    select
+        link_point_player.lk_point_player,
+        link_point_player.hk_point,
+        link_point_player.bk_point,
+        link_point_player.hk_player,
+        link_point_player.bk_player,
+        link_point_player.is_point_server,
+        link_point_player.record_source,
+
+        -- add player point score
+        case
+            when link_point_player.is_server = true then int_point_scores_parsed.point_score_in_game_server
+            when link_point_player.is_server != true then int_point_scores_parsed.point_score_in_game_receiver
+            else null
+        end as point_score_in_game_player,
+
+        -- add player int point score
+        case
+            when link_point_player.is_server = true then int_point_scores_parsed.point_score_in_game_server_int
+            when link_point_player.is_server != true then int_point_scores_parsed.point_score_in_game_receiver_int
+            else null
+        end as point_score_in_game_player_int
+            
+
+    from link_point_player
+    left join int_point_scores_parsed on link_point_player.hk_point = int_point_scores_parsed.hk_point
+),
+
 -- add is_point_ending_player (did player hit last shot)
 point_player_is_point_ending_player as (
     select
@@ -35,10 +78,12 @@ point_player_is_point_ending_player as (
         link_point_player.hk_player,
         link_point_player.bk_player,
         link_point_player.is_point_server,
+        link_point_player.point_score_in_game_player,
+        link_point_player.point_score_in_game_player_int,
         link_point_player.hk_player = bridge_shot_player.hk_player as is_point_ending_player,
         pit_point.point_result,
-        link_point_player.bus_dv_source_model as record_source
-    from link_point_player
+        link_point_player.record_source
+    from point_player_point_scores as link_point_player
     -- join point to get number of shots, result
     left join pit_point on link_point_player.hk_point = pit_point.hk_point
     -- join shot_point to get last shot
@@ -57,6 +102,8 @@ player_point_is_point_winner as (
         bk_point,
         hk_player,
         bk_player,
+        point_score_in_game_player,
+        point_score_in_game_player_int,
         is_point_server,
         is_point_ending_player,
         record_source,
@@ -106,6 +153,8 @@ final as (
         bk_point,
         hk_player,
         bk_player,
+        point_score_in_game_player,
+        point_score_in_game_player_int,
         is_point_server,
         is_point_ending_player,
         is_point_winner

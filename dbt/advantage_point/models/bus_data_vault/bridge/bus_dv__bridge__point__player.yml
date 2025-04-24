@@ -55,6 +55,18 @@ models:
         data_tests:
           - not_null
 
+      - name: point_score_in_game_player
+        data_type: string
+        description: Player point score in the current game.
+        data_tests:
+          - not_null
+
+      - name: point_score_in_game_player_int
+        data_type: integer
+        description: Player point score (as an integer) in the current game.
+        data_tests:
+          - not_null
+
       - name: is_point_server
         data_type: boolean
         description: Boolean flag indicating if the player served that point.
