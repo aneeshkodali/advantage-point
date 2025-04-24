@@ -8,8 +8,6 @@ point_details as (
         record_source,
 
         point_side,
-        is_break_point,
-        is_game_point
     from (
         {{ get_latest_record(
             model_ref=ref('bus_dv__sat__point_details'),
@@ -51,8 +49,6 @@ final as (
 
         point_details.point_score_in_game,
         point_details.point_side,
-        point_details.is_break_point,
-        point_details.is_game_point,
         point_details.hash_diff as point_details_hash_diff,
         point_details.load_datetime as point_details_load_datetime,
 

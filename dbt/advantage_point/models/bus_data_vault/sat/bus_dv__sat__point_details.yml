@@ -37,11 +37,3 @@ models:
       - name: point_side
         data_type: string
         description: Side of the court on which the point is played.
-        
-      - name: is_break_point
-        data_type: boolean
-        description: Boolean flag to indicate if point is a break point (receiver has a chance to win the game).
-        
-      - name: is_game_point
-        data_type: boolean
-        description: Boolean flag to indicate if point is a game point (server has a chance to win the game).
