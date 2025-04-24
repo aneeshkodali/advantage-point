@@ -1,36 +1,23 @@
 with
 
 link_point_server as (
-    select
-        lk_point_server,
-        hk_point,
-        hk_server,
-        load_datetime
-    from {{ ref('raw_dv__link__point__server') }}
+    select * from {{ ref('raw_dv__link__point__server') }}
 ),
 
 link_match_player as (
-    select
-        *
-    from {{ ref('raw_dv__link__match__player') }}
+    select * from {{ ref('raw_dv__link__match__player') }}
 ),
 
 link_match_point as (
-    select
-        *
-    from {{ ref('raw_dv__link__match__point') }}
+    select * from {{ ref('raw_dv__link__match__point') }}
 ),
 
 hub_player as (
-    select
-        *
-    from {{ ref('raw_dv__hub__player') }}
+    select * from {{ ref('raw_dv__hub__player') }}
 ),
 
 hub_point as (
-    select
-        *
-    from {{ ref('raw_dv__hub__point') }}
+    select * from {{ ref('raw_dv__hub__point') }}
 ),
 
 -- prep server rows
@@ -38,7 +25,9 @@ point_player_server as (
     select
         lk_point_server as lk_point_player,
         hk_point,
+        bk_point,
         hk_server as hk_player,
+        bk_server as bk_player,
         true as is_server,
         load_datetime as link_load_datetime
     from link_point_server
@@ -53,7 +42,9 @@ point_player_receiver as (
             player_business_key_col='hub_player.bk_player'
         ) }} as lk_point_player,
         link_point_server.hk_point,
+        link_point_server.bk_point,
         link_match_player.hk_player,
+        link_match_player.bk_player,
         false as is_server,
         link_point_server.load_datetime as link_load_datetime
     from link_point_server
@@ -76,7 +67,9 @@ point_player_union as (
     select
         point_player.lk_point_player,
         point_player.hk_point,
+        point_player.bk_point,
         point_player.hk_player,
+        point_player.bk_player,
         point_player.is_server,
         point_player.link_load_datetime,
         current_timestamp as bus_dv_load_datetime,
@@ -86,7 +79,9 @@ point_player_union as (
             select
                 lk_point_player,
                 hk_point,
+                bk_point,
                 hk_player,
+                bk_player,
                 is_server,
                 link_load_datetime
             from point_player_server
@@ -96,7 +91,9 @@ point_player_union as (
             select
                 lk_point_player,
                 hk_point,
+                bk_point,
                 hk_player,
+                bk_player,
                 is_server,
                 link_load_datetime
             from point_player_receiver
