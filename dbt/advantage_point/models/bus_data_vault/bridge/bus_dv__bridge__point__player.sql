@@ -1,20 +1,26 @@
+{{
+    config(
+        unique_key='lk_point_player'
+    )
+}}
+
 with
 
-link_point_server as (
-    select
-        lk_point_server,
-        hk_point,
-        hk_server,
-
-        load_datetime
-    from (
-        {{ get_latest_record(
-            model_ref=ref('raw_dv__link__point__server'),
-            partition_by_col='lk_point_server',
-            order_by_col='load_datetime'
-        ) }}
-    ) as p_s
+link_record_sources as (
+    select * from {{ ref('stg__seed__link_record_sources') }}
 ),
+
+link_point_player as (
+    select * from {{ ref('bus_dv__int__point__player') }}
+),
+
+bridge_shot_point as (
+    select * from {{ ref('bus_dv__bridge__shot__point') }}
+),
+
+bridge_shot_player as (
+    select * from {{ ref('bus_dv__bridge__shot__player') }}
+)
 
  pit_point as (
     select
@@ -22,107 +28,101 @@ link_point_server as (
     from {{ ref('bus_dv__pit__point') }}
 ),
 
-pit_player as (
+-- add is_point_ending_player (did player hit last shot)
+point_player_is_point_ending_player as (
     select
-        *
-    from {{ ref('bus_dv__pit__player') }}
+        link_point.player.lk_point_player,
+        link_point_player.hk_point,
+        link_point_player.bk_point,
+        link_point_player.hk_player,
+        link_point_player.bk_player,
+        link_point_player.is_point_server,
+        link_point_player.hk_player = bridge_shot_player.hk_player as is_point_ending_player,
+        pit_point.point_result,
+        link_point_player.bus_dv_source_model as record_source
+    from link_point_player
+    -- join point to get number of shots, result
+    left join pit_point on link_point_player.hk_point = pit_point.hk_point
+    -- join shot_point to get last shot
+    left join bridge_shot_point on 1=1
+        and link_point_player.hk_point = bridge_shot_point.hk_point
+        and pit_point.point_length = bridge_shot_point.shot_number
+    -- join shot_player to get player who hit last shot
+    left join bridge_shot_player on bridge_shot_point.hk_shot = bridge_shot_player.hk_shot
 ),
 
-bridge_match_player as (
+-- add logic for if player won point
+player_point_is_point_winner as (
     select
-        *
-    from {{ ref('bus_dv__bridge__match__player') }}
-),
-
-bridge_match_point as (
-    select
-        *
-    from {{ ref('bus_dv__bridge__match__point') }}
-),
-
-hub_player as (
-    select
-        *
-    from {{ ref('raw_dv__hub__player') }}
-),
-
-hub_point as (
-    select
-        *
-    from {{ ref('raw_dv__hub__point') }}
-),
-
--- prep server rows
-point_player_server as (
-    select
-        lk_point_server as lk_point_player,
+        lk_point_player,
         hk_point,
-        hk_server as hk_player,
-        true as is_server,
-        load_datetime as link_load_datetime
-    from link_point_server
+        bk_point,
+        hk_player,
+        bk_player,
+        is_point_server,
+        is_point_ending_player,
+        record_source,
+
+        case
+            -- if player hit last shot
+            when is_point_ending_player = true then
+                case
+                    -- if 'winner'-like shot
+                    when point_result in ('ace', 'service winner', 'winner') then true
+                    -- if 'error'-like shot
+                    when point_result in ('double fault', 'forced error', 'unforced error') then false
+                    else null
+                end
+            -- if player did NOT hit last shot --> opponent hit last shot
+            when is_point_ending_player = false then
+                case
+                    -- if 'winner'-like shot
+                    when point_result in ('ace', 'service winner', 'winner') then false
+                    -- if 'error'-like shot
+                    when point_result in ('double fault', 'forced error', 'unforced error') then true
+                    else null
+                end
+            else null
+        end as is_point_winner
+    from point_player_is_point_ending_player
 ),
 
--- prep receiver rows
--- creates new lk_point_player values since receiver rows do not exist in raw data vault
-point_player_receiver as (
+-- add row number to order records
+records_rownum as (
     select
-        {{ generate_point_player_surrogate_key(
-            point_business_key_col='hub_point.bk_point',
-            player_business_key_col='hub_player.bk_player'
-        ) }} as lk_point_player,
-        link_point_server.hk_point,
-        bridge_match_player.hk_player,
-        false as is_server,
-        link_point_server.load_datetime as link_load_datetime
-    from link_point_server
-    -- join match_point to point_server on point to get match_point
-    left join bridge_match_point on link_point_server.hk_point = bridge_match_point.hk_point
-    -- join match_player to match_point to get point_player (WHERE clause filters out server)
-    left join bridge_match_player on bridge_match_point.hk_match = bridge_match_player.hk_match
-    -- join to get bk for hk generation
-    left join hub_point on bridge_match_point.hk_point = hub_point.hk_point
-    -- join to get bk for hk generation
-    left join hub_player on bridge_match_player.hk_player = hub_player.hk_player
+        lnk.*,
+        row_number() over (partition by lnk.lk_point_player order by link_rec_src.sort_order) as rn -- assing row number
+    from player_point_is_point_winner as lnk
+    left join link_record_sources as link_rec_src on 1=1
+        and link_rec_src.link_name = 'bus_dv__bridge__point__player'
+        and lnk.record_source = link_rec_src.record_source
+),
+
+final as (
+    select
+        lk_point_player,
+        current_timestamp as load_datetime,
+        record_source,
+
+        hk_point,
+        bk_point,
+        hk_player,
+        bk_player,
+        is_point_server,
+        is_point_ending_player,
+        is_point_winner
+
+    from records_rownum as incr
     where 1=1
-        -- filter out where player is server
-        and link_point_server.hk_server != bridge_match_player.hk_player
-
-),
-
--- union
-point_player_union as (
-    select
-        bridge_point_player.lk_point_player,
-        bridge_point_player.hk_point,
-        bridge_point_player.hk_player,
-        bridge_point_player.is_server,
-        bridge_point_player.link_load_datetime,
-        current_timestamp as bus_dv_load_datetime,
-        'bus_dv__bridge__point__player' as bus_dv_source_model
-    from (
-        (
-            select
-                lk_point_player,
-                hk_point,
-                hk_player,
-                is_server,
-                link_load_datetime
-            from point_player_server
-        )
-        union all
-        (
-            select
-                lk_point_player,
-                hk_point,
-                hk_player,
-                is_server,
-                link_load_datetime
-            from point_player_receiver
-        )
-    ) as bridge_point_player
-    left join pit_point on bridge_point_player.hk_point = pit_point.hk_point
-    left join pit_player on bridge_point_player.hk_player = pit_player.hk_player
+        and rn = 1 -- filter for row number
+        {% if is_incremental() %}
+        and not exists (
+            select 1
+            from {{ this }} as existing
+            where 1=1
+                and existing.lk_point_player = incr.lk_point_player
+        ) -- filter for new pk records
+        {% endif %}
 )
 
-select * from point_player_union
+select * from final

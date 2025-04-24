@@ -28,7 +28,7 @@ point_player_server as (
         bk_point,
         hk_server as hk_player,
         bk_server as bk_player,
-        true as is_server,
+        true as is_point_server,
         load_datetime as link_load_datetime
     from link_point_server
 ),
@@ -45,7 +45,7 @@ point_player_receiver as (
         link_point_server.bk_point,
         link_match_player.hk_player,
         link_match_player.bk_player,
-        false as is_server,
+        false as is_point_server,
         link_point_server.load_datetime as link_load_datetime
     from link_point_server
     -- join match_point to point_server on point to get match_point
@@ -70,7 +70,7 @@ point_player_union as (
         point_player.bk_point,
         point_player.hk_player,
         point_player.bk_player,
-        point_player.is_server,
+        point_player.is_point_server,
         point_player.link_load_datetime,
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__point__player' as bus_dv_source_model
@@ -82,7 +82,7 @@ point_player_union as (
                 bk_point,
                 hk_player,
                 bk_player,
-                is_server,
+                is_point_server,
                 link_load_datetime
             from point_player_server
         )
@@ -94,7 +94,7 @@ point_player_union as (
                 bk_point,
                 hk_player,
                 bk_player,
-                is_server,
+                is_point_server,
                 link_load_datetime
             from point_player_receiver
         )

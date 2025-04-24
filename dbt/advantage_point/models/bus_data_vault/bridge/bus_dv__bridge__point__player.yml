@@ -12,6 +12,18 @@ models:
         data_tests:
           - unique
           - not_null
+
+      - name: load_datetime
+        data_type: timestamp
+        description: Datetime when business key(s) is first recorded.
+        data_tests:
+          - not_null
+
+      - name: record_source
+        data_type: string
+        description: Source from which business key(s) originated.
+        data_tests:
+          - not_null
           
       - name: hk_point
         data_type: string
@@ -22,6 +34,12 @@ models:
               to: ref('raw_dv__hub__point')
               field: hk_point
 
+      - name: bk_point
+        data_type: string
+        description: Unique identifier for point.
+        data_tests:
+          - not_null
+
       - name: hk_player
         data_type: string
         description: Hash-based unique identifier for player.
@@ -31,7 +49,13 @@ models:
               to: ref('raw_dv__hub__player')
               field: hk_player
 
-      - name: is_server
+      - name: bk_player
+        data_type: string
+        description: Unique identifier for player.
+        data_tests:
+          - not_null
+
+      - name: is_point_server
         data_type: boolean
         description: Boolean flag indicating if the player served that point.
         tests:
@@ -39,20 +63,18 @@ models:
           - accepted_values:
               values: [true, false]
 
-      - name: link_load_datetime
-        data_type: timestamp
-        description: Load timestamp from the link model.
-        data_tests:
+      - name: is_point_ending_player
+        data_type: boolean
+        description: Boolean flag indicating if the player ended the point (hit last shot in rally).
+        tests:
           - not_null
+          - accepted_values:
+              values: [true, false]
 
-      - name: bus_dv_load_datetime
-        data_type: timestamp
-        description: Timestamp when this bridge record was generated in the business vault.
-        data_tests:
+      - name: is_point_winner
+        data_type: boolean
+        description: Boolean flag indicating if the player won that point.
+        tests:
           - not_null
-
-      - name: bus_dv_source_model
-        data_type: string
-        description: Name of the dbt model that generated this record for traceability.
-        data_tests:
-          - not_null
+          - accepted_values:
+              values: [true, false]

@@ -25,13 +25,13 @@ hub_player as (
 -- get list of point servers
 point_server as (
     select * from {{ ref('bus_dv__int__point__player') }}
-    where is_server = true
+    where is_point_server = true
 ),
 
 -- get list of point receivers
 point_receiver as (
     select * from {{ ref('bus_dv__int__point__player') }}
-    where is_server = false
+    where is_point_server = false
 ),
 
 -- join models

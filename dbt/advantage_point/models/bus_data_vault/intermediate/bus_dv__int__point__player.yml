@@ -43,7 +43,7 @@ models:
         data_tests:
           - not_null
 
-      - name: is_server
+      - name: is_point_server
         data_type: boolean
         description: Boolean flag indicating if the player served that point.
         tests:
