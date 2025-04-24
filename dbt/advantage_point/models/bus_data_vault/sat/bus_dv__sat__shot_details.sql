@@ -10,7 +10,7 @@ hub_shots as (
 
 shot_details as (
     select
-        hk_shot,
+        bk_shot,
         bus_dv_source_model as record_source,
 
         shot_direction,
@@ -36,7 +36,7 @@ records_hash as (
         ]) }} as hash_diff
     from shot_details as sat
     left join hub_shots as hub_s on 1=1
-        and sat.hk_shot = hub_s.hk_shot
+        and sat.bk_shot = hub_s.bk_shot
 ),
 
 -- filter for incremental changes

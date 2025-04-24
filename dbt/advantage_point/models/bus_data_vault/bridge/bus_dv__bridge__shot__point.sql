@@ -35,7 +35,7 @@ records_lkey as (
         lnk.shot_number,
         lnk.shot_number_in_point,
         lnk.record_source
-    from joined as lnk
+    from int_shot as lnk
     left join hub_shot on lnk.bk_shot = hub_shot.bk_shot
     left join hub_point on lnk.hk_point = hub_point.hk_point
 ),

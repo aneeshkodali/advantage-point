@@ -37,7 +37,7 @@ point_rally as (
             order_by_col='load_datetime'
         ) }}
     ) as p
-)
+),
 
 -- get unique list of hk
 hk_union as (
