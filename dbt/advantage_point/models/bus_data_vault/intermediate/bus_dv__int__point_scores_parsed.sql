@@ -1,3 +1,7 @@
+{{ config(
+  materialized='table'
+)}}
+
 with
 
 sat_point_details as (
