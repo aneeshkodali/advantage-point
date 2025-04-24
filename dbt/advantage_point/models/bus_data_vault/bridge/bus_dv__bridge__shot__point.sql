@@ -18,6 +18,10 @@ hub_shot as (
     select * from {{ ref('bus_dv__hub__shot') }}
 ),
 
+hub_point as (
+    select * from {{ ref('raw_dv__hub__point') }}
+),
+
 -- add hub key
 records_lkey as (
     select
