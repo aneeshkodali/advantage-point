@@ -20,12 +20,10 @@ bridge_shot_point as (
 
 bridge_shot_player as (
     select * from {{ ref('bus_dv__bridge__shot__player') }}
-)
+),
 
  pit_point as (
-    select
-        *
-    from {{ ref('bus_dv__pit__point') }}
+    select * from {{ ref('bus_dv__pit__point') }}
 ),
 
 -- add is_point_ending_player (did player hit last shot)
