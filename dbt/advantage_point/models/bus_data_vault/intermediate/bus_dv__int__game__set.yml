@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: bus_dv__int__game__set
+    description: >
+      Intermediate model for game_set data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - bk_set
+            - bk_game
+
+    columns:    
+      - name: bk_set
+        data_type: string
+        description: Unique identifier for set.
+        data_tests:
+          - not_null
+
+      - name: bk_game
+        data_type: string
+        description: Unique identifier for game.
+        data_tests:
+          - not_null
+
+      - name: game_number_in_set
+        data_type: integer
+        description: Game number in the set.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
