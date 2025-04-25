@@ -5,5 +5,5 @@ bo5_super_tiebreak,Bo5,Standard,5,3,6,SuperTB,6-6,10,TRUE,6-6,TRUE,Final set use
 bo5_no_tiebreak,Bo5,Standard,5,3,6,,,,FALSE,,TRUE,Final set is advantage set (no tiebreak)
 bo3_no_tiebreak,Bo3,Standard,3,2,6,,,,FALSE,,TRUE,No tiebreak in final set
 bo5_tb12all,Bo5,Standard,5,3,6,12-point,12-12,7,TRUE,12-12,TRUE,Tiebreak played only at 12–12 in final set
-bo5_shortsets,Bo5_Short,Short,5,3,4,12-point,3-3,7,TRUE,3-3,FALSE,Fast4-style: sets to 4, tiebreak at 3–3, No-Ad
+bo5_shortsets,Bo5_Short,Short,5,3,4,12-point,3-3,7,TRUE,3-3,FALSE,Fast4-style: sets to 4; tiebreak at 3–3, No-Ad
 bo3_matchtiebreak,Bo3,Standard,3,2,6,MatchTB,,10,TRUE,,FALSE,Match tiebreak played in lieu of 3rd set (common in doubles)
