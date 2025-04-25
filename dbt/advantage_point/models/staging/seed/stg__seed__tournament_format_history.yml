@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_tournament_format_history
+    description: >
+      Historical mapping of tournament formats by name, gender, and time period.
+      Includes all format changes over time to enable time-based joins with match data.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - tournament_name
+            - tournament_gender
+            - format_id
+            - effective_start_year
+            - effective_end_year
+    columns:
+      - name: tournament_name
+        description: Name of the tournament.
+        data_tests:
+          - not_null
+
+      - name: tournament_gender
+        description: Gender division for the tournament: M (Men), W (Women).
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['M', 'W']
+
+      - name: format_id
+        description: Foreign key to tournament_formats.format_id indicating format rules in effect.
+        data_tests:
+          - not_null
+
+      - name: effective_start_year
+        description: The first year this format was used (defaults to 1800 if unknown).
+        data_tests:
+          - not_null
+
+      - name: effective_end_year
+        description: The last year this format was used (defaults to 3000 if still active).
+        data_tests:
+          - not_null
+
+      - name: note
+        description: Descriptive note about the format period and reason for change.

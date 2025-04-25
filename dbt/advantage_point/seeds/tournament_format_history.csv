@@ -1,0 +1,26 @@
+tournament_name,tournament_gender,format_id,effective_start_year,effective_end_year,note
+ATP_Doubles,M,bo3_matchtiebreak,2006,,Same format in men’s doubles.
+ATP_Finals,M,bo5_standard,,2007,Final was Bo5 through 2007.
+ATP_Finals,M,standard,2008,,Final changed to Bo3 with tiebreaks.
+Australian_Open,M,bo5_standard,,2018,Used standard Bo5 with 7-pt tiebreak at 6–6 until 2018.
+Australian_Open,M,bo5_super_tiebreak,2019,,Switched to 10-point super tiebreak at 6–6 in final set.
+Davis_Cup,M,bo5_no_tiebreak,,2015,No final set tiebreak used historically.
+Davis_Cup,M,bo5_standard,2016,2018,Added 7-pt tiebreak in final set.
+Davis_Cup,M,bo3_standard,2019,,Switched to Bo3 format.
+French_Open,M,bo5_no_tiebreak,,2021,No final set tiebreak (advantage set) until 2021.
+French_Open,M,bo5_super_tiebreak,2022,,Adopted 10-point super tiebreak at 6–6 in final set.
+French_Open,W,bo3_no_tiebreak,,2021,No final set tiebreak (advantage set) until 2021.
+French_Open,W,standard,2022,,Adopted standard tiebreak at 6–6 in final set.
+Next_Gen_ATP_Finals,M,bo5_shortsets,2017,,Fast4-style: sets to 4 games, tiebreak at 3–3.
+Olympics,M,bo5_no_tiebreak,,2012,Bo5 with no final set tiebreak used until 2012.
+Olympics,M,bo3_standard,2016,,Standardized to Bo3 with 7-pt tiebreak in all sets.
+US_Open,M,bo5_standard,1970,,Bo5 with 7-pt tiebreak at 6–6 used since 1970.
+Wimbledon,M,bo5_no_tiebreak,,2018,Advantage set until 2018.
+Wimbledon,M,bo5_tb12all,2019,2021,Used 7-pt tiebreak at 12–12 in final set.
+Wimbledon,M,bo5_super_tiebreak,2022,,Switched to 10-point tiebreak at 6–6.
+Wimbledon,W,bo3_no_tiebreak,,2018,Advantage set until 2018.
+Wimbledon,W,bo3_tb12all,2019,2021,Tiebreak only at 12–12 in final set.
+Wimbledon,W,standard,2022,,Switched to standard 7-pt tiebreak at 6–6.
+WTA_Doubles,W,bo3_matchtiebreak,2015,,No-Ad + match tiebreak in 3rd set.
+WTA_Finals,W,bo5_standard,1984,1998,Final was Bo5 during this time.
+WTA_Finals,W,standard,1999,,Returned to Bo3 with standard scoring.
