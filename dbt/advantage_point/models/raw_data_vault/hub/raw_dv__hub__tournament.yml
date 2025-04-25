@@ -45,7 +45,6 @@ models:
           - not_null
           - accepted_values:
               values: ['M', 'W']
-              quote: true
       
       - name: tournament_name
         data_type: string

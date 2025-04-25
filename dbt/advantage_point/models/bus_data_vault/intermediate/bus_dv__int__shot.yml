@@ -60,8 +60,7 @@ models:
         description: Outcome of the shot.
         data_tests:
           - accepted_values:
-              values: ['ace', 'double fault', 'fault', 'forced error', 'service winner', 'unforced error', 'winner', null]
-              quote: true
+              values: ['ace', 'double fault', 'fault', 'forced error', 'service winner', 'unforced error', 'winner']
         
       - name: shot_type
         data_type: string
