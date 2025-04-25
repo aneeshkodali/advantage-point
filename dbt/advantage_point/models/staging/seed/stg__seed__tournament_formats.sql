@@ -1,7 +1,7 @@
 with
 
 source as (
-    select * from {{ ref('tournamnet_formats') }}
+    select * from {{ ref('tournament_formats') }}
 ),
 
 renamed as (
