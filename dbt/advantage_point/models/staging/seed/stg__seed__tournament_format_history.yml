@@ -20,7 +20,7 @@ models:
           - not_null
 
       - name: tournament_gender
-        description: Gender division for the tournament: M (Men), W (Women).
+        description: Gender division for the tournament.
         data_tests:
           - not_null
           - accepted_values:
