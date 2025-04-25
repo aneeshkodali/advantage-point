@@ -45,7 +45,7 @@ final as (
         record_source,
 
         point_score_in_game,
-        point_side,
+        point_side
 
     from records_hash as incr
     where 1=1
