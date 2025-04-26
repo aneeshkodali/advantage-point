@@ -20,6 +20,7 @@ final as (
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__game__set' as bus_dv_source_model
+    from game_set
 )
 
 select * from final
