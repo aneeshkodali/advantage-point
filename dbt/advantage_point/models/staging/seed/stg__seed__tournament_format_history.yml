@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_tournament_format_history
+  - name: stg__seed__tournament_format_history
     description: >
       Historical mapping of tournament formats by name, gender, and time period.
       Includes all format changes over time to enable time-based joins with match data.
