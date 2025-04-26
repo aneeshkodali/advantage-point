@@ -32,14 +32,10 @@ models:
           - not_null
 
       - name: effective_start_year
-        description: The first year this format was used (defaults to 1800 if unknown).
-        data_tests:
-          - not_null
-
+        description: The first year this format was used.
+      
       - name: effective_end_year
-        description: The last year this format was used (defaults to 3000 if still active).
-        data_tests:
-          - not_null
-
+        description: The last year this format was used.
+        
       - name: note
         description: Descriptive note about the format period and reason for change.
