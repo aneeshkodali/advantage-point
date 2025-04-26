@@ -30,10 +30,10 @@ hub_game as (
 -- join to get hk and bk
 point_game as (
     select
-        {{ generate_point__game_surrogate_key(
+        {{ generate_point_game_surrogate_key(
             point_business_key_col='hub_point.bk_game',
             game_business_key_col='lnk.bk_game'
-        ) }} as lk_shot_point,
+        ) }} as lk_point_game,
         
         lnk.hk_point,
         hub_point.bk_point,
