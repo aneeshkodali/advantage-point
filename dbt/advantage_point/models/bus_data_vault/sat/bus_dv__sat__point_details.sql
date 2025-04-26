@@ -23,11 +23,9 @@ records_hash as (
         hub_p.hk_point,
         sat.record_source,
 
-        sat.point_score_in_game,
         sat.point_side,
         
         {{ dbt_utils.generate_surrogate_key([
-            'sat.point_score_in_game',
             'sat.point_side',
         ]) }} as hash_diff
     from point_details as sat
@@ -44,7 +42,6 @@ final as (
         hash_diff,
         record_source,
 
-        point_score_in_game,
         point_side
 
     from records_hash as incr
