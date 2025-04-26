@@ -31,7 +31,7 @@ hub_game as (
 point_game as (
     select
         {{ generate_point_game_surrogate_key(
-            point_business_key_col='hub_point.bk_game',
+            point_business_key_col='hub_point.bk_point',
             game_business_key_col='lnk.bk_game'
         ) }} as lk_point_game,
         
