@@ -7,7 +7,7 @@ point_details as (
         hash_diff,
         record_source,
 
-        point_side,
+        point_side
     from (
         {{ get_latest_record(
             model_ref=ref('bus_dv__sat__point_details'),
