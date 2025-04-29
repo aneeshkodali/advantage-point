@@ -1,4 +1,4 @@
-format_id,match_format,set_type,best_of,sets_to_win,games_per_set,tiebreak_type,tiebreak_trigger_game,tiebreak_points,final_set_tiebreak,final_set_tiebreak_trigger_game,is_ad_scoring,format_description
+format_id,match_format,set_type,best_of_sets,sets_to_win,games_per_set,tiebreak_type,tiebreak_trigger_game,tiebreak_points,final_set_tiebreak,final_set_tiebreak_trigger_game,is_ad_scoring,format_description
 standard,Bo3,Standard,3,2,6,12-point,6-6,7,TRUE,6-6,TRUE,Best-of-3 with 7-point tiebreak at 6–6 in all sets.
 bo5_standard,Bo5,Standard,5,3,6,12-point,6-6,7,TRUE,6-6,TRUE,Best-of-5 with tiebreak at 6–6 in all sets.
 bo5_super_tiebreak,Bo5,Standard,5,3,6,SuperTB,6-6,10,TRUE,6-6,TRUE,Final set uses 10-point super tiebreak at 6–6.

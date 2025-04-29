@@ -9,7 +9,7 @@ renamed as (
         format_id,
         match_format,
         set_type,
-        cast(best_of as int) as best_of,
+        cast(best_of_sets as int) as best_of_sets,
         cast(sets_to_win as int) as sets_to_win,
         cast(games_per_set as int) as games_per_set,
         tiebreak_type,

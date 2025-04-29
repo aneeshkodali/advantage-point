@@ -29,7 +29,7 @@ models:
           - accepted_values:
               values: ['Short', 'Standard']
 
-      - name: best_of
+      - name: best_of_sets
         data_type: integer
         description: Total number of sets to determine the match winner (e.g., 3 or 5)
         data_tests:
