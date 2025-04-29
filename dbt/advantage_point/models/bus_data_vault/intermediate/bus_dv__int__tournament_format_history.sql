@@ -109,7 +109,7 @@ tournament_w_format_joined as (
         coalesce(
             tf.final_set_tiebreak,
             tf_fallback.final_set_tiebreak
-        ) as final_set_tiebreak
+        ) as final_set_tiebreak,
         coalesce(
             tf.final_set_tiebreak_trigger_game,
             tf_fallback.final_set_tiebreak_trigger_game
