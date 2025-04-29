@@ -1,3 +1,7 @@
+{{ config(
+  materialized='table'
+)}}
+
 with
 
 hub_tournaments as (
