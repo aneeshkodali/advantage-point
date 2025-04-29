@@ -1,0 +1,88 @@
+version: 2
+
+models:
+  - name: bus_dv__int__tournament_format_history
+    description: >
+      Intermediate model for tournament format history data.
+    columns:
+      - name: hk_tournament
+        data_type: string
+        description: Hash-based unique identifier.
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('raw_dv__hub__tournament')
+              field: hk_tournament
+
+      - name: best_of_sets
+        data_type: integer
+        description: Total number of sets to determine the match winner (e.g., 3 or 5)
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [3, 5]
+
+      - name: sets_to_win
+        data_type: integer
+        description: Number of sets required to win the match (e.g., 2 or 3)
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [2, 3]
+
+      - name: games_per_set
+        data_type: integer
+        description: Number of games needed to win a set under normal conditions (e.g., 6 or 4 for Fast4)
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [4, 6]
+             
+      - name: tiebreak_trigger_game
+        data_type: string
+        description: Game score that triggers a tiebreak (e.g., 6-6, 12-12, 3-3)
+        data_tests:
+          - accepted_values:
+              values: ['3-3', '6-6', '12-12']
+
+      - name: tiebreak_points
+        data_type: integer
+        description: Number of points required to win the tiebreak (e.g., 7 or 10)
+        data_tests:
+          - accepted_values:
+              values: [7, 10]
+
+      - name: final_set_tiebreak
+        description: Indicates whether a tiebreak is used in the final set
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
+
+      - name: final_set_tiebreak_trigger_game
+        data_type: string
+        description: Game score in the final set that triggers a tiebreak (if applicable)
+        data_tests:
+          - accepted_values:
+              values: ['3-3', '6-6', '12-12']
+              
+      - name: is_ad_scoring
+        data_type: boolean
+        description: TRUE if advantage scoring is used, FALSE if no-ad scoring is used
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
+
+      - name: bus_dv_load_datetime
+        data_type: timestamp
+        description: Timestamp when this bridge record was generated in the business vault.
+        data_tests:
+          - not_null
+
+      - name: bus_dv_source_model
+        data_type: string
+        description: Name of the dbt model that generated this record for traceability.
+        data_tests:
+          - not_null
