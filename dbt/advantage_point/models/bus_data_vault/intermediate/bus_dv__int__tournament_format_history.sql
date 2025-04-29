@@ -121,7 +121,7 @@ tournament_w_format_joined as (
     -- use hub_tournaments to get ALL tournament records - also get hkey
     from hub_tournaments as hub_t
     -- join tournament_bk to preserve preexisting tournament_format_history
-    left join tournament_bk as t on hub_t.bk_tournament = tournament_bk.bk_tournament
+    left join tournament_bk as t on hub_t.bk_tournament = t.bk_tournament
     -- join tournament_formats to get format info
     left join tournament_formats as tf on t.format_id = tf.format_id
     -- join the 'fallback' option if format data doesn't exist for tournament
@@ -142,7 +142,7 @@ final as (
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__tournament_format_history' as bus_dv_source_model
-    from tournament_w_format
+    from tournament_w_format_joined
 )
 
 select * from final
