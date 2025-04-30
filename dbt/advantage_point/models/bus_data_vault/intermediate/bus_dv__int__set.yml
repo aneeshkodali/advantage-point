@@ -38,6 +38,14 @@ models:
         data_tests:
           - not_null
 
+      - name: is_deciding_set
+        data_type: boolean
+        description: Boolean field to indicate if set is last set in the match.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
+
       - name: bus_dv_load_datetime
         data_type: timestamp
         description: Timestamp when this bridge record was generated in the business vault.
