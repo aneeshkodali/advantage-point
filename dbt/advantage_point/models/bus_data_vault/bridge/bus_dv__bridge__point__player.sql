@@ -72,7 +72,7 @@ point_player_point_scores as (
 -- add is_point_ending_player (did player hit last shot)
 point_player_is_point_ending_player as (
     select
-        link_point.player.lk_point_player,
+        link_point_player.lk_point_player,
         link_point_player.hk_point,
         link_point_player.bk_point,
         link_point_player.hk_player,
