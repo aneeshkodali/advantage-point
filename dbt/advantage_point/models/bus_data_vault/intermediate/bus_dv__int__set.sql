@@ -42,7 +42,7 @@ final as (
         bk_set,
         is_deciding_set,
 
-        bus_dv_load_datetime,
+        current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__set' as bus_dv_source_model
     from sets_is_deciding_set
 )
