@@ -47,7 +47,6 @@ final as (
     select
         hk_union.hk_point,
 
-        point_details.point_score_in_game,
         point_details.point_side,
         point_details.hash_diff as point_details_hash_diff,
         point_details.load_datetime as point_details_load_datetime,
