@@ -27,8 +27,6 @@ sets_is_deciding_set as (
 final as (
     select
         hk_match,
-        bk_match,
-        set_number_in_match,
         bk_set,
         is_deciding_set,
 

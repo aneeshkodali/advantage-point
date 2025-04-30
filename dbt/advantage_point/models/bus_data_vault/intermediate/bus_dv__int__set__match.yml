@@ -7,16 +7,10 @@ models:
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - bk_match
-            - set_number_in_match
+            - hk_match
+            - bk_set
 
     columns:
-      - name: set_number_in_match
-        data_type: integer
-        description: Set number in the match.
-        data_tests:
-          - not_null
-      
       - name: hk_match
         data_type: string
         description: Hash-based unique identifier for match.
@@ -25,12 +19,6 @@ models:
           - relationships:
               to: ref('raw_dv__hub__match')
               field: hk_match
-
-      - name: bk_match
-        data_type: string
-        description: Unique identifier for match.
-        data_tests:
-          - not_null
 
       - name: bk_set
         data_type: string
