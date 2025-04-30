@@ -1,9 +1,9 @@
 version: 2
 
 models:
-  - name: bus_dv__int__set
+  - name: bus_dv__int__set__match
     description: >
-      Intermediate model for set data.
+      Intermediate model for set_match data.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -37,6 +37,14 @@ models:
         description: Unique identifier for set.
         data_tests:
           - not_null
+
+      - name: is_deciding_set
+        data_type: boolean
+        description: Boolean field to indicate if set is last set in the match.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: [false, true]
 
       - name: bus_dv_load_datetime
         data_type: timestamp
