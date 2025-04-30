@@ -57,6 +57,7 @@ point_game_is_winning_point as (
         point_game.bk_point,
         point_game.point_score_in_game,
         point_game.point_number_in_game,
+        point_game.hk_game,
         point_game.bk_game,
         point_game.record_source,
         point_game.point_score_in_game,
