@@ -152,7 +152,7 @@ point_rally as (
             when shot_result in ('ace', 'service winner', 'winner') then shot_number
             when shot_result in ('double fault', 'forced error', 'unforced error') then shot_number - 1
             else null
-        end as rally_length,
+        end as rally_length
     from point_side as points
     left join int_shots_filtered as shots on points.hk_point = shots.hk_point
 ),
