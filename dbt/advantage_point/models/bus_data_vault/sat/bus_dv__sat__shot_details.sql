@@ -13,6 +13,7 @@ shot_details as (
         bk_shot,
         bus_dv_source_model as record_source,
 
+        shot_number,
         shot_direction,
         shot_result,
         shot_type
@@ -25,11 +26,13 @@ records_hash as (
         hub_s.hk_shot,
         sat.record_source,
 
+        sat.shot_number,
         sat.shot_direction,
         sat.shot_result,
         sat.shot_type,
         
         {{ dbt_utils.generate_surrogate_key([
+            'sat.shot_number',
             'sat.shot_direction',
             'sat.shot_result',
             'sat.shot_type',
@@ -48,6 +51,7 @@ final as (
         hash_diff,
         record_source,
         
+        shot_number,
         shot_direction,
         shot_result,
         shot_type
