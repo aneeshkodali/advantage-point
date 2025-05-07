@@ -10,64 +10,26 @@ link_record_sources as (
     select * from {{ ref('stg__seed__link_record_sources') }}
 ),
 
-int_shot as (
-    select * from {{ ref('bus_dv__int__shot') }}
-),
-
-hub_shot as (
-    select * from {{ ref('bus_dv__hub__shot') }}
-),
-
-hub_player as (
-    select * from {{ ref('raw_dv__hub__player') }}
-),
-
--- get list of point servers
-point_server as (
-    select * from {{ ref('bus_dv__int__point__player') }}
-    where is_point_server = true
-),
-
--- get list of point receivers
-point_receiver as (
-    select * from {{ ref('bus_dv__int__point__player') }}
-    where is_point_server = false
-),
-
--- join models
-joined as (
-    select
-        int_shot.bk_shot,
-        int_shot.shot_number,
-        case
-            when shot_number % 2 != 0 then point_server.hk_player
-            else point_receiver.hk_player
-        end as hk_player,
-        int_shot.bus_dv_source_model as record_source
-    from int_shot
-    left join point_server on int_shot.hk_point = point_server.hk_point
-    left join point_receiver on int_shot.hk_point = point_receiver.hk_point
+int_shot_player as (
+    select * from {{ ref('bus_dv__int__shot__player') }}
 ),
 
 -- add hub key
 records_lkey as (
     select
         {{ generate_shot_player_surrogate_key(
-            shot_business_key_col='lnk.bk_shot',
-            player_business_key_col='hub_player.bk_player'
+            shot_business_key_col='bk_shot',
+            player_business_key_col='bk_player'
         ) }} as lk_shot_player,
 
-        hub_shot.hk_shot,
-        lnk.hk_player,
+        hk_shot,
+        hk_player,
 
-        lnk.bk_shot,
-        hub_player.bk_player,
+        bk_shot,
+        bk_player,
 
-        lnk.shot_number,
         lnk.record_source
-    from joined as lnk
-    left join hub_shot on lnk.bk_shot = hub_shot.bk_shot
-    left join hub_player on lnk.hk_player = hub_player.hk_player
+    from int_shot_player
 ),
 
 
@@ -91,9 +53,7 @@ final as (
         hk_shot,
         bk_shot,
         hk_player,
-        bk_player,
-
-        shot_number
+        bk_player
 
     from records_rownum as incr
     where 1=1

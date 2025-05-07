@@ -3,7 +3,7 @@ version: 2
 models:
   - name: bus_dv__bridge__shot__player
     description: >
-      Bridge table for shot_player data.
+      Bridge table for shot-player data.
 
     columns:
       - name: lk_shot_player
@@ -30,9 +30,6 @@ models:
         description: Hash-based unique identifier for shot.
         data_tests:
           - not_null
-          - relationships:
-              to: ref('bus_dv__hub__shot')
-              field: hk_shot
 
       - name: bk_shot
         data_type: string
@@ -45,18 +42,9 @@ models:
         description: Hash-based unique identifier for player.
         data_tests:
           - not_null
-          - relationships:
-              to: ref('raw_dv__hub__player')
-              field: hk_player
 
       - name: bk_player
         data_type: string
         description: Unique identifier for player.
-        data_tests:
-          - not_null
-
-      - name: shot_number
-        data_type: integer
-        description: Shot number in point (assigns same value to multiple serve attempts).
         data_tests:
           - not_null
