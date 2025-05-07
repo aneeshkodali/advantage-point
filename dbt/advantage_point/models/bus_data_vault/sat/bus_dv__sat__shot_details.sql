@@ -8,7 +8,7 @@ hub_shots as (
     select * from {{ ref('bus_dv__hub__shot') }}
 ),
 
-shot_details as (
+int_shot as (
     select
         bk_shot,
         bus_dv_source_model as record_source,
@@ -37,9 +37,9 @@ records_hash as (
             'sat.shot_result',
             'sat.shot_type',
         ]) }} as hash_diff
-    from shot_details as sat
+    from int_shot as sat
     left join hub_shots as hub_s on 1=1
-        and sat.bk_shot = hub_s.bk_shot
+        and sat.hk_shot = hub_s.hk_shot
 ),
 
 -- filter for incremental changes
