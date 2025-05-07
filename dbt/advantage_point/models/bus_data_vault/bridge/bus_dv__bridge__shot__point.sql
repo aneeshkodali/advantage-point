@@ -27,6 +27,9 @@ records_lkey as (
 
         bk_shot,
         bk_point,
+
+        shot_number,
+
         bus_dv_source_model as record_source
     from int_shot_point
 ),
@@ -51,7 +54,9 @@ final as (
         hk_shot,
         bk_shot,
         hk_point,
-        bk_point
+        bk_point,
+
+        shot_number
 
     from records_rownum as incr
     where 1=1

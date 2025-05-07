@@ -48,3 +48,9 @@ models:
         description: Unique identifier for point.
         data_tests:
           - not_null
+
+      - name: shot_number
+        data_type: integer
+        description: Shot number in point (assigns same value to multiple serve attempts).
+        data_tests:
+          - not_null
