@@ -7,6 +7,7 @@ point_details as (
         hash_diff,
         record_source,
 
+        point_score_in_game,
         point_side,
         point_length,
         point_result,
@@ -29,6 +30,7 @@ final as (
     select
         hk_union.hk_point,
 
+        point_details.point_score_in_game,
         point_details.point_side,
         point_details.point_length,
         point_details.point_result,

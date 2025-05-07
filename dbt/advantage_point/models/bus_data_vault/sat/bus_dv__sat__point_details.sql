@@ -13,6 +13,7 @@ int_point as (
         hk_point,
         bus_dv_source_model as record_source,
 
+        point_score_in_game,
         point_side,
         point_length,
         point_result,
@@ -26,12 +27,14 @@ records_hash as (
         hub_p.hk_point,
         sat.record_source,
 
+        sat.point_score_in_game,
         sat.point_side,
         sat.point_length,
         sat.point_result,
         sat.rally_length,
         
         {{ dbt_utils.generate_surrogate_key([
+            'sat.point_score_in_game',
             'sat.point_side',
             'sat.point_length',
             'sat.point_result',
@@ -50,7 +53,8 @@ final as (
         current_timestamp as load_datetime,
         hash_diff,
         record_source,
-
+        
+        point_score_in_game,
         point_side,
         point_length,
         point_result,

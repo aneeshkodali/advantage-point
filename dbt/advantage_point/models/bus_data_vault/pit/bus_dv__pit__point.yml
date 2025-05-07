@@ -17,6 +17,10 @@ models:
               to: ref('raw_dv__hub__point')
               field: hk_point
 
+      - name: point_score_in_game
+        data_type: string
+        description: Point score within the game (from server's perspective).
+
       - name: point_side
         data_type: string
         description: Side of the court on which the point is played.
