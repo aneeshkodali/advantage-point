@@ -10,38 +10,25 @@ link_record_sources as (
     select * from {{ ref('stg__seed__link_record_sources') }}
 ),
 
-int_shot as (
-    select * from {{ ref('bus_dv__int__shot') }}
-),
-
-hub_shot as (
-    select * from {{ ref('bus_dv__hub__shot') }}
-),
-
-hub_point as (
-    select * from {{ ref('raw_dv__hub__point') }}
+int_shot_point as (
+    select * from {{ ref('bus_dv__int__shot__point') }}
 ),
 
 -- add hub key
 records_lkey as (
     select
         {{ generate_shot_point_surrogate_key(
-            shot_business_key_col='lnk.bk_shot',
-            point_business_key_col='lnk.bk_point'
+            shot_business_key_col='bk_shot',
+            point_business_key_col='bk_point'
         ) }} as lk_shot_point,
 
-        hub_shot.hk_shot,
-        hub_point.hk_point,
+        hk_shot,
+        hk_point,
 
-        lnk.bk_shot,
-        lnk.bk_point,
-
-        lnk.shot_number,
-        lnk.shot_number_in_point,
-        lnk.bus_dv_source_model as record_source
-    from int_shot as lnk
-    left join hub_shot on lnk.bk_shot = hub_shot.bk_shot
-    left join hub_point on lnk.hk_point = hub_point.hk_point
+        bk_shot,
+        bk_point,
+        bus_dv_source_model as record_source
+    from int_shot_point
 ),
 
 -- add row number to order records
@@ -64,10 +51,7 @@ final as (
         hk_shot,
         bk_shot,
         hk_point,
-        bk_point,
-
-        shot_number,
-        shot_number_in_point
+        bk_point
 
     from records_rownum as incr
     where 1=1
