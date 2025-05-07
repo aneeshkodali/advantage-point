@@ -20,6 +20,26 @@ models:
       - name: point_side
         data_type: string
         description: Side of the court on which the point is played.
+      
+      - name: point_side
+        data_type: string
+        description: Side of the court on which the point is played.
+
+      - name: point_length
+        data_type: integer
+        description: >
+          Number of shots in point.
+          Does NOT factor in second serves (1st and 2nd serve count as 1 serve attempt/shot) or point result.
+
+      - name: point_result
+        data_type: string
+        description: Outcome of the point rally.
+        
+      - name: rally_length
+        data_type: integer
+        description: >
+          Number of shots in the rally, accounting for point outcome (does not count shot that resulted in an 'error').
+          Does NOT factor in second serves (1st and 2nd serve count as 1 serve attempt/shot).
 
       - name: point_details_hash_diff
         data_type: string
