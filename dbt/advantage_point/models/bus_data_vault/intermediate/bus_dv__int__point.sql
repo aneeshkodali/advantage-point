@@ -56,6 +56,7 @@ running_numbers as (
     select
         ext_sat_points.*,
         hub_match.bk_match,
+        hub_point.bk_point,
         hub_point.point_number_in_match,
         dense_rank() over (
             partition by link_match_point.hk_match
@@ -183,6 +184,7 @@ point_type as (
 final as (
     select
         hk_point,
+        bk_point,
         set_score_in_match,
         game_score_in_set,
         point_score_in_game,
