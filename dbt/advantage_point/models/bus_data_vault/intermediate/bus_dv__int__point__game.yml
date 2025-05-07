@@ -1,9 +1,9 @@
 version: 2
 
 models:
-  - name: bus_dv__int__shot__point
+  - name: bus_dv__int__point__game
     description: >
-      Intermediate model for shot-point data.
+      Intermediate model for point-game data.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
