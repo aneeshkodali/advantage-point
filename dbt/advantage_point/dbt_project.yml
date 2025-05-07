@@ -57,5 +57,7 @@ models:
         +materialized: incremental
       sat:
         +materialized: incremental
+      pit:
+        +materialized: table
       bridge:
         +materialized: incremental
