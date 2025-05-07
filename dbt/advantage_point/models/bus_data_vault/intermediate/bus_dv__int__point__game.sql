@@ -1,7 +1,7 @@
 with
 
 int_point as (
-    select * from {{ ref('bus_dv__int__point__game') }}
+    select * from {{ ref('bus_dv__int__point') }}
 ),
 
 hub_point as (
