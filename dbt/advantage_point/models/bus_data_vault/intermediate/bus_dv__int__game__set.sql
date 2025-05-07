@@ -1,7 +1,7 @@
 with
 
-point_scores_parsed as (
-    select * from {{ ref('bus_dv__int__point_scores_parsed') }}
+int_point as (
+    select * from {{ ref('bus_dv__int__point') }}
 ),
 
 game_set as (
@@ -9,7 +9,7 @@ game_set as (
         game_number_in_set,
         bk_set,
         bk_game
-    from point_scores_parsed
+    from int_point
 ),
 
 final as (

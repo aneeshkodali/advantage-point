@@ -22,8 +22,8 @@ bridge_shot_player as (
     select * from {{ ref('bus_dv__pit__point') }}
 ),
 
-int_point_scores_parsed as (
-    select * from {{ ref('bus_dv__int__point_scores_parsed') }}
+int_point as (
+    select * from {{ ref('bus_dv__int__point') }}
 ),
 
 -- select initial columns
@@ -52,21 +52,21 @@ point_player_point_scores as (
 
         -- add player point score
         case
-            when link_point_player.is_point_server = true then int_point_scores_parsed.point_score_in_game_server
-            when link_point_player.is_point_server != true then int_point_scores_parsed.point_score_in_game_receiver
+            when link_point_player.is_point_server = true then int_point.point_score_in_game_server
+            when link_point_player.is_point_server != true then int_point.point_score_in_game_receiver
             else null
         end as point_score_in_game_player,
 
         -- add player int point score
         case
-            when link_point_player.is_point_server = true then int_point_scores_parsed.point_score_in_game_server_int
-            when link_point_player.is_point_server != true then int_point_scores_parsed.point_score_in_game_receiver_int
+            when link_point_player.is_point_server = true then int_point.point_score_in_game_server_int
+            when link_point_player.is_point_server != true then int_point.point_score_in_game_receiver_int
             else null
         end as point_score_in_game_player_int
             
 
     from link_point_player
-    left join int_point_scores_parsed on link_point_player.hk_point = int_point_scores_parsed.hk_point
+    left join int_point on link_point_player.hk_point = int_point.hk_point
 ),
 
 -- add is_point_ending_player (did player hit last shot)

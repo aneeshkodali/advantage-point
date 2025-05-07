@@ -1,7 +1,7 @@
 with
 
-int_point_scores_parsed as (
-    select * from {{ ref('bus_dv__int__point_scores_parsed') }}
+int_point as (
+    select * from {{ ref('bus_dv__int__point') }}
 ),
 
 tournament_format_history as (
@@ -17,7 +17,7 @@ set_last_point as (
     select
         bk_set,
         max(point_number_in_match) as point_number_in_match
-    from int_point_scores_parsed
+    from int_point
     group by 1
 ),
 
@@ -55,7 +55,7 @@ set_details as (
         end as is_tiebreak_set
                     
 
-    from int_point_scores_parsed as s
+    from int_point as s
     -- join match_tournament to get tournament
     left join link_match_tournament as m_t on s.hk_match = m_t.hk_match
     -- join tournament_format_history to get best_of_sets
