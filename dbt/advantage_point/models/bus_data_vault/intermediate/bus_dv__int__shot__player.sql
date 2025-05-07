@@ -54,11 +54,11 @@ int_shot_player_hk as (
 
 final as (
     select
-        hk_point,
         hk_shot,
-        bk_point,
+        hk_player
         bk_shot,
-
+        bk_player,
+        
         shot_number,
 
         current_timestamp as bus_dv_load_datetime,
