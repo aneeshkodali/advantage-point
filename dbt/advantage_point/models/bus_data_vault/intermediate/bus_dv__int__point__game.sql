@@ -47,8 +47,6 @@ final as (
         bk_game,
 
         point_number_in_game,
-        is_break_point,
-        is_game_point,
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__point__game' as bus_dv_source_model
