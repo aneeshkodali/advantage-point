@@ -45,7 +45,7 @@ int_shot_player_hk as (
         hub_shot.hk_shot,
         int_shot_player.bk_shot,
         hub_player.hk_player,
-        int_shot_player.bk_player,
+        hub_player.bk_player,
         int_shot_player.shot_number
     from joined as int_shot_player
     left join hub_shot on int_shot_player.bk_shot = hub_shot.bk_shot
