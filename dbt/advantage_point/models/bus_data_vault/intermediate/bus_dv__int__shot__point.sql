@@ -22,7 +22,7 @@ int_shot_point_hk as (
     from int_shot as int_shot_point
     left join hub_point on int_shot_point.hk_point = hub_point.hk_point
     left join hub_shot on int_shot_point.bk_shot = hub_shot.bk_shot
-)
+),
 
 final as (
     select
