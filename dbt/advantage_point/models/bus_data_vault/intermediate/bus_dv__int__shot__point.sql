@@ -33,7 +33,7 @@ final as (
 
         current_timestamp as bus_dv_load_datetime,
         'bus_dv__int__shot__point' as bus_dv_source_model
-    from int_shot
+    from int_shot_point_hk
 )
 
 select * from final
