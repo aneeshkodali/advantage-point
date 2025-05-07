@@ -39,7 +39,7 @@ records_hash as (
         ]) }} as hash_diff
     from int_shot as sat
     left join hub_shots as hub_s on 1=1
-        and sat.hk_shot = hub_s.hk_shot
+        and sat.bk_shot = hub_s.bk_shot
 ),
 
 -- filter for incremental changes
