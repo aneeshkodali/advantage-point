@@ -54,31 +54,9 @@ models:
         description: Unique identifier for game.
         data_tests:
           - not_null
-      
-      - name: point_score_in_game
-        data_type: string
-        description: Point score within the game (from server's perspective).
-        data_tests:
-          - not_null
 
       - name: point_number_in_game
         data_type: integer
         description: Point number in the current game.
         data_tests:
           - not_null
-
-      - name: is_game_point
-        data_type: boolean
-        description: Boolean flag to indicate if point is a game point (server has a chance to win the game).
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [false, true]
-
-      - name: is_break_point
-        data_type: boolean
-        description: Boolean flag to indicate if point is a break point (receiver has a chance to win the game).
-        data_tests:
-          - not_null
-          - accepted_values:
-              values: [false, true]
