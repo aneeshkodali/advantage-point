@@ -1,6 +1,6 @@
 {{
     config(
-        unique_key='lk_point_game'
+        unique_key='lk_point_set'
     )
 }}
 
@@ -10,52 +10,52 @@ link_record_sources as (
     select * from {{ ref('stg__seed__link_record_sources') }}
 ),
 
-int_point_game as (
-    select * from {{ ref('bus_dv__int__point__game') }}
+int_point_set as (
+    select * from {{ ref('bus_dv__int__point__set') }}
 ),
 
 -- select columns
 -- join to get hk and bk
-point_game as (
+point_set as (
     select
-        {{ generate_point_game_surrogate_key(
+        {{ generate_point_set_surrogate_key(
             point_business_key_col='bk_point',
-            game_business_key_col='bk_game'
-        ) }} as lk_point_game,
+            set_business_key_col='bk_set'
+        ) }} as lk_point_set,
         
         hk_point,
         bk_point,
-        hk_game,
-        bk_game,
+        hk_set,
+        bk_set,
 
-        point_number_in_game,
+        point_number_in_set,
 
         bus_dv_source_model as record_source
-    from int_point_game
+    from int_point_set
 ),
 
 -- add row number to order records
 records_rownum as (
     select
         lnk.*,
-        row_number() over (partition by lnk.lk_point_game order by link_rec_src.sort_order) as rn -- assing row number
-    from point_game as lnk
+        row_number() over (partition by lnk.lk_point_set order by link_rec_src.sort_order) as rn -- assing row number
+    from point_set as lnk
     left join link_record_sources as link_rec_src on 1=1
-        and link_rec_src.link_name = 'bus_dv__bridge__point__game'
+        and link_rec_src.link_name = 'bus_dv__bridge__point__set'
         and lnk.record_source = link_rec_src.record_source
 ),
 
 final as (
     select
-        lk_point_game,
+        lk_point_set,
         current_timestamp as load_datetime,
         record_source,
 
         hk_point,
         bk_point,
-        hk_game,
-        bk_game,
-        point_number_in_game,
+        hk_set,
+        bk_set,
+        point_number_in_set,
 
     from records_rownum as incr
     where 1=1
@@ -65,7 +65,7 @@ final as (
             select 1
             from {{ this }} as existing
             where 1=1
-                and existing.lk_point_game = incr.lk_point_game
+                and existing.lk_point_set = incr.lk_point_set
         ) -- filter for new pk records
         {% endif %}
 )

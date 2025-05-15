@@ -1,6 +1,7 @@
 link_name,record_source,sort_order
 bus_dv__bridge__point__game,bus_dv__int__point__game,1
 bus_dv__bridge__point__player,bus_dv__int__point__player,1
+bus_dv__bridge__point__set,bus_dv__int__point__set,1
 bus_dv__bridge__shot__player,bus_dv__int__shot__player,1
 bus_dv__bridge__shot__point,bus_dv__int__shot__point,1
 raw_dv__link__match__player,tennisabstract__matches,1
