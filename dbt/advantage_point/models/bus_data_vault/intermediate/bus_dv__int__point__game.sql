@@ -18,9 +18,7 @@ point_game as (
         hk_point,
         bk_point,
         point_number_in_game,
-        bk_game,
-        is_break_point,
-        is_game_point
+        bk_game
     from int_point
 ),
 
@@ -31,9 +29,7 @@ point_game_hk as (
         int_point_game.bk_point,
         hub_game.hk_game,
         int_point_game.bk_game,
-        int_point_game.point_number_in_game,
-        int_point_game.is_break_point,
-        int_point_game.is_game_point
+        int_point_game.point_number_in_game
     from point_game as int_point_game
     left join hub_point on int_point_game.hk_point = hub_point.hk_point
     left join hub_game on int_point_game.bk_game = hub_game.bk_game
