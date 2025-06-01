@@ -18,7 +18,6 @@ def main():
     # load environment variables
     ENV_FILE_PATH = r'G:\My Drive\Projects\advantage_point\advantage-point\ingest\.env'
     load_env_file(env_path=ENV_FILE_PATH)
-    ingestion_database_name = os.getenv("INGESTION_DATABASE")
 
     # initialize database connection
     connection = create_connection()
