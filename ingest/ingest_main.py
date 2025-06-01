@@ -1,10 +1,10 @@
 from utils.functions.env.format_env_value import format_env_value
 from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
-from utils.functions.supabase.format_sql_query_results import format_sql_query_results
-
+from utils.functions.supabase.query_control_table import query_control_table
 import logging
 import os
+import traceback
 
 def main():
 
@@ -18,29 +18,31 @@ def main():
     # load environment variables
     ENV_FILE_PATH = r'G:\My Drive\Projects\advantage_point\advantage-point\ingest\.env'
     load_env_file(env_path=ENV_FILE_PATH)
-    ingestion_database_name = os.getenv("SUPABASE_DATABASE")
+    ingestion_database_name = os.getenv("INGESTION_DATABASE")
 
     # initialize database connection
     connection = create_connection()
-    # initialize cursor
-    cursor = connection.cursor()
 
-    # query control table
-    control_table_query = f"""
-        select
-            *
-        from {ingestion_database_name}.meta.control_table__web_scripts
-        where is_active = True
-    """
-    cursor.execute(control_table_query)
+    logger.info(f"Starting ingestion process")
 
-    control_table_record_list = format_sql_query_results(cursor)
+    try:
 
-    logger.info(control_table_record_list)
+        # query control table
+        control_table_record_list = query_control_table(
+            connection=connection
+        )
 
-    # close database connection
-    cursor.close()
-    connection.close()
+        logger.info(control_table_record_list)
+
+    except Exception as e:
+        logger.error(f"Error with ingestion process: {e}")
+        logger.error(traceback.format_exc())
+
+    finally:
+        
+        # close database connection
+        logger.info(f"End of ingestion process")
+        connection.close()
 
 if __name__ == '__main__':
     main()
