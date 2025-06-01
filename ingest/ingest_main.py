@@ -26,6 +26,12 @@ def main():
 
     try:
 
+        # create table databases
+        logger.info(f"Ensuring databases exist")
+        create_databases(
+            connection=connection
+        )
+
         # query control table
         control_table_record_list = query_control_table(
             connection=connection

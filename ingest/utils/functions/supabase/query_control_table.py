@@ -20,7 +20,7 @@ def query_control_table(
     logger = logging.getLogger(__name__)
 
     # retrieve database name
-    postgres_ingest_database_name = os.getenv("INGESTION_DATABASE")
+    postgres_ingest_database_name = os.getenv("INGESTION_DATABASE").upper()
 
     # create cursor
     cursor = connection.cursor()
@@ -29,15 +29,15 @@ def query_control_table(
     # prioritizes:
     # - tables that don't exist
     control_table_records_sql = f"""
-        with
+        WITH
             -- select control table records
-            control_table as (
-                select
+            CONTROL_TABLE as (
+                SELECT
                     *
-                from {postgres_ingest_database_name}.meta.vw__control_table__web_scripts
-                where is_active = true
+                FROM {postgres_ingest_database_name}.META.VW__CONTROL_TABLE__WEB_SCRIPTS
+                WHERE IS_ACTIVE = TRUE
             )
-        select * from control_table
+        SELECT * FROM CONTROL_TABLE
     """
     # execute query
     # logger.debug(f"Running SQL: {control_table_records_sql}")
