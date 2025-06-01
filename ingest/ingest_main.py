@@ -1,8 +1,9 @@
+from utils.functions.env.format_env_value import format_env_value
 from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
-from utils.functions.version_control.get_current_branch import get_current_branch
 
 import logging
+import os
 
 def main():
 
@@ -19,9 +20,6 @@ def main():
 
     # initialize database connection
     db_connection = create_connection()
-
-    git_branch = get_current_branch()
-    logger.info(f"Branch: {git_branch}")
 
     # close database connection
     db_connection.close()
