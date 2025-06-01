@@ -24,7 +24,7 @@ def create_databases(
 
     # construct query
     control_table_database_sql = f"""
-        with
+        WITH
             -- select target table databases
             TARGET_DATABASE AS (
                 SELECT DISTINCT
@@ -52,8 +52,8 @@ def create_databases(
             -- query information_schema for databases
             DATABASES_INFO_SCHEMA AS (
                 SELECT
-                    DATABASE_NAME
-                FROM {postgres_ingest_database_name}.INFORMATION_SCHEMA.DATABASES
+                    DATNAME AS DATABASE_NAME
+                FROM PG_DATABASE
             ),
             -- join database datasets
             DATABASES_JOINED AS (
@@ -80,8 +80,8 @@ def create_databases(
     for database_dict in database_list:
 
         # parse dict
-        database_name = database_dict['DATABASE_NAME']
-        database_exists_flag = database_dict['DATABASE_EXISTS_FLAG']
+        database_name = database_dict['database_name']
+        database_exists_flag = database_dict['database_exists_flag']
 
         if database_exists_flag == False:
 

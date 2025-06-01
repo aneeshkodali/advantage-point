@@ -1,6 +1,7 @@
 from utils.functions.env.format_env_value import format_env_value
 from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
+from utils.functions.supabase.create_databases import create_databases
 from utils.functions.supabase.query_control_table import query_control_table
 import logging
 import os
