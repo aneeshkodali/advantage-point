@@ -1,7 +1,8 @@
 from utils.functions.env.format_env_value import format_env_value
 from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
-from utils.functions.supabase.create_databases import create_databases
+# from utils.functions.supabase.create_databases import create_databases
+from utils.functions.supabase.create_schemas import create_schemas
 from utils.functions.supabase.query_control_table import query_control_table
 import logging
 import os
@@ -21,21 +22,27 @@ def main():
     load_env_file(env_path=ENV_FILE_PATH)
 
     # initialize database connection
-    connection = create_connection()
+    postgres_db_connection = create_connection()
 
     logger.info(f"Starting ingestion process")
 
     try:
 
-        # create table databases
-        logger.info(f"Ensuring databases exist")
-        create_databases(
-            connection=connection
+        # # create table databases
+        # logger.info(f"Ensuring databases exist")
+        # create_databases(
+        #     connection=postgres_db_connection
+        # )
+
+        # create table schemas
+        logger.info(f"Ensuring schemas exist")
+        create_schemas(
+            connection=postgres_db_connection
         )
 
         # query control table
         control_table_record_list = query_control_table(
-            connection=connection
+            connection=postgres_db_connection
         )
 
         logger.info(control_table_record_list)
@@ -48,7 +55,7 @@ def main():
         
         # close database connection
         logger.info(f"End of ingestion process")
-        connection.close()
+        postgres_db_connection.close()
 
 if __name__ == '__main__':
     main()

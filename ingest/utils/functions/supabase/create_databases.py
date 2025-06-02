@@ -17,7 +17,7 @@ def create_databases(
     logger = logging.getLogger(__name__)
 
     # retrieve database name
-    postgres_ingest_database_name = os.getenv("INGESTION_DATABASE").upper()
+    postgres_ingest_database_name = os.getenv("SUPABASE_DATABASE").upper()
 
     # create cursor
     cursor = connection.cursor()
