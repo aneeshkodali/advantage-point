@@ -22,7 +22,7 @@ def main():
     load_env_file(env_path=ENV_FILE_PATH)
 
     # initialize database connection
-    postgres_db_connection = create_connection()
+    connection = create_connection()
 
     logger.info(f"Starting ingestion process")
 
@@ -31,18 +31,18 @@ def main():
         # # create table databases
         # logger.info(f"Ensuring databases exist")
         # create_databases(
-        #     connection=postgres_db_connection
+        #     connection=connection
         # )
 
         # create table schemas
         logger.info(f"Ensuring schemas exist")
         create_schemas(
-            connection=postgres_db_connection
+            connection=connection
         )
 
         # query control table
         control_table_record_list = query_control_table(
-            connection=postgres_db_connection
+            connection=connection
         )
 
         logger.info(control_table_record_list)
@@ -55,7 +55,7 @@ def main():
         
         # close database connection
         logger.info(f"End of ingestion process")
-        postgres_db_connection.close()
+        connection.close()
 
 if __name__ == '__main__':
     main()
