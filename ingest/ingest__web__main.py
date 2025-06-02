@@ -3,6 +3,7 @@ from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
 # from utils.functions.supabase.create_databases import create_databases
 from utils.functions.supabase.create_schemas import create_schemas
+from utils.functions.supabase.drop_table import drop_table
 from utils.functions.supabase.query_control_table import query_control_table
 import importlib
 import logging
@@ -51,10 +52,14 @@ def main():
 
             # parse control table record
             source_script_name = control_table_dict['source_script_name']
+            target_database_name = control_table_dict['target_database_name']
             target_schema_name = control_table_dict['target_schema_name']
             target_table_name = control_table_dict['target_table_name']
+            temp_database_name = control_table_dict['temp_database_name']
+            temp_schema_name = control_table_dict['temp_schema_name']
+            temp_table_name = control_table_dict['temp_table_name']
 
-            logger.info(f"Beginning ingestion process for target table: {target_schema_name}.{target_table_name}")
+            logger.info(f"Beginning ingestion process for target table: {target_database_name}.{target_schema_name}.{target_table_name}")
 
             # extract source data
             try:
@@ -69,14 +74,25 @@ def main():
                 logger.error(traceback.format_exc())
                 continue
 
+            # if no data returned, continue with next control table record
+            if source_data_df.empty or source_data_df is None:
+                logger.warning(f"Extracted data is empty for script {source_script_name}. Skipping.")
+                continue
+
+            logger.info(f"Number of records extracted: {len(source_data_df)}")
+
+            # drop temp table
+            logger.info(f"Dropping temp table if exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+            drop_table(
+                connection=connection,
+                database_name=temp_database_name,
+                schema_name=temp_schema_name,
+                table_name=temp_table_name
+            )
+
     except Exception as e:
         logger.error(f"Error with ingestion process: {e}")
         logger.error(traceback.format_exc())
-
-    # if no data returned, continue with next control table record
-    if source_data_df.empty or source_data_df is None:
-        logger.warning(f"Extracted data is empty for script {source_script_name}. Skipping.")
-        continue
 
     finally:
         
