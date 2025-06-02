@@ -45,7 +45,26 @@ def main():
             connection=connection
         )
 
-        logger.info(control_table_record_list)
+        # loop through control table records
+        logger.info(f"Looping through control table records: {len(control_table_record_list)}")
+        for control_table_dict in control_table_record_list:
+
+            # parse control table record
+            source_script_name = control_table_dict['source_script_name']
+            target_schema_name = control_table_dict['target_schema_name']
+            target_table_name = control_table_dict['target_table_name']
+
+            logger.info(f"Beginning ingestion process for target table: {target_schema_name}.{target_table_name}")
+
+            # extract source data
+            try:
+                logger.info(f"Retrieving source data using script: {source_script_name}")
+
+             # continue with next record if extract function fails 
+            except Exception as e:
+                logger.error(f"Exception for {source_script_name}: {e}")
+                logger.error(traceback.format_exc())
+                continue
 
     except Exception as e:
         logger.error(f"Error with ingestion process: {e}")
