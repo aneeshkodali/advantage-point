@@ -12,4 +12,4 @@ def format_env_value(
         return value
     # otherwise return 'dev' value
     else:
-        return f"{value}_dev"
+        return f"{value}__dev"

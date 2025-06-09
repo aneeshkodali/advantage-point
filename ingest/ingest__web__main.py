@@ -2,7 +2,9 @@ from utils.functions.env.format_env_value import format_env_value
 from utils.functions.env.load_env_file import load_env_file
 from utils.functions.supabase.create_connection import create_connection
 # from utils.functions.supabase.create_databases import create_databases
-from utils.functions.supabase.create_schemas import create_schemas
+# from utils.functions.supabase.create_schemas import create_schemas
+from utils.functions.supabase.create_schema import create_schema
+from utils.functions.supabase.create_and_load_table_with_df import create_and_load_table_with_df
 from utils.functions.supabase.drop_table import drop_table
 from utils.functions.supabase.query_control_table import query_control_table
 import importlib
@@ -41,17 +43,37 @@ def main():
             connection=connection
         )
 
+        # format database/schema names
+        control_table_record_list = [
+            {
+                **control_table_dict,
+                **{
+                    'target_database_name': control_table_dict['target_database_name'],
+                    'temp_database_name': control_table_dict['temp_database_name'],
+                    'target_schema_name': format_env_value(value=control_table_dict['target_schema_name']),
+                    'temp_schema_name': format_env_value(value=control_table_dict['temp_schema_name']),
+                },
+            }
+            for control_table_dict in control_table_record_list
+        ]
         # # create table databases
         # logger.info(f"Ensuring databases exist")
         # create_databases(
         #     connection=connection
         # )
 
-        # # create table schemas
-        # logger.info(f"Ensuring schemas exist")
-        # create_schemas(
-        #     connection=connection
-        # )
+        # create table schemas
+        control_table_schema_list = set()
+        for control_table_dict in control_table_record_list:
+            control_table_schema_list.add(control_table_dict['target_schema_name'])
+            control_table_schema_list.add(control_table_dict['temp_schema_name'])
+        control_table_schema_list = list(control_table_schema_list)
+        logger.info(f"Ensuring schemas exist")
+        for schema_name in control_table_schema_list:
+            create_schema(
+                connection=connection,
+                schema_name=schema_name
+            )
 
         # loop through control table records
         logger.info(f"Looping through control table records: {len(control_table_record_list)}")
@@ -92,6 +114,16 @@ def main():
             logger.info(f"Dropping temp table if exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
             drop_table(
                 connection=connection,
+                database_name=temp_database_name,
+                schema_name=temp_schema_name,
+                table_name=temp_table_name
+            )
+
+            # create/load temp table
+            logger.info(f"Creating and loading temp table with {len(source_data_df)} records: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+            create_and_load_table_with_df(
+                connection=connection,
+                df=source_data_df,
                 database_name=temp_database_name,
                 schema_name=temp_schema_name,
                 table_name=temp_table_name
