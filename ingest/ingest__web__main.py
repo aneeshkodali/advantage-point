@@ -7,6 +7,7 @@ from utils.functions.supabase.drop_table import drop_table
 from utils.functions.supabase.query_control_table import query_control_table
 import importlib
 import logging
+import os
 import traceback
 
 def main():
@@ -23,11 +24,22 @@ def main():
     load_env_file(env_path=ENV_FILE_PATH)
 
     # initialize database connection
-    connection = create_connection()
+    connection = create_connection(
+        database_name=os.getenv('SUPABASE_DATABASE'),
+        user_name=os.getenv('SUPABASE_USER'),
+        user_password=os.getenv('SUPABASE_PASSWORD'),
+        host_name=os.getenv('SUPABASE_HOST'),
+        port_number=os.getenv('SUPABASE_PORT')
+    )
 
     logger.info(f"Starting ingestion process")
 
     try:
+
+        # query control table
+        control_table_record_list = query_control_table(
+            connection=connection
+        )
 
         # # create table databases
         # logger.info(f"Ensuring databases exist")
@@ -35,16 +47,11 @@ def main():
         #     connection=connection
         # )
 
-        # create table schemas
-        logger.info(f"Ensuring schemas exist")
-        create_schemas(
-            connection=connection
-        )
-
-        # query control table
-        control_table_record_list = query_control_table(
-            connection=connection
-        )
+        # # create table schemas
+        # logger.info(f"Ensuring schemas exist")
+        # create_schemas(
+        #     connection=connection
+        # )
 
         # loop through control table records
         logger.info(f"Looping through control table records: {len(control_table_record_list)}")
