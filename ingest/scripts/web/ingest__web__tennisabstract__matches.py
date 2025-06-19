@@ -91,7 +91,7 @@ def main(
         # creating and loading temp table
         logger.info(f"Loading data to table: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
         record_batch_df = get_match_data_df(
-            match_url_list = record_batch_list
+            match_url_list=record_batch_list
         )
         create_and_load_table_with_df(
             connection=connection,
