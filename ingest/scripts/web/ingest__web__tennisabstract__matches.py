@@ -78,11 +78,6 @@ def main(
             f"(batch {i // source_max_record_load_count + 1})"
         )
 
-        # create/load temp table
-        record_batch_df = get_match_data_df(
-            match_url_list = record_batch_list
-        )
-
         # drop temp table
         logger.info(f"Ensuring table is dropped: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
         drop_table(
@@ -91,10 +86,13 @@ def main(
             schema_name=temp_schema_name,
             table_name=temp_table_name
         )
-        logger.info(f"Table no longer exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+        logger.info(f"Table no longer exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")        
 
         # creating and loading temp table
         logger.info(f"Loading data to table: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+        record_batch_df = get_match_data_df(
+            match_url_list = record_batch_list
+        )
         create_and_load_table_with_df(
             connection=connection,
             df=record_batch_df,
