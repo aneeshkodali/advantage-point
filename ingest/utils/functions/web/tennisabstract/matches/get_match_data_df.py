@@ -1,19 +1,26 @@
-from utils.functions.web.tennisabstract.matches.get_match_url_list import get_match_url_list
+from typing import (
+    List,
+)
 from utils.functions.web.tennisabstract.matches.get_match_data_scraped import get_match_data_scraped
 from utils.functions.web.tennisabstract.matches.get_match_data_url import get_match_data_url
 import logging
 import pandas as pd
 
-def main():
+def get_match_data_df(
+    match_url_list: List
+) -> pd.DataFrame:
+    """
+    Arguments:
+    - match_url_list: List of match urls
+
+    Create pandas dataframe from list.
+    """
 
     # set logging
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
-
-    # get list of match urls from source
-    match_url_list = get_match_url_list()
 
     # loop through match urls
     match_data_list = []
@@ -57,7 +64,3 @@ def main():
         return match_data_df
 
     return pd.DataFrame()
-  
-
-if __name__ == "__main__":
-    main()

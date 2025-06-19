@@ -24,28 +24,11 @@ def drop_table(
     # inititialize cursor
     cursor = connection.cursor()
 
-    # construct query to check table existence
-    table_exists_sql = f"""
-        SELECT
-            COUNT(*) > 0 AS TABLE_EXISTS_FLAG
-        FROM {database_name}.INFORMATION_SCHEMA.TABLES
-        WHERE
-                TABLE_SCHEMA = '{schema_name}'
-            AND TABLE_NAME = '{table_name}'
-        ;
-    """
-
-    # execute query for target table existence
-    cursor.execute(table_exists_sql)
-    table_exists_flag = cursor.fetchone()[0]
-
-    if table_exists_flag == True:
-        # drop table if exists
-        drop_table_sql = f"DROP TABLE {database_name}.{schema_name}.{table_name}"
-        # logger.debug(f"Running SQL: {drop_table_sql}")
-        cursor.execute(drop_table_sql)
-        # logger.info(f"Dropped table: {database_name}.{schema_name}.{table_name}")
+    # drop table if exists
+    drop_table_sql = f"DROP TABLE IF EXISTS {database_name}.{schema_name}.{table_name};"
+    # logger.debug(f"Running SQL: {drop_table_sql}")
+    cursor.execute(drop_table_sql)
+    # logger.info(f"Table no longer exists: {database_name}.{schema_name}.{table_name}")
         
-
     # close cursor
     cursor.close()

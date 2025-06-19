@@ -43,19 +43,19 @@ def main():
             connection=connection
         )
 
-        # format database/schema names
-        control_table_record_list = [
-            {
-                **control_table_dict,
-                **{
-                    'target_database_name': control_table_dict['target_database_name'],
-                    'temp_database_name': control_table_dict['temp_database_name'],
-                    'target_schema_name': format_env_value(value=control_table_dict['target_schema_name']),
-                    'temp_schema_name': format_env_value(value=control_table_dict['temp_schema_name']),
-                },
-            }
-            for control_table_dict in control_table_record_list
-        ]
+        # # format database/schema names
+        # control_table_record_list = [
+        #     {
+        #         **control_table_dict,
+        #         **{
+        #             'target_database_name': control_table_dict['target_database_name'],
+        #             'temp_database_name': control_table_dict['temp_database_name'],
+        #             'target_schema_name': format_env_value(value=control_table_dict['target_schema_name']),
+        #             'temp_schema_name': format_env_value(value=control_table_dict['temp_schema_name']),
+        #         },
+        #     }
+        #     for control_table_dict in control_table_record_list
+        # ]
         # # create table databases
         # logger.info(f"Ensuring databases exist")
         # create_databases(
@@ -83,10 +83,11 @@ def main():
             source_script_name = control_table_dict['source_script_name']
             target_database_name = control_table_dict['target_database_name']
             target_schema_name = control_table_dict['target_schema_name']
+            # target_table_exists_flag = control_table_dict['target_table_exists_flag']
             target_table_name = control_table_dict['target_table_name']
-            temp_database_name = control_table_dict['temp_database_name']
-            temp_schema_name = control_table_dict['temp_schema_name']
-            temp_table_name = control_table_dict['temp_table_name']
+            # temp_database_name = control_table_dict['temp_database_name']
+            # temp_schema_name = control_table_dict['temp_schema_name']
+            # temp_table_name = control_table_dict['temp_table_name']
 
             logger.info(f"Beginning ingestion process for target table: {target_database_name}.{target_schema_name}.{target_table_name}")
 
@@ -94,8 +95,11 @@ def main():
             try:
                 logger.info(f"Retrieving source data using script: {source_script_name}")
                 
-                source_script = importlib.import_module(source_script_name)
-                source_data_df = source_script.main()
+                source_script = importlib.import_module(f"scripts.web.{source_script_name}")
+                source_data_df = source_script.main(
+                    connection=connection,
+                    table_record_dict=control_table_dict
+                )
 
              # continue with next record if extract function fails 
             except Exception as e:
@@ -103,31 +107,36 @@ def main():
                 logger.error(traceback.format_exc())
                 continue
 
-            # if no data returned, continue with next control table record
-            if source_data_df.empty or source_data_df is None:
-                logger.warning(f"Extracted data is empty for script {source_script_name}. Skipping.")
-                continue
+            # # if no data returned, continue with next control table record
+            # if source_data_df.empty or source_data_df is None:
+            #     logger.warning(f"Extracted data is empty for script {source_script_name}. Skipping.")
+            #     continue
 
-            logger.info(f"Number of records extracted: {len(source_data_df)}")
+            # logger.info(f"Number of records extracted: {len(source_data_df)}")
 
-            # drop temp table
-            logger.info(f"Dropping temp table if exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
-            drop_table(
-                connection=connection,
-                database_name=temp_database_name,
-                schema_name=temp_schema_name,
-                table_name=temp_table_name
-            )
+            # # drop temp table
+            # logger.info(f"Dropping temp table if exists: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+            # drop_table(
+            #     connection=connection,
+            #     database_name=temp_database_name,
+            #     schema_name=temp_schema_name,
+            #     table_name=temp_table_name
+            # )
 
-            # create/load temp table
-            logger.info(f"Creating and loading temp table with {len(source_data_df)} records: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
-            create_and_load_table_with_df(
-                connection=connection,
-                df=source_data_df,
-                database_name=temp_database_name,
-                schema_name=temp_schema_name,
-                table_name=temp_table_name
-            )
+            # # create/load temp table
+            # logger.info(f"Creating and loading temp table with {len(source_data_df)} records: {temp_database_name}.{temp_schema_name}.{temp_table_name}")
+            # create_and_load_table_with_df(
+            #     connection=connection,
+            #     df=source_data_df,
+            #     database_name=temp_database_name,
+            #     schema_name=temp_schema_name,
+            #     table_name=temp_table_name
+            # )
+
+            # # check if target table exists
+            # if target_table_exists_flag == True:
+            #     logger.info(f"Target table {target_database_name}.{target_schema_name}.{target_table_name} exists: {target_table_exists_flag}")
+
 
     except Exception as e:
         logger.error(f"Error with ingestion process: {e}")

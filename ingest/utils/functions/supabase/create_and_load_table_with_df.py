@@ -1,8 +1,9 @@
+from psycopg2 import Error
+from utils.functions.supabase.check_table_existence import check_table_existence
 from utils.functions.supabase.infer_sql_type import infer_sql_type
 import logging
 import pandas as pd
 import psycopg2
-from psycopg2 import Error
 
 
 def create_and_load_table_with_df(
@@ -38,14 +39,23 @@ def create_and_load_table_with_df(
         # initialize cursor
         cursor = connection.cursor()
 
-        # create table
-        create_table_sql = f"""
-            CREATE TABLE IF NOT EXISTS {database_name}.{schema_name}.{table_name} (
-                {', '.join(column_type_list)}
-            )
-        """
-        cursor.execute(create_table_sql)
-        # logger.info(f"Table created or already exists: {database_name}.{schema_name}.{table_name}")
+        table_exists_flag = check_table_existence(
+            connection=connection,
+            database_name=database_name,
+            schema_name=schema_name,
+            table_name=table_name
+        )
+
+        if table_exists_flag != True:
+
+            # create table
+            create_table_sql = f"""
+                CREATE TABLE IF NOT EXISTS {database_name}.{schema_name}.{table_name} (
+                    {', '.join(column_type_list)}
+                )
+            """
+            cursor.execute(create_table_sql)
+            # logger.info(f"Table created or already exists: {database_name}.{schema_name}.{table_name}")
 
         # insert data
         insert_sql = f"""
